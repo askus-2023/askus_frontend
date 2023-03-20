@@ -9,6 +9,7 @@ const colors = {
   grey30: '#E0E0E0',
   grey20: '#EEEEEE',
   grey10: '#F5F5F5',
-}
+  red: '#F22D50',
+};
 
-export const theme = { colors }
+export const theme = { colors };
