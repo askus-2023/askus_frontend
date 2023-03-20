@@ -1,25 +1,23 @@
-import React from "react"
-import styled from "styled-components"
-import { theme } from "../../../styles/Theme"
+import React from 'react';
+import styled from 'styled-components';
+import { theme } from '../../../styles/Theme';
 
 const TextButton = ({ type, children }) => {
   return (
     <Wrapper>
-      <button type={type ?? 'button'}>
-        {children}
-      </button>
+      <button type={type ?? 'button'}>{children}</button>
     </Wrapper>
-  )
-}
+  );
+};
 
-export default TextButton
+export default TextButton;
 
 const Wrapper = styled.div`
   background-color: white;
   border: none;
   border-radius: 6px;
   display: flex;
-  
+
   button {
     padding: 12px 15px;
     color: ${theme.colors.green50};
@@ -29,4 +27,4 @@ const Wrapper = styled.div`
       color: ${theme.colors.green70};
     }
   }
-`
+`;

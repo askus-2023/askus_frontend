@@ -1,6 +1,6 @@
-import React from "react"
-import styled from "styled-components"
-import { theme } from "../../../styles/Theme"
+import React from 'react';
+import styled from 'styled-components';
+import { theme } from '../../../styles/Theme';
 
 const OutlinedButton = ({ type, children, onClick }) => {
   return (
@@ -9,10 +9,10 @@ const OutlinedButton = ({ type, children, onClick }) => {
         {children}
       </button>
     </Wrapper>
-  )
-}
+  );
+};
 
-export default OutlinedButton
+export default OutlinedButton;
 
 const Wrapper = styled.div`
   background-color: white;
@@ -22,7 +22,7 @@ const Wrapper = styled.div`
   &:hover {
     border-color: ${theme.colors.green70};
   }
-  
+
   button {
     padding: 12px 15px;
     color: ${theme.colors.green50};
@@ -32,4 +32,4 @@ const Wrapper = styled.div`
       color: ${theme.colors.green70};
     }
   }
-`
+`;

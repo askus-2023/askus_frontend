@@ -1,6 +1,6 @@
-import React from "react"
-import styled from "styled-components"
-import { theme } from "../../../styles/Theme"
+import React from 'react';
+import styled from 'styled-components';
+import { theme } from '../../../styles/Theme';
 
 const ContainedButton = ({ type, children, onClick }) => {
   return (
@@ -9,10 +9,10 @@ const ContainedButton = ({ type, children, onClick }) => {
         {children}
       </button>
     </Wrapper>
-  )
-}
+  );
+};
 
-export default ContainedButton
+export default ContainedButton;
 
 const Wrapper = styled.div`
   background-color: ${theme.colors.green50};
@@ -21,12 +21,11 @@ const Wrapper = styled.div`
   &:hover {
     background-color: ${theme.colors.green70};
   }
-  
+
   button {
     padding: 12px 15px;
     color: white;
     font-size: 16px;
     font-weight: bold;
-
   }
-`
+`;
