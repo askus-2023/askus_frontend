@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { theme } from '../../../styles/Theme';
 
-const TextButton = ({ type, children }) => {
+const TextButton = ({ type, children, onClick }) => {
   return (
     <Wrapper>
-      <button type={type ?? 'button'}>{children}</button>
+      <button type={type ?? 'button'} onClick={onClick}>{children}</button>
     </Wrapper>
   );
 };
@@ -13,18 +13,18 @@ const TextButton = ({ type, children }) => {
 export default TextButton;
 
 const Wrapper = styled.div`
-  background-color: white;
   border: none;
   border-radius: 6px;
   display: flex;
+  flex-shrink: 0;
 
   button {
     padding: 12px 15px;
-    color: ${theme.colors.green50};
+    color: white;
     font-size: 16px;
     font-weight: bold;
     &:hover {
-      color: ${theme.colors.green70};
+      color: ${theme.colors.green50};
     }
   }
 `;

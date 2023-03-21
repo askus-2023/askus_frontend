@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../../styles/Theme';
 
-const SearchInput = ({
+const TextInput = ({
   id,
   className,
   type,
@@ -41,7 +41,7 @@ const SearchInput = ({
   );
 };
 
-export default SearchInput;
+export default TextInput;
 
 const Wrapper = styled.div`
   position: relative;

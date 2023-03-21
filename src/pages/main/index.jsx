@@ -4,6 +4,7 @@ import TextInput from '../../components/common/input/TextInput';
 import ContainedButton from '../../components/common/button/ContainedButton';
 import TextButton from '../../components/common/button/TextButton';
 import OutlinedButton from '../../components/common/button/OutlinedButton';
+import SearchInput from '../../components/common/input/SearchInput';
 
 const MainPage = () => {
   const [email, setEmail] = useState('');
@@ -19,6 +20,7 @@ const MainPage = () => {
         error={true}
         errMsg='에러메시지입니다'
       />
+      <SearchInput />
       <ContainedButton>Contained</ContainedButton>
       <TextButton>Text</TextButton>
       <OutlinedButton>Outlined</OutlinedButton>
@@ -29,7 +31,7 @@ const MainPage = () => {
 export default MainPage;
 
 const Wrapper = styled.div`
-  height: 100%;
+  height: calc(100% - 80px);
   display: flex;
   flex-direction: column;
   align-items: center;

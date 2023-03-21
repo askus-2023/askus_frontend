@@ -5,7 +5,8 @@ import { theme } from '../../../styles/Theme';
 const ContainedButton = ({ type, children, onClick }) => {
   return (
     <Wrapper>
-      <button type={type ?? 'button'} onClick={onClick}>
+      <button
+        type={type ?? 'button'} onClick={onClick}>
         {children}
       </button>
     </Wrapper>
@@ -18,6 +19,7 @@ const Wrapper = styled.div`
   background-color: ${theme.colors.green50};
   border-radius: 6px;
   display: flex;
+  flex-shrink: 0;
   &:hover {
     background-color: ${theme.colors.green70};
   }
