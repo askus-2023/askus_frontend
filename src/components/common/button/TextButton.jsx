@@ -5,7 +5,9 @@ import { theme } from '../../../styles/Theme';
 const TextButton = ({ type, children, onClick }) => {
   return (
     <Wrapper>
-      <button type={type ?? 'button'} onClick={onClick}>{children}</button>
+      <button type={type ?? 'button'} onClick={onClick}>
+        {children}
+      </button>
     </Wrapper>
   );
 };
@@ -20,11 +22,12 @@ const Wrapper = styled.div`
 
   button {
     padding: 12px 15px;
-    color: white;
+    color: ${theme.colors.green50};
     font-size: 16px;
     font-weight: bold;
     &:hover {
-      color: ${theme.colors.green50};
+      border-radius: 6px;
+      background-color: ${theme.colors.green10};
     }
   }
 `;

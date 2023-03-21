@@ -20,7 +20,7 @@ const Wrapper = styled.div`
   border-radius: 6px;
   display: flex;
   flex-shrink: 0;
-  
+
   &:hover {
     border-color: ${theme.colors.green70};
   }

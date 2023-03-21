@@ -5,8 +5,7 @@ import { theme } from '../../../styles/Theme';
 const ContainedButton = ({ type, children, onClick }) => {
   return (
     <Wrapper>
-      <button
-        type={type ?? 'button'} onClick={onClick}>
+      <button type={type ?? 'button'} onClick={onClick}>
         {children}
       </button>
     </Wrapper>

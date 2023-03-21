@@ -1,17 +1,15 @@
-import React from 'react'
-import styled from 'styled-components'
-import { theme } from '../../../styles/Theme'
+import React from 'react';
+import styled from 'styled-components';
+import { theme } from '../../../styles/Theme';
 // import SearchInput from '../input/SearchInput'
-import TextButton from '../button/TextButton'
-import ContainedButton from '../button/ContainedButton'
-import icSearch from '../../../assets/icons/ic-search-white.svg'
+import TextButton from '../button/TextButton';
+import ContainedButton from '../button/ContainedButton';
+import icSearch from '../../../assets/icons/ic-search-white.svg';
 
 const Header = () => {
   return (
     <Wrapper>
-      <LogoArea>
-        로고 넣기
-      </LogoArea>
+      <LogoArea>로고 넣기</LogoArea>
       <ul>
         <li>
           <SearchIcon>
@@ -26,10 +24,10 @@ const Header = () => {
         </li>
       </ul>
     </Wrapper>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
 
 const Wrapper = styled.div`
   width: 100%;
@@ -49,17 +47,17 @@ const Wrapper = styled.div`
       display: flex;
     }
   }
-`
+`;
 const LogoArea = styled.div`
   flex: 1 0 140px;
   padding: 0 12px;
-`
+`;
 const SearchIcon = styled.div`
   width: 36px;
   height: 36px;
   display: flex;
   align-self: center;
-  &:hover{
+  &:hover {
     cursor: pointer;
     background-color: ${theme.colors.green50};
     border-radius: 50%;
@@ -69,5 +67,4 @@ const SearchIcon = styled.div`
     width: 60%;
     height: 60%;
   }
-
-`
+`;

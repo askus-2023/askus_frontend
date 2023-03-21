@@ -1,7 +1,7 @@
-import React from 'react'
-import styled from 'styled-components'
-import { theme } from '../../../styles/Theme'
-import icSearch from '../../../assets/icons/ic-search-white.svg'
+import React from 'react';
+import styled from 'styled-components';
+import { theme } from '../../../styles/Theme';
+import icSearch from '../../../assets/icons/ic-search-white.svg';
 
 const SearchInput = ({ className }) => {
   return (
@@ -11,10 +11,10 @@ const SearchInput = ({ className }) => {
         <img src={icSearch} alt='검색 아이콘' />
       </button>
     </Wrapper>
-  )
-}
+  );
+};
 
-export default SearchInput
+export default SearchInput;
 
 const Wrapper = styled.div`
   position: relative;
@@ -37,7 +37,7 @@ const Wrapper = styled.div`
       height: 100%;
     }
   }
-`
+`;
 const InputEl = styled.input`
   width: 100%;
   padding: 12px 45px 12px 18px;
@@ -47,4 +47,4 @@ const InputEl = styled.input`
   &:focus {
     border-color: ${theme.colors.grey90};
   }
-`
+`;
