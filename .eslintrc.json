@@ -27,7 +27,8 @@
     "eqeqeq": "warn",
     "no-self-compare": "warn",
     "no-unused-vars": "warn",
-    "no-use-before-define": "error"
+    "no-use-before-define": "error",
+    "react/prop-types": ["off"]
   },
   "settings": {
     "react": {
