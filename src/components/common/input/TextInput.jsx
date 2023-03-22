@@ -45,15 +45,15 @@ export default TextInput;
 
 const Wrapper = styled.div`
   position: relative;
-  width: 400px;
+  width: 40rem;
   background-color: white;
 
   label {
     position: absolute;
     top: 0;
     left: 0;
-    padding: 0 8px;
-    font-size: 16px;
+    padding: 0 0.8rem;
+    font-size: 1.6rem;
     color: ${({ focus, error }) =>
       error
         ? theme.colors.red
@@ -63,30 +63,30 @@ const Wrapper = styled.div`
     background-color: white;
     transform: ${({ focus, isValue, error }) =>
       error || focus || isValue
-        ? 'translate(4px, -7px) scale(0.75)'
-        : 'translate(6px, 14px)'};
+        ? 'translate(0.4rem, -0.7rem) scale(0.75)'
+        : 'translate(0.6rem, 1.4rem)'};
     transform-origin: top-left;
     transition: transform 0.25s ease;
     pointer-events: none;
   }
   input {
     width: 100%;
-    font-size: 16px;
-    padding: 12px 15px;
-    border: 1px solid
+    font-size: 1.6rem;
+    padding: 1.2rem 1.5rem;
+    border: 0.1rem solid
       ${({ error }) => (error ? theme.colors.red : theme.colors.grey40)};
-    border-radius: 6px;
+    border-radius: 0.6rem;
     &:focus {
-      border: 2px solid;
+      border: 0.2rem solid;
       border-color: ${({ error }) =>
         error ? theme.colors.red : theme.colors.green50};
     }
   }
 `;
 const ErrorMsgWrapper = styled.div`
-  padding: 4px 12px;
+  padding: 0.4rem 1.2rem;
   span {
-    font-size: 12px;
+    font-size: 1.2rem;
     color: ${theme.colors.red};
     font-weight: bold;
   }

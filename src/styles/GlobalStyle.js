@@ -13,13 +13,14 @@ html {
   padding: 0;
 }
 body {
-  font-family: 'Noto Sans KR', sans-serif;
   margin: 0;
   padding: 0;
   color: #323232;
   .App {
     width: 100vw;
+    max-width: 100%;
     height: 100vh;
+    font-size: 10px;
   }
 button {
   outline: none;
