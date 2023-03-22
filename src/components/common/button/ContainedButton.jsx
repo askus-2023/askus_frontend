@@ -16,7 +16,7 @@ export default ContainedButton;
 
 const Wrapper = styled.div`
   background-color: ${theme.colors.green50};
-  border-radius: 6px;
+  border-radius: 0.6rem;
   display: flex;
   flex-shrink: 0;
   &:hover {
@@ -24,9 +24,9 @@ const Wrapper = styled.div`
   }
 
   button {
-    padding: 12px 15px;
+    padding: 1.2rem 1.5rem;
     color: white;
-    font-size: 16px;
+    font-size: 1.6rem;
     font-weight: bold;
   }
 `;

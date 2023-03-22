@@ -17,8 +17,6 @@ const MainPage = () => {
         placeholder='이메일'
         onChange={(e) => setEmail(e.target.value)}
         value={email}
-        error={true}
-        errMsg='에러메시지입니다'
       />
       <SearchInput />
       <ContainedButton>Contained</ContainedButton>

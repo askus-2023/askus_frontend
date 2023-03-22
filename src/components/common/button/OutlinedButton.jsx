@@ -16,8 +16,8 @@ export default OutlinedButton;
 
 const Wrapper = styled.div`
   background-color: white;
-  border: 1px solid ${theme.colors.green50};
-  border-radius: 6px;
+  border: 0.1rem solid ${theme.colors.green50};
+  border-radius: 0.6rem;
   display: flex;
   flex-shrink: 0;
 
@@ -26,9 +26,9 @@ const Wrapper = styled.div`
   }
 
   button {
-    padding: 12px 15px;
+    padding: 1.2rem 1.5rem;
     color: ${theme.colors.green50};
-    font-size: 16px;
+    font-size: 1.6rem;
     font-weight: bold;
     &:hover {
       color: ${theme.colors.green70};
