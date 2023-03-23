@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { theme } from '../../../styles/Theme';
 
-const OutlinedButton = ({ type, children, onClick }) => {
+const OutlinedButton = ({ type, className, children, onClick }) => {
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <button type={type ?? 'button'} onClick={onClick}>
         {children}
       </button>
@@ -28,7 +28,7 @@ const Wrapper = styled.div`
   button {
     padding: 1.2rem 1.5rem;
     color: ${theme.colors.green50};
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     font-weight: bold;
     &:hover {
       color: ${theme.colors.green70};

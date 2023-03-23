@@ -1,29 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import TextInput from '../../components/common/input/TextInput';
-import ContainedButton from '../../components/common/button/ContainedButton';
-import TextButton from '../../components/common/button/TextButton';
-import OutlinedButton from '../../components/common/button/OutlinedButton';
-import SearchInput from '../../components/common/input/SearchInput';
 
 const MainPage = () => {
-  const [email, setEmail] = useState('');
-
-  return (
-    <Wrapper>
-      <TextInput
-        id='email'
-        type='email'
-        placeholder='이메일'
-        onChange={(e) => setEmail(e.target.value)}
-        value={email}
-      />
-      <SearchInput />
-      <ContainedButton>Contained</ContainedButton>
-      <TextButton>Text</TextButton>
-      <OutlinedButton>Outlined</OutlinedButton>
-    </Wrapper>
-  );
+  return <Wrapper></Wrapper>;
 };
 
 export default MainPage;

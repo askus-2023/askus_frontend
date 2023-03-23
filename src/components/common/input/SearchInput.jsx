@@ -1,12 +1,12 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { theme } from '../../../styles/Theme';
-import icSearch from '../../../assets/icons/ic-search-white.svg';
+import icSearch from '../../../assets/icons/search-white.svg';
 
-const SearchInput = ({ className }) => {
+const SearchInput = ({ className, alwaysVisible }) => {
   return (
     <Wrapper className={className}>
-      <InputEl />
+      <InputEl type='search' alwaysVisible={alwaysVisible} />
       <button>
         <img src={icSearch} alt='검색 아이콘' />
       </button>
@@ -16,35 +16,53 @@ const SearchInput = ({ className }) => {
 
 export default SearchInput;
 
-const Wrapper = styled.div`
+const Wrapper = styled.form`
   position: relative;
-  max-width: 3.6rem;
+  max-width: 36rem;
+  &:hover input {
+    width: 100%;
+    visibility: visible;
+    padding-right: 4.5rem;
+  }
+  &:hover button {
+    background-color: ${theme.colors.green50};
+  }
   button {
     position: absolute;
     top: 0;
     right: 0;
-    width: 3.3rem;
-    height: 3.3rem;
-    padding: 0.8rem;
+    width: 3.6rem;
+    height: 3.6rem;
     border-radius: 50%;
-    background-color: ${theme.colors.green50};
-    transform: translate(-0.5rem, 0.5rem);
-    &:hover {
-      background-color: ${theme.colors.green70};
-    }
-    img {
-      width: 100%;
-      height: 100%;
-    }
+    transform: translate(-0.4rem, 0.4rem);
+    background-color: ${theme.colors.grey30};
   }
 `;
 const InputEl = styled.input`
-  width: 100%;
-  padding: 1.2rem 4.5rem 1.2rem 1.8rem;
+  ${({ alwaysVisible }) =>
+    alwaysVisible
+      ? css`
+          width: 100%;
+          padding-right: 4.5rem;
+        `
+      : css`
+          width: 4.2rem;
+          visibility: hidden;
+          transition: all 0.5s ease;
+        `}
+  padding: 1.2rem 2.4rem 1.2rem 1.8rem;
   font-size: 1.6rem;
   border: 0.1rem solid ${theme.colors.grey30};
   border-radius: 2.4rem;
-  &:focus {
-    border-color: ${theme.colors.grey90};
+  float: right;
+  &:active,
+  :focus {
+    width: 100%;
+    visibility: visible;
+    padding-right: 4.5rem;
+    border: 0.1rem solid ${theme.colors.grey50};
+  }
+  &:focus ~ button {
+    background-color: ${theme.colors.green50};
   }
 `;

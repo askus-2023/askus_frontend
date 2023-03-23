@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { theme } from '../../../styles/Theme';
 
-const ContainedButton = ({ type, children, onClick }) => {
+const ContainedButton = ({ type, className, children, onClick }) => {
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <button type={type ?? 'button'} onClick={onClick}>
-        {children}
+        <span>{children}</span>
       </button>
     </Wrapper>
   );
@@ -24,9 +24,10 @@ const Wrapper = styled.div`
   }
 
   button {
+    width: 100%;
     padding: 1.2rem 1.5rem;
     color: white;
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     font-weight: bold;
   }
 `;
