@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../../styles/Theme';
-
-// import profileImage from '../../../assets/images/profile.png';
-import icHeartEmpty from '../../../assets/icons/ic-heart-empty.svg';
-import icHeartFill from '../../../assets/icons/ic-heart-fill.svg';
-// import { AiFillStar } from "react-icons/ai";
+import heartEmpty from '../../../assets/icons/heart-empty.svg';
+import heartFill from '../../../assets/icons/heart-fill.svg';
 
 const Card = ({ thumbnail, menu, title, date, nickname, profile, like }) => {
   const [isMouseHover, setIsMouseHover] = useState(false);
@@ -31,13 +28,9 @@ const Card = ({ thumbnail, menu, title, date, nickname, profile, like }) => {
             <Nickname>{nickname}</Nickname>
           </WriterInfo>
           {!isMouseHover ? (
-            <Like
-              src={icHeartEmpty}
-              alt='heartEmpty'
-              onMouseOver={iconHandler}
-            />
+            <Like src={heartEmpty} alt='heartEmpty' onMouseOver={iconHandler} />
           ) : (
-            <Like src={icHeartFill} alt='heartFill' onMouseOut={iconHandler} />
+            <Like src={heartFill} alt='heartFill' onMouseOut={iconHandler} />
           )}
         </Writer>
       </InfoWrapper>
