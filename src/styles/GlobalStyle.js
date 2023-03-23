@@ -11,6 +11,7 @@ ${reset}
 html {
   margin: 0;
   padding: 0;
+  font-size: 10px;
 }
 body {
   margin: 0;
@@ -20,9 +21,9 @@ body {
     width: 100vw;
     max-width: 100%;
     height: 100vh;
-    font-size: 10px;
   }
 button {
+  padding: 0;
   outline: none;
   border: none;
   background: none;
@@ -31,9 +32,13 @@ button {
   }
 }
 input {
+  padding: 0;
   border: none;
   &:focus {
     outline: none;
+  }
+  &[type="file"] {
+    display: none;
   }
 }
 `;

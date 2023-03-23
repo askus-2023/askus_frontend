@@ -10,6 +10,7 @@ const TextInput = ({
   error,
   errMsg,
   placeholder,
+  required,
   onChange,
 }) => {
   const [focus, setFocus] = useState(false);
@@ -18,13 +19,14 @@ const TextInput = ({
     <Wrapper
       className={className}
       focus={focus}
-      isValue={value.length}
+      isValue={value?.length}
       error={error}
     >
       <div className='input-field'>
         <label htmlFor={id}>{placeholder}</label>
         <input
           id={id}
+          required={required}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
           type={type ?? 'text'}
@@ -46,8 +48,8 @@ export default TextInput;
 const Wrapper = styled.div`
   position: relative;
   width: 40rem;
-  background-color: white;
-
+  min-height: 4.6rem;
+  margin: 1rem 0;
   label {
     position: absolute;
     top: 0;
@@ -59,7 +61,7 @@ const Wrapper = styled.div`
         ? theme.colors.red
         : focus
         ? theme.colors.green50
-        : theme.colors.grey70};
+        : theme.colors.grey50};
     background-color: white;
     transform: ${({ focus, isValue, error }) =>
       error || focus || isValue
@@ -72,9 +74,10 @@ const Wrapper = styled.div`
   input {
     width: 100%;
     font-size: 1.6rem;
+    background-color: white;
     padding: 1.2rem 1.5rem;
     border: 0.1rem solid
-      ${({ error }) => (error ? theme.colors.red : theme.colors.grey40)};
+      ${({ error }) => (error ? theme.colors.red : theme.colors.grey30)};
     border-radius: 0.6rem;
     &:focus {
       border: 0.2rem solid;
