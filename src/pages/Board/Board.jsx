@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { theme } from '../../styles/Theme';
 import Card from '../../components/common/card/Card';
 import thumbnail from '../../assets/images/thumbnail.png';
-import userimage from '../../assets/images/default-profile.png';
-import { theme } from '../../styles/Theme';
+import profile from '../../assets/images/default-profile.png';
 import ContainedButton from '../../components/common/button/ContainedButton';
-import TextButton from '../../components/common/button/TextButton';
-import OutlinedButton from '../../components/common/button/OutlinedButton';
 import SelectButton from '../../components/common/button/SelectButton';
 
 const exPost = [
@@ -17,7 +15,7 @@ const exPost = [
     title: '맛있게 다이어트 할 수 있는! 다이어트 식단 추천',
     date: '2023.03.23',
     nickname: 'Cookle',
-    userimage: userimage,
+    profile: profile,
     like: false,
   },
   {
@@ -27,7 +25,7 @@ const exPost = [
     title: '맛있게 다이어트 할 수 있는! 다이어트 식단 추천',
     date: '2023.03.23',
     nickname: 'Cookle',
-    userimage: userimage,
+    profile: profile,
     like: false,
   },
   {
@@ -37,7 +35,7 @@ const exPost = [
     title: '맛있게 다이어트 할 수 있는! 다이어트 식단 추천',
     date: '2023.03.23',
     nickname: 'Cookle',
-    userimage: userimage,
+    profile: profile,
     like: false,
   },
   {
@@ -47,7 +45,7 @@ const exPost = [
     title: '맛있게 다이어트 할 수 있는! 다이어트 식단 추천',
     date: '2023.03.23',
     nickname: 'Cookle',
-    userimage: userimage,
+    profile: profile,
     like: true,
   },
   {
@@ -57,7 +55,7 @@ const exPost = [
     title: '맛있게 다이어트 할 수 있는! 다이어트 식단 추천',
     date: '2023.03.23',
     nickname: 'Cookle',
-    userimage: userimage,
+    profile: profile,
     like: false,
   },
 ];
@@ -100,7 +98,7 @@ const Board = () => {
             title={post.title}
             date={post.date}
             nickname={post.nickname}
-            userimage={post.userimage}
+            profile={post.profile}
             like={post.like}
           />
         ))}

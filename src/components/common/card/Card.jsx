@@ -7,7 +7,7 @@ import icHeartEmpty from '../../../assets/icons/ic-heart-empty.svg';
 import icHeartFill from '../../../assets/icons/ic-heart-fill.svg';
 // import { AiFillStar } from "react-icons/ai";
 
-const Card = ({ thumbnail, menu, title, date, nickname, userimage, like }) => {
+const Card = ({ thumbnail, menu, title, date, nickname, profile, like }) => {
   const [isMouseHover, setIsMouseHover] = useState(false);
 
   const iconHandler = () => {
@@ -27,7 +27,7 @@ const Card = ({ thumbnail, menu, title, date, nickname, userimage, like }) => {
         </Info>
         <Writer>
           <WriterInfo>
-            <UserImage src={userimage} alt='userimage' />
+            <UserImage src={profile} alt='profile' />
             <Nickname>{nickname}</Nickname>
           </WriterInfo>
           {!isMouseHover ? (
