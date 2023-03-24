@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Header from './components/common/header/Header';
+import Board from './pages/Board/Board';
 const MainPage = lazy(() => import('./pages/main'));
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Navigate to='/main' />} />
           <Route path='/main' element={<MainPage />} />
+          <Route path='/board' element={<Board />} />
         </Routes>
       </Suspense>
     </div>
