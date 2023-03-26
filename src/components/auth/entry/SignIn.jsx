@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import TextInput from '../../common/input/TextInput';
-import ContainedButton from '../../common/button/ContainedButton';
+import TextInput from '../../Common/Input/TextInput';
+import ContainedButton from '../../Common/Button/ContainedButton';
 import useFormValidation from './useFormValidation';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formValid, setFormValid] = useState({});
-  
+
   const { validateEmail, validatePassword } = useFormValidation();
   const handleClickSignIn = () => {
     const newFormValid = {

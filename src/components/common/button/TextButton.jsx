@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { theme } from '../../../styles/Theme';
+import { theme } from '../../../Styles/Theme';
 
 const TextButton = ({ type, className, children, onClick }) => {
   return (

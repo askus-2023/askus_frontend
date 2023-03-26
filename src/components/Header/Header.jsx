@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { theme } from '../../../styles/Theme';
-import SearchInput from '../input/SearchInput';
-import TextButton from '../button/TextButton';
-import ContainedButton from '../button/ContainedButton';
-import AuthModal from '../../auth/entry/AuthModal';
-import logo from '../../../assets/images/logo.png';
-import icBurgerSimple from '../../../assets/icons/burger-simple.svg';
-import icProfile from '../../../assets/icons/default-profile.svg';
+import { theme } from '../../Styles/Theme';
+import SearchInput from '../Common/Input/SearchInput';
+import TextButton from '../Common/Button/TextButton';
+import ContainedButton from '../Common/Button/ContainedButton';
+import AuthModal from '../Auth/Entry/AuthModal';
+import logo from '../../Assets/Images/logo.png';
+import icBurgerSimple from '../../Assets/Icons/burger-simple.svg';
+import icProfile from '../../Assets/Icons/default-profile.svg';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
@@ -68,12 +68,11 @@ export default Header;
 
 const Wrapper = styled.div`
   width: 100%;
-  padding: 0 8rem;
-  position: relative;
+  padding: 0 4rem;
+  position: fixed;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 0.1rem solid ${theme.colors.grey30};
   .header-action {
     display: flex;
     padding: 2rem 1.2rem;
@@ -95,9 +94,11 @@ const Wrapper = styled.div`
   }
 `;
 const LogoArea = styled.div`
-  flex: 1 1 20rem;
+  flex: 0 1 auto;
   padding: 0 1.2rem;
-  cursor: pointer;
+  img {
+    cursor: pointer;
+  }
 `;
 const ProfileWrapper = styled.div`
   padding: 0.5rem 0.5rem 0.5rem 1.4rem;

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { theme } from '../../styles/Theme';
-import Card from '../../components/common/card/Card';
-import thumbnail from '../../assets/images/thumbnail.png';
-import profile from '../../assets/images/default-profile.png';
-import ContainedButton from '../../components/common/button/ContainedButton';
-import SelectButton from '../../components/common/button/SelectButton';
+import { theme } from '../../Styles/Theme';
+import Card from '../../Components/Common/Card/Card';
+import thumbnail from '../../Assets/Images/thumbnail.png';
+import profile from '../../Assets/Images/default-profile.png';
+import ContainedButton from '../../Components/Common/Button/ContainedButton';
+import SelectButton from '../../Components/Common/Button/SelectButton';
 
 const exPost = [
   {

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { theme } from '../../../styles/Theme';
-import heartEmpty from '../../../assets/icons/heart-empty.svg';
-import heartFill from '../../../assets/icons/heart-fill.svg';
+import { theme } from '../../../Styles/Theme';
+import heartEmpty from '../../../Assets/Icons/heart-empty.svg';
+import heartFill from '../../../Assets/Icons/heart-fill.svg';
 
 const Card = ({ thumbnail, menu, title, date, nickname, profile, like }) => {
   const [isMouseHover, setIsMouseHover] = useState(false);

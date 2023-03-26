@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { theme } from '../../../styles/Theme';
+import { theme } from '../../../Styles/Theme';
 
 const SelectButton = ({ className, onChange, option, selected }) => {
   return (
