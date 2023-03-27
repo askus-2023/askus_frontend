@@ -101,12 +101,10 @@ const CategoryWrapper = styled.div`
 `;
 const SearchWrapper = styled.div`
   position: relative;
-  width: fit-content;
+  z-index: 0;
   margin: 0 auto;
-
   > .ic-search {
     position: absolute;
-    z-index: 5;
     top: 42%;
     left: 2.8rem;
   }

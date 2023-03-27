@@ -15,6 +15,7 @@ const Header = () => {
   const [phase, setPhase] = useState('');
   const navigate = useNavigate();
   return (
+    <>
     <Wrapper>
       <LogoArea onClick={() => navigate('main')}>
         <img src={logo} alt='로고' />
@@ -57,10 +58,11 @@ const Header = () => {
           </>
         )}
       </ul>
-      {isOpenModal && (
+    </Wrapper>
+    {isOpenModal && (
         <AuthModal phase={phase} setPhase={setPhase} openModal={openModal} />
       )}
-    </Wrapper>
+    </>
   );
 };
 
