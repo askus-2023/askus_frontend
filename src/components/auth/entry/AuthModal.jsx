@@ -7,8 +7,8 @@ import SignIn from './SignIn';
 
 const AuthModal = ({ phase, setPhase, openModal }) => {
   return (
-    <div>
-      <Overlay />
+    <Wrapper>
+      <Overlay className='overlay' />
       <ModalWrapper>
         <Header>
           <div></div>
@@ -37,12 +37,18 @@ const AuthModal = ({ phase, setPhase, openModal }) => {
           )}
         </Toggle>
       </ModalWrapper>
-    </div>
+    </Wrapper>
   );
 };
 
 export default AuthModal;
+const Wrapper = styled.div`
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  z-index: 5;
 
+`
 const Overlay = styled.div`
   position: fixed;
   top: 0;
@@ -58,7 +64,6 @@ const ModalWrapper = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 5;
   background-color: white;
   border-radius: 0.6rem;
 `;
