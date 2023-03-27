@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import TextInput from '../../common/input/TextInput';
-import ContainedButton from '../../common/button/ContainedButton';
-import defaultProfile from '../../../assets/images/default-profile.png';
-import icCancel from '../../../assets/icons/cancel.svg';
+import TextInput from '../../Common/Input/TextInput';
+import ContainedButton from '../../Common/Button/ContainedButton';
+import defaultProfile from '../../../Assets/Images/default-profile.png';
+import icCancel from '../../../Assets/Icons/cancel.svg';
 import useFormValidation from './useFormValidation';
 
 const SignUp = ({ setPhase }) => {
@@ -15,7 +15,8 @@ const SignUp = ({ setPhase }) => {
   const [formValid, setFormValid] = useState({});
   const [image, setImage] = useState({});
 
-  const { validateEmail, validatePassword, validateNickname } = useFormValidation();
+  const { validateEmail, validatePassword, validateNickname } =
+    useFormValidation();
 
   const uploadImage = () => {
     const file = fileInputRef.current?.files;

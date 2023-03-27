@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import SignUp from './SignUp';
-import icClose from '../../../assets/icons/close.svg';
-import { theme } from '../../../styles/Theme';
+import icClose from '../../../Assets/Icons/close.svg';
+import { theme } from '../../../Styles/Theme';
 import SignIn from './SignIn';
 
 const AuthModal = ({ phase, setPhase, openModal }) => {
   return (
-    <Wrapper>
+    <div>
       <Overlay />
       <ModalWrapper>
         <Header>
@@ -23,14 +23,26 @@ const AuthModal = ({ phase, setPhase, openModal }) => {
           <span>Cookle에 오신 것을 환영합니다.</span>
         </Welcome>
         {phase === 'signup' ? <SignUp setPhase={setPhase} /> : <SignIn />}
+        <Toggle>
+          {phase === 'signup' ? (
+            <>
+              이미 계정이 있으신가요?{' '}
+              <button onClick={() => setPhase('signin')}>로그인</button>
+            </>
+          ) : (
+            <>
+              아직 Cookle을 이용해본 적이 없으신가요?{' '}
+              <button onClick={() => setPhase('signup')}>가입하기</button>
+            </>
+          )}
+        </Toggle>
       </ModalWrapper>
-    </Wrapper>
+    </div>
   );
 };
 
 export default AuthModal;
 
-const Wrapper = styled.div``;
 const Overlay = styled.div`
   position: fixed;
   top: 0;
@@ -41,10 +53,12 @@ const Overlay = styled.div`
 `;
 const ModalWrapper = styled.div`
   max-width: 44rem;
+  padding-bottom: 2.4rem;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 5;
   background-color: white;
   border-radius: 0.6rem;
 `;
@@ -71,4 +85,12 @@ const Welcome = styled.div`
   padding: 2rem;
   font-size: 2.2rem;
   font-weight: bold;
+`;
+const Toggle = styled.div`
+  font-size: 1.2rem;
+  text-align: center;
+  button {
+    font-weight: bold;
+    cursor: pointer;
+  }
 `;

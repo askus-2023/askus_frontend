@@ -1,24 +1,32 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { theme } from '../../../styles/Theme';
-import icSearch from '../../../assets/icons/search-white.svg';
+import { theme } from '../../../Styles/Theme';
+import icSearch from '../../../Assets/Icons/search-white.svg';
 
-const SearchInput = ({ className, alwaysVisible }) => {
+const SearchInput = ({ className, placeholder, alwaysVisible }) => {
   return (
     <Wrapper className={className}>
-      <InputEl type='search' alwaysVisible={alwaysVisible} />
-      <button>
-        <img src={icSearch} alt='검색 아이콘' />
-      </button>
+      <FormEl>
+        <InputEl
+          type='search'
+          alwaysVisible={alwaysVisible}
+          placeholder={placeholder}
+        />
+        <button>
+          <img src={icSearch} alt='검색 아이콘' />
+        </button>
+      </FormEl>
     </Wrapper>
   );
 };
 
 export default SearchInput;
 
-const Wrapper = styled.form`
+const Wrapper = styled.div`
+  max-width: 64rem;
+`;
+const FormEl = styled.form`
   position: relative;
-  max-width: 36rem;
   &:hover input {
     width: 100%;
     visibility: visible;
@@ -34,8 +42,9 @@ const Wrapper = styled.form`
     width: 3.6rem;
     height: 3.6rem;
     border-radius: 50%;
-    transform: translate(-0.4rem, 0.4rem);
-    background-color: ${theme.colors.grey30};
+    transform: translate(-0.4rem, 0.45rem);
+    transition: background-color 0.5s ease;
+    background-color: rgba(224, 224, 224, 0.4);
   }
 `;
 const InputEl = styled.input`
@@ -60,7 +69,6 @@ const InputEl = styled.input`
     width: 100%;
     visibility: visible;
     padding-right: 4.5rem;
-    border: 0.1rem solid ${theme.colors.grey50};
   }
   &:focus ~ button {
     background-color: ${theme.colors.green50};
