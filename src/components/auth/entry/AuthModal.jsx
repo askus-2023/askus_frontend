@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import SignUp from './SignUp';
-import icClose from '../../../Assets/Icons/close.svg';
-import { theme } from '../../../Styles/Theme';
+import icClose from '../../../assets/icons/close.svg';
+import { theme } from '../../../styles/Theme';
 import SignIn from './SignIn';
 
 const AuthModal = ({ phase, setPhase, openModal }) => {

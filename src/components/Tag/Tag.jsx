@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { theme } from '../../Styles/Theme';
+import { theme } from '../../styles/Theme';
 
 const Tag = ({ className, type, hash, children }) => {
   return (
