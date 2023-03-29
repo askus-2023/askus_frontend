@@ -1,14 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { theme } from '../../../Styles/Theme';
+import { theme } from '../../../styles/Theme';
 
 const SelectButton = ({ className, onChange, option, selected }) => {
   return (
     <Wrapper className={className}>
       <select onChange={onChange} value={selected}>
-        <option value='' disabled>
-          필터
-        </option>
         {option.map((option, idx) => {
           return (
             <option value={option} key={idx}>
@@ -36,6 +33,7 @@ const Wrapper = styled.div`
   }
 
   select {
+    width: 11rem;
     padding: 0.8rem 0.2rem;
     color: ${theme.colors.green50};
     border: 0rem;
@@ -43,7 +41,8 @@ const Wrapper = styled.div`
     font-size: 1.8rem;
     font-weight: bold;
     outline: none;
-    text-indent: 2rem;
+    text-indent: 1rem;
+    cursor: pointer;
     &:hover {
       color: ${theme.colors.green70};
     }

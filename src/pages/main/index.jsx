@@ -1,11 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import Tag from '../../Components/Tag/Tag';
-import SearchInput from '../../Components/Common/Input/SearchInput';
-import bgImage from '../../Assets/Images/MainPage/bg-01.jpg';
-import icSearch from '../../Assets/Icons/search-grey.svg';
-import { theme } from '../../Styles/Theme';
+import Tag from '../../components/tag/Tag';
+import SearchInput from '../../components/common/input/SearchInput';
+import bgImage from '../../assets/images/mainPage/bg-01.jpg';
+import icSearch from '../../assets/icons/search-grey.svg';
+import { theme } from '../../styles/Theme';
+
 const MainPage = () => {
+  const navigate = useNavigate();
   return (
     <Wrapper>
       <SectionTop className='section-top'>
@@ -18,19 +21,44 @@ const MainPage = () => {
         </Copy>
         <CategoryWrapper>
           <ul className='section-top__categories categories'>
-            <li className='category'>
+            <li
+              className='category'
+              onClick={() =>
+                navigate('/board', { state: { category: '한식' } })
+              }
+            >
               <Tag className='category-item'>한식</Tag>
             </li>
-            <li className='category'>
+            <li
+              className='category'
+              onClick={() =>
+                navigate('/board', { state: { category: '양식' } })
+              }
+            >
               <Tag className='category-item'>양식</Tag>
             </li>
-            <li className='category'>
+            <li
+              className='category'
+              onClick={() =>
+                navigate('/board', { state: { category: '일식' } })
+              }
+            >
               <Tag className='category-item'>일식</Tag>
             </li>
-            <li className='category'>
+            <li
+              className='category'
+              onClick={() =>
+                navigate('/board', { state: { category: '중식' } })
+              }
+            >
               <Tag className='category-item'>중식</Tag>
             </li>
-            <li className='category'>
+            <li
+              className='category'
+              onClick={() =>
+                navigate('/board', { state: { category: '기타' } })
+              }
+            >
               <Tag className='category-item'>기타</Tag>
             </li>
           </ul>

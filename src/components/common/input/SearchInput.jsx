@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { theme } from '../../../Styles/Theme';
-import icSearch from '../../../Assets/Icons/search-white.svg';
+import { theme } from '../../../styles/Theme';
+import icSearch from '../../../assets/icons/search-white.svg';
 
 const SearchInput = ({ className, placeholder, alwaysVisible }) => {
   return (

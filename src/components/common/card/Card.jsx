@@ -1,15 +1,35 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import { theme } from '../../../Styles/Theme';
-import heartEmpty from '../../../Assets/Icons/heart-empty.svg';
-import heartFill from '../../../Assets/Icons/heart-fill.svg';
+import styled, { keyframes } from 'styled-components';
+import { theme } from '../../../styles/Theme';
+import heartEmpty from '../../../assets/icons/heart-empty.svg';
+import heartFill from '../../../assets/icons/heart-fill.svg';
 
-const Card = ({ thumbnail, menu, title, date, nickname, profile, like }) => {
-  const [isMouseHover, setIsMouseHover] = useState(false);
+const Card = ({
+  thumbnail,
+  menu,
+  title,
+  date,
+  nickname,
+  profile,
+  category,
+  like,
+  liketotal,
+}) => {
+  const [isLike, setIsLike] = useState(like);
+  const [total, setTotal] = useState(liketotal);
 
   const iconHandler = () => {
-    isMouseHover ? setIsMouseHover(false) : setIsMouseHover(true);
+    if (isLike) {
+      setIsLike(!isLike);
+      setTotal((total) => total - 1);
+    } else {
+      setIsLike(!isLike);
+      setTotal((total) => total + 1);
+    }
   };
+
+  const dateFormat =
+    date.getFullYear() + '.' + (date.getMonth() + 1) + '.' + date.getDate();
 
   return (
     <Wrapper>
@@ -18,25 +38,39 @@ const Card = ({ thumbnail, menu, title, date, nickname, profile, like }) => {
       </ImageWrapper>
       <InfoWrapper>
         <Info>
-          <Menu>{menu}</Menu>
+          <Menu>
+            [{category}] {menu}
+          </Menu>
           <Title>{title}</Title>
-          <Date>{date}</Date>
+          <Date>{dateFormat}</Date>
         </Info>
         <Writer>
           <WriterInfo>
             <UserImage src={profile} alt='profile' />
             <Nickname>{nickname}</Nickname>
           </WriterInfo>
-          {!isMouseHover ? (
-            <Like src={heartEmpty} alt='heartEmpty' onMouseOver={iconHandler} />
-          ) : (
-            <Like src={heartFill} alt='heartFill' onMouseOut={iconHandler} />
-          )}
+          <div>
+            {!isLike ? (
+              <Like src={heartEmpty} alt='heartEmpty' onClick={iconHandler} />
+            ) : (
+              <Like src={heartFill} alt='heartFill' onClick={iconHandler} />
+            )}
+            <Total>{total}</Total>
+          </div>
         </Writer>
       </InfoWrapper>
     </Wrapper>
   );
 };
+
+const card = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
 
 const Wrapper = styled.div`
   width: 24rem;
@@ -44,6 +78,8 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   border: 0.1rem solid ${theme.colors.grey30};
+  transition: all 5s;
+  animation: ${card} 2s;
 `;
 
 const ImageWrapper = styled.div`
@@ -116,6 +152,10 @@ const Writer = styled.div`
   display: flex;
   text-align: left;
   width: 100%;
+  div {
+    display: flex;
+    align-items: center;
+  }
 `;
 
 const WriterInfo = styled.div`
@@ -129,6 +169,7 @@ const UserImage = styled.img`
   width: 3rem;
   height: 3rem;
   object-fit: cover;
+  border-radius: 1.5rem;
 `;
 
 const Nickname = styled.h4`
@@ -141,6 +182,11 @@ const Nickname = styled.h4`
   &:hover {
     font-weight: bold;
   }
+`;
+
+const Total = styled.div`
+  font-size: 1.3rem;
+  color: ${theme.colors.grey50};
 `;
 
 const Like = styled.img`

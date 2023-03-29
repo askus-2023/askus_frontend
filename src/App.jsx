@@ -1,8 +1,8 @@
 import React, { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import Header from './Components/Header/Header';
-import Board from './Pages/Board/Board';
-const MainPage = lazy(() => import('./Pages/Main'));
+import Header from './components/header/Header';
+import Board from './pages/Board/Board';
+const MainPage = lazy(() => import('./pages/main'));
 
 function App() {
   return (

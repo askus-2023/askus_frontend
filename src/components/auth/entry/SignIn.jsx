@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import TextInput from '../../Common/Input/TextInput';
-import ContainedButton from '../../Common/Button/ContainedButton';
+import TextInput from '../../common/input/TextInput';
+import ContainedButton from '../../common/button/ContainedButton';
 import useFormValidation from './useFormValidation';
 
 const SignIn = () => {

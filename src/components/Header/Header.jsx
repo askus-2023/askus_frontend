@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { theme } from '../../Styles/Theme';
-import SearchInput from '../Common/Input/SearchInput';
-import TextButton from '../Common/Button/TextButton';
-import ContainedButton from '../Common/Button/ContainedButton';
-import AuthModal from '../Auth/Entry/AuthModal';
-import logo from '../../Assets/Images/logo.png';
-import icBurgerSimple from '../../Assets/Icons/burger-simple.svg';
-import icProfile from '../../Assets/Icons/default-profile.svg';
+import { theme } from '../../styles/Theme';
+import SearchInput from '../common/input/SearchInput';
+import TextButton from '../common/button/TextButton';
+import ContainedButton from '../common/button/ContainedButton';
+import AuthModal from '../auth/entry/AuthModal';
+import logo from '../../assets/images/logo.png';
+import icBurgerSimple from '../../assets/icons/burger-simple.svg';
+import icProfile from '../../assets/icons/default-profile.svg';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
@@ -24,7 +24,7 @@ const Header = () => {
         <li className='header-action__search'>
           <SearchInput />
         </li>
-        {false ? (
+        {true ? (
           <li className='header-action__profile'>
             <ProfileWrapper>
               <img src={icBurgerSimple} alt='메뉴 아이콘' />
@@ -71,7 +71,8 @@ export default Header;
 const Wrapper = styled.div`
   width: 100%;
   padding: 0 4rem;
-  position: fixed;
+  position: absolute;
+  top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -104,6 +105,7 @@ const LogoArea = styled.div`
 `;
 const ProfileWrapper = styled.div`
   padding: 0.5rem 0.5rem 0.5rem 1.4rem;
+  background: rgba(244, 244, 244, 0.75);
   display: flex;
   justify-content: space-between;
   gap: 1.8rem;
