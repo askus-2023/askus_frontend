@@ -17,6 +17,7 @@ body {
   margin: 0;
   padding: 0;
   color: #323232;
+  font-family: 'Noto Sans KR', sans-serif;
   .App {
     width: 100vw;
     max-width: 100%;
