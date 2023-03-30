@@ -21,45 +21,50 @@ const MainPage = () => {
         </Copy>
         <CategoryWrapper>
           <ul className='section-top__categories categories'>
-            <li
-              className='category'
-              onClick={() =>
-                navigate('/board', { state: { category: '한식' } })
-              }
-            >
-              <Tag className='category-item'>한식</Tag>
+            <li className='category'>
+              <button
+                onClick={() =>
+                  navigate('/board', { state: { category: '한식' } })
+                }
+              >
+                <Tag className='category-item'>한식</Tag>
+              </button>
             </li>
-            <li
-              className='category'
-              onClick={() =>
-                navigate('/board', { state: { category: '양식' } })
-              }
-            >
-              <Tag className='category-item'>양식</Tag>
+            <li className='category'>
+              <button
+                onClick={() =>
+                  navigate('/board', { state: { category: '양식' } })
+                }
+              >
+                <Tag className='category-item'>양식</Tag>
+              </button>
             </li>
-            <li
-              className='category'
-              onClick={() =>
-                navigate('/board', { state: { category: '일식' } })
-              }
-            >
-              <Tag className='category-item'>일식</Tag>
+            <li className='category'>
+              <button
+                onClick={() =>
+                  navigate('/board', { state: { category: '일식' } })
+                }
+              >
+                <Tag className='category-item'>일식</Tag>
+              </button>
             </li>
-            <li
-              className='category'
-              onClick={() =>
-                navigate('/board', { state: { category: '중식' } })
-              }
-            >
-              <Tag className='category-item'>중식</Tag>
+            <li className='category'>
+              <button
+                onClick={() =>
+                  navigate('/board', { state: { category: '중식' } })
+                }
+              >
+                <Tag className='category-item'>중식</Tag>
+              </button>
             </li>
-            <li
-              className='category'
-              onClick={() =>
-                navigate('/board', { state: { category: '기타' } })
-              }
-            >
-              <Tag className='category-item'>기타</Tag>
+            <li className='category'>
+              <button
+                onClick={() =>
+                  navigate('/board', { state: { category: '기타' } })
+                }
+              >
+                <Tag className='category-item'>기타</Tag>
+              </button>
             </li>
           </ul>
         </CategoryWrapper>
@@ -92,7 +97,6 @@ const SectionTop = styled.section`
   padding: 13.2rem 5.2rem;
   display: flex;
   flex-direction: column;
-  gap: 2.4rem;
 `;
 const Copy = styled.p`
   text-align: center;
@@ -114,11 +118,13 @@ const CategoryWrapper = styled.div`
     cursor: pointer;
   }
   .category-item {
-    padding: 1.4rem 2.4rem;
-    background: rgba(0, 0, 0, 0.75);
-    &:hover {
-      background: rgba(0, 0, 0, 0.6);
-      box-shadow: -0.2rem -0.2rem 0.4rem rgba(255, 255, 255, 0.2) inset;
+    .tag-container {
+      padding: 0.8rem 2.4rem;
+      background: rgba(0, 0, 0, 0.75);
+      &:hover {
+        background: rgba(0, 0, 0, 0.6);
+        box-shadow: -0.2rem -0.2rem 0.4rem rgba(255, 255, 255, 0.2) inset;
+      }
     }
     .tag-name {
       color: white;
@@ -140,7 +146,7 @@ const SearchWrapper = styled.div`
     padding: 1.2rem;
     form {
       input {
-        min-width: 54rem;
+        min-width: 57.6rem;
         border-radius: 3rem;
         padding: 1.6rem 1.6rem 1.6rem 5.8rem;
         ::placeholder {

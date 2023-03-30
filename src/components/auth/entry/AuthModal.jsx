@@ -47,8 +47,7 @@ const Wrapper = styled.div`
   height: 100vh;
   position: fixed;
   z-index: 5;
-
-`
+`;
 const Overlay = styled.div`
   position: fixed;
   top: 0;

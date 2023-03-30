@@ -1,20 +1,20 @@
-import React, { Suspense, lazy } from 'react';
+import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Header from './components/header/Header';
+import MainPage from './pages/main';
 import Board from './pages/Board/Board';
-const MainPage = lazy(() => import('./pages/main'));
+import BoardDetailPage from './pages/Board/[id]';
 
 function App() {
   return (
     <div className='App'>
       <Header />
-      <Suspense fallback={<div>로딩 중입니다</div>}>
-        <Routes>
-          <Route path='/' element={<Navigate to='/main' />} />
-          <Route path='/main' element={<MainPage />} />
-          <Route path='/board' element={<Board />} />
-        </Routes>
-      </Suspense>
+      <Routes>
+        <Route path='/' element={<Navigate to='/main' />} />
+        <Route path='/main' element={<MainPage />} />
+        <Route path='/board' element={<Board />} />
+        <Route path='/board/:id' element={<BoardDetailPage />} />
+      </Routes>
     </div>
   );
 }
