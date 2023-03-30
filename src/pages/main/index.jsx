@@ -21,45 +21,50 @@ const MainPage = () => {
         </Copy>
         <CategoryWrapper>
           <ul className='section-top__categories categories'>
-            <li
-              className='category'
-              onClick={() =>
-                navigate('/board', { state: { category: '한식' } })
-              }
-            >
-              <Tag className='category-item'>한식</Tag>
+            <li className='category'>
+              <button
+                onClick={() =>
+                  navigate('/board', { state: { category: '한식' } })
+                }
+              >
+                <Tag className='category-item'>한식</Tag>
+              </button>
             </li>
-            <li
-              className='category'
-              onClick={() =>
-                navigate('/board', { state: { category: '양식' } })
-              }
-            >
-              <Tag className='category-item'>양식</Tag>
+            <li className='category'>
+              <button
+                onClick={() =>
+                  navigate('/board', { state: { category: '양식' } })
+                }
+              >
+                <Tag className='category-item'>양식</Tag>
+              </button>
             </li>
-            <li
-              className='category'
-              onClick={() =>
-                navigate('/board', { state: { category: '일식' } })
-              }
-            >
-              <Tag className='category-item'>일식</Tag>
+            <li className='category'>
+              <button
+                onClick={() =>
+                  navigate('/board', { state: { category: '일식' } })
+                }
+              >
+                <Tag className='category-item'>일식</Tag>
+              </button>
             </li>
-            <li
-              className='category'
-              onClick={() =>
-                navigate('/board', { state: { category: '중식' } })
-              }
-            >
-              <Tag className='category-item'>중식</Tag>
+            <li className='category'>
+              <button
+                onClick={() =>
+                  navigate('/board', { state: { category: '중식' } })
+                }
+              >
+                <Tag className='category-item'>중식</Tag>
+              </button>
             </li>
-            <li
-              className='category'
-              onClick={() =>
-                navigate('/board', { state: { category: '기타' } })
-              }
-            >
-              <Tag className='category-item'>기타</Tag>
+            <li className='category'>
+              <button
+                onClick={() =>
+                  navigate('/board', { state: { category: '기타' } })
+                }
+              >
+                <Tag className='category-item'>기타</Tag>
+              </button>
             </li>
           </ul>
         </CategoryWrapper>

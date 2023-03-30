@@ -16,50 +16,50 @@ const Header = () => {
   const navigate = useNavigate();
   return (
     <>
-    <Wrapper>
-      <LogoArea onClick={() => navigate('main')}>
-        <img src={logo} alt='로고' />
-      </LogoArea>
-      <ul className='header-action'>
-        <li className='header-action__search'>
-          <SearchInput />
-        </li>
-        {true ? (
-          <li className='header-action__profile'>
-            <ProfileWrapper>
-              <img src={icBurgerSimple} alt='메뉴 아이콘' />
-              <img src={icProfile} alt='프로필 아이콘' />
-            </ProfileWrapper>
+      <Wrapper>
+        <LogoArea onClick={() => navigate('main')}>
+          <img src={logo} alt='로고' />
+        </LogoArea>
+        <ul className='header-action'>
+          <li className='header-action__search'>
+            <SearchInput />
           </li>
-        ) : (
-          <>
-            <li className='header-action__signin'>
-              <TextButton
-                className='header__btn header__btn-signin'
-                onClick={() => {
-                  openModal(true);
-                  setPhase('signin');
-                }}
-              >
-                로그인
-              </TextButton>
+          {true ? (
+            <li className='header-action__profile'>
+              <ProfileWrapper>
+                <img src={icBurgerSimple} alt='메뉴 아이콘' />
+                <img src={icProfile} alt='프로필 아이콘' />
+              </ProfileWrapper>
             </li>
-            <li className='header-action__signup'>
-              <ContainedButton
-                className='header__btn header__btn-signup'
-                onClick={() => {
-                  openModal(true);
-                  setPhase('signup');
-                }}
-              >
-                회원가입
-              </ContainedButton>
-            </li>
-          </>
-        )}
-      </ul>
-    </Wrapper>
-    {isOpenModal && (
+          ) : (
+            <>
+              <li className='header-action__signin'>
+                <TextButton
+                  className='header__btn header__btn-signin'
+                  onClick={() => {
+                    openModal(true);
+                    setPhase('signin');
+                  }}
+                >
+                  로그인
+                </TextButton>
+              </li>
+              <li className='header-action__signup'>
+                <ContainedButton
+                  className='header__btn header__btn-signup'
+                  onClick={() => {
+                    openModal(true);
+                    setPhase('signup');
+                  }}
+                >
+                  회원가입
+                </ContainedButton>
+              </li>
+            </>
+          )}
+        </ul>
+      </Wrapper>
+      {isOpenModal && (
         <AuthModal phase={phase} setPhase={setPhase} openModal={openModal} />
       )}
     </>
