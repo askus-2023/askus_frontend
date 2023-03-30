@@ -22,7 +22,6 @@ const Wrapper = styled.div`
   &:hover {
     background-color: ${theme.colors.green70};
   }
-
   button {
     width: 100%;
     padding: 1.2rem 1.5rem;

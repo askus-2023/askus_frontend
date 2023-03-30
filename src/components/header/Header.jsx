@@ -24,7 +24,7 @@ const Header = () => {
           <li className='header-action__search'>
             <SearchInput />
           </li>
-          {true ? (
+          {false ? (
             <li className='header-action__profile'>
               <ProfileWrapper>
                 <img src={icBurgerSimple} alt='메뉴 아이콘' />
@@ -73,6 +73,7 @@ const Wrapper = styled.div`
   padding: 0 4rem;
   position: absolute;
   top: 0;
+  z-index: 10;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -105,7 +106,7 @@ const LogoArea = styled.div`
 `;
 const ProfileWrapper = styled.div`
   padding: 0.5rem 0.5rem 0.5rem 1.4rem;
-  background: rgba(244, 244, 244, 0.75);
+  background: rgba(255, 255, 255, 0.4);
   display: flex;
   justify-content: space-between;
   gap: 1.8rem;
@@ -113,4 +114,7 @@ const ProfileWrapper = styled.div`
   border: 0.1rem solid ${theme.colors.grey30};
   border-radius: 2.4rem;
   cursor: pointer;
+  &:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
 `;
