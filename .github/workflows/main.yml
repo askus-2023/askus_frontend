@@ -33,6 +33,9 @@ jobs:
         env:
           CI: ""
 
+      - name: Make Directory
+        run: mkdir -p deploy
+
       - name: Make zip file
         run: zip -qq -r ./kookle-front.zip ./deploy
         shell: bash
