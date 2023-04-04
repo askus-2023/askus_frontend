@@ -37,7 +37,7 @@ jobs:
         run: mkdir -p deploy
 
       - name: Make zip file
-        run: zip -qq -r ./kookle-front.zip ./deploy
+        run: zip -qq -r ./kookle.zip ./deploy
         shell: bash
 
       - name: Configure AWS credentials
