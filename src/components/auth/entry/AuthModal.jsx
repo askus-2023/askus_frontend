@@ -11,7 +11,7 @@ const AuthModal = ({ phase, setPhase, openModal }) => {
       <Overlay className='overlay' />
       <ModalWrapper>
         <Header>
-          <div></div>
+          <div />
           <div className='modal__header-title'>
             {phase === 'signup' ? '회원가입' : '로그인'}
           </div>
@@ -91,6 +91,7 @@ const Welcome = styled.div`
   padding: 2rem;
   font-size: 2.2rem;
   font-weight: bold;
+  text-align: center;
 `;
 const Toggle = styled.div`
   font-size: 1.2rem;
