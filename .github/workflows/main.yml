@@ -10,7 +10,7 @@ env:
   S3_BUCKET_NAME: kookle-deploy
   AWS_REGION: ap-northeast-2
   CODE_DEPLOY_APPLICATION_NAME: kookle
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: kookle-group
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: kookle-front
 
 jobs:
   build:
