@@ -20,16 +20,15 @@ const SignUp = ({ setPhase }) => {
   const [nickname, setNickname] = useState('');
   const [formValid, setFormValid] = useState({});
   const [image, setImage] = useState({});
-  const [duplicationChecked, setDuplicationChecked] = useState(false)
-  const [duplicated, setDuplicated] = useState(false)
+  const [duplicationChecked, setDuplicationChecked] = useState(false);
+  const [duplicated, setDuplicated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingSignUp, setIsLoadingSignUp] = useState(false)
+  const [isLoadingSignUp, setIsLoadingSignUp] = useState(false);
   const { validateEmail, validatePassword, validateNickname } =
     useFormValidation();
 
-  const signup = useMutation(signUp)
-  const checkEmail = useMutation(duplicationCheck)
-
+  const signup = useMutation(signUp);
+  const checkEmail = useMutation(duplicationCheck);
 
   const uploadImage = () => {
     const file = fileInputRef.current?.files;
@@ -38,8 +37,9 @@ const SignUp = ({ setPhase }) => {
     }
   };
 
-  const handleClickSignUp = async () => {
-    setIsLoadingSignUp(true)
+  const handleClickSignUp = async (e) => {
+    e.preventDefault();
+    setIsLoadingSignUp(true);
     const newFormValid = {
       ...formValid,
       EMAIL: !validateEmail(email).isValid,
@@ -49,50 +49,53 @@ const SignUp = ({ setPhase }) => {
     };
     setFormValid(newFormValid);
 
-    if (duplicationChecked && !duplicated && !Object.values(newFormValid).includes(true)) {
-    
+    if (
+      duplicationChecked &&
+      !duplicated &&
+      !Object.values(newFormValid).includes(true)
+    ) {
       const data = new URLSearchParams({
         email,
         password,
         checkedPassword: passwordCheck,
         nickname,
-      })
+      });
       signup.mutate(data, {
         onSuccess: () => {
-          setIsLoadingSignUp(false)
-          setPhase('signin')
+          setIsLoadingSignUp(false);
+          setPhase('signin');
         },
-        onError: (err) => console.log(err.response.data)
-      })
-    };
+        onError: (err) => console.log(err.response.data),
+      });
+    }
   };
 
   const handleClickDuplicationCheck = () => {
     if (email && validateEmail(email).isValid) {
-      setIsLoading(true)
+      setIsLoading(true);
       const data = new URLSearchParams({
-        email
-      })
+        email,
+      });
       checkEmail.mutate(data, {
         onSuccess: (res) => {
-          setDuplicationChecked(true)
+          setDuplicationChecked(true);
           if (res.data.duplicated) {
-            setDuplicated(true)
+            setDuplicated(true);
           } else {
-            setDuplicated(false)
+            setDuplicated(false);
           }
         },
-        onSettled: () => setIsLoading(false)
-      })
+        onSettled: () => setIsLoading(false),
+      });
     }
-  }
+  };
   useEffect(() => {
-    setDuplicationChecked(false)
-  }, [email])
+    setDuplicationChecked(false);
+  }, [email]);
 
   return (
     <Wrapper>
-      <form>
+      <form onSubmit={handleClickSignUp}>
         <ProfileSection>
           <label htmlFor='profile-image'>
             <img
@@ -125,18 +128,18 @@ const SignUp = ({ setPhase }) => {
               errMsg={validateEmail(email).errMsg}
             />
             <div className='duplication-check'>
-              {!duplicationChecked && 
-                <DuplicationCheckButton
-                  onClick={handleClickDuplicationCheck}
-                >중복확인</DuplicationCheckButton>
-              }
+              {!duplicationChecked && (
+                <DuplicationCheckButton onClick={handleClickDuplicationCheck}>
+                  중복확인
+                </DuplicationCheckButton>
+              )}
               {isLoading && <StyledSpinner />}
-              {(duplicationChecked && duplicated) && 
+              {duplicationChecked && duplicated && (
                 <img src={icCancelRed} alt='중복 이메일' />
-              }
-              {(duplicationChecked && !duplicated) && 
+              )}
+              {duplicationChecked && !duplicated && (
                 <img src={icCheck} alt='통과' />
-              }
+              )}
             </div>
           </EmailWrapper>
           <TextInput
@@ -165,7 +168,7 @@ const SignUp = ({ setPhase }) => {
             error={formValid.NICKNAME}
             errMsg={validateNickname(nickname).errMsg}
           />
-          <ContainedButton onClick={handleClickSignUp}>
+          <ContainedButton type='submit'>
             {isLoadingSignUp ? <Spinner color='white' /> : '회원가입'}
           </ContainedButton>
         </div>
@@ -211,19 +214,18 @@ const EmailWrapper = styled.div`
     right: 1rem;
     transform: translateY(-50%);
     z-index: 11;
-
   }
-`
+`;
 const DuplicationCheckButton = styled(OutlinedButton)`
   border-radius: 0.4rem;
   button {
     padding: 0.4rem 0.8rem;
     font-size: 1.2rem;
   }
-`
+`;
 const StyledSpinner = styled(Spinner)`
   position: absolute;
   top: 50%;
   right: 2rem;
   transform: translateY(-50%);
-`
+`;

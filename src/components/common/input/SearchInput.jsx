@@ -44,7 +44,7 @@ const FormEl = styled.form`
     border-radius: 50%;
     transform: translate(-0.4rem, 0.45rem);
     transition: background-color 0.5s ease;
-    background-color: rgba(224, 224, 224, 0.4);
+    background-color: ${theme.colors.grey30};
   }
 `;
 const InputEl = styled.input`

@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
+import Header from '../../components/header/Header';
 import Card from '../../components/common/card/Card';
 import ContainedButton from '../../components/common/button/ContainedButton';
 import SelectButton from '../../components/common/button/SelectButton';
 import Pagination from '../../components/common/pagination/Pagination';
 import exPost from './DummyPost';
+import useScroll from '../../hooks/useScroll';
 
 const Board = () => {
   const [selectedCate, setSelectedCate] = useState('전체');
   const [selectedfilter, setSelectedFilter] = useState('최신순');
   const [isSelected, setIsSelected] = useState(false);
   const [page, setPage] = useState(1);
+  const ref = useRef(null);
+
+  const { scrollTop } = useScroll(ref);
 
   const limit = 20;
   const offset = (page - 1) * limit;
@@ -38,80 +43,87 @@ const Board = () => {
       : exPost.filter((post) => post.category === selectedCate);
 
   return (
-    <Wrapper>
-      <TopSection>
-        <CategorySection>
-          {category.map((cate, i) => (
-            <Category
-              key={i}
-              className={selectedCate === cate && 'cateSelect'}
-              value={cate}
-              onClick={categoryHandler}
-            >
-              {cate}
-            </Category>
-          ))}
-        </CategorySection>
-        <ContainedButton className='postButton'>글 작성</ContainedButton>
-      </TopSection>
-      <SelectSection>
-        <SelectButton
-          onChange={filterHandler}
-          option={filterOption}
-          selected={selectedfilter}
-        />
-      </SelectSection>
-      <CardSection>
-        {expost
-          .sort((a, b) => {
-            if (selectedfilter === '좋아요순') {
-              if (a.liketotal < b.liketotal) {
-                return 1;
-              } else if (a.liketotal > b.liketotal) {
-                return -1;
+    <Container ref={ref} className='container'>
+      <Header scrollTop={scrollTop} />
+      <Wrapper>
+        <TopSection>
+          <CategorySection>
+            {category.map((cate, i) => (
+              <Category
+                key={i}
+                className={selectedCate === cate && 'cateSelect'}
+                value={cate}
+                onClick={categoryHandler}
+              >
+                {cate}
+              </Category>
+            ))}
+          </CategorySection>
+          <ContainedButton className='postButton'>글 작성</ContainedButton>
+        </TopSection>
+        <SelectSection>
+          <SelectButton
+            onChange={filterHandler}
+            option={filterOption}
+            selected={selectedfilter}
+          />
+        </SelectSection>
+        <CardSection>
+          {expost
+            .sort((a, b) => {
+              if (selectedfilter === '좋아요순') {
+                if (a.liketotal < b.liketotal) {
+                  return 1;
+                } else if (a.liketotal > b.liketotal) {
+                  return -1;
+                }
+                return 0;
+              } else {
+                if (a.date < b.date) {
+                  return 1;
+                } else if (a.date > b.date) {
+                  return -1;
+                }
+                return 0;
               }
-              return 0;
-            } else {
-              if (a.date < b.date) {
-                return 1;
-              } else if (a.date > b.date) {
-                return -1;
-              }
-              return 0;
-            }
-          })
-          .slice(offset, offset + limit)
-          .map((post) => (
-            <Card
-              key={post.id}
-              thumbnail={post.thumbnail}
-              menu={post.menu}
-              title={post.title}
-              date={new Date(post.date)}
-              nickname={post.nickname}
-              profile={post.profile}
-              category={post.category}
-              like={post.like}
-              liketotal={post.liketotal}
-            ></Card>
-          ))}
-      </CardSection>
-      <footer>
-        <Pagination
-          total={expost.length}
-          limit={limit}
-          page={page}
-          setPage={setPage}
-          isSelected={isSelected}
-          setIsSelected={setIsSelected}
-        />
-      </footer>
-    </Wrapper>
+            })
+            .slice(offset, offset + limit)
+            .map((post) => (
+              <Card
+                key={post.id}
+                thumbnail={post.thumbnail}
+                menu={post.menu}
+                title={post.title}
+                date={new Date(post.date)}
+                nickname={post.nickname}
+                profile={post.profile}
+                category={post.category}
+                like={post.like}
+                liketotal={post.liketotal}
+              ></Card>
+            ))}
+        </CardSection>
+        <footer>
+          <Pagination
+            total={expost.length}
+            limit={limit}
+            page={page}
+            setPage={setPage}
+            isSelected={isSelected}
+            setIsSelected={setIsSelected}
+          />
+        </footer>
+      </Wrapper>
+    </Container>
   );
 };
 
 export default Board;
 
+const Container = styled.div`
+  height: 100%;
+  overflow-y: auto;
+`;
 const Wrapper = styled.div`
   width: 89.6%;
   display: flex;
