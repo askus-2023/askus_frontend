@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import profile from '../../assets/images/default-profile.png';
 import OutlinedButton from '../../components/common/button/OutlinedButton';
+import Header from '../../components/header/Header';
 import SquareCard from '../../components/common/card/SquareCard';
 import exPost from '../Board/DummyPost';
+import useScroll from '../../hooks/useScroll';
 
 const Profile = () => {
   const [selectedCate, setSelectedCate] = useState('작성글');
+  const ref = useRef(null);
   const navigate = useNavigate();
+
+  const { scrollTop } = useScroll(ref);
 
   const postcategory = ['작성글', '좋아요'];
 
@@ -18,40 +23,54 @@ const Profile = () => {
   };
 
   return (
-    <Wrapper>
-      <TopSection>
-        <Info>
-          <img src={profile} alt='profile' />
-          <div className='infotxt'>
-            <Greettxt>
-              <span>아무개</span> 님, 반가워요!
-            </Greettxt>
-            <div>abc@email.com</div>
+    <Container ref={ref} className='container'>
+      <Header scrollTop={scrollTop} />
+      <Wrapper>
+        <TopSection>
+          <Info>
+            <img src={profile} alt='profile' />
+            <div className='infotxt'>
+              <Greettxt>
+                <span>아무개</span> 님, 반가워요!
+              </Greettxt>
+              <div>abc@email.com</div>
+            </div>
+          </Info>
+          <div>
+            <OutlinedButton onClick={() => navigate('edit')}>
+              내 정보 수정
+            </OutlinedButton>
           </div>
-        </Info>
+        </TopSection>
         <div>
-          <OutlinedButton onClick={() => navigate('edit')}>
-            내 정보 수정
-          </OutlinedButton>
-        </div>
-      </TopSection>
-      <div>
-        <PostCategory>
-          {postcategory.map((cate, i) => (
-            <button
-              key={i}
-              className={selectedCate === cate ? 'cateSelect' : ''}
-              value={cate}
-              onClick={categoryHandler}
-            >
-              {cate}(2)
-            </button>
-          ))}
-        </PostCategory>
-        <PostCard>
-          {selectedCate === '좋아요'
-            ? exPost
-                .map((post) => (
+          <PostCategory>
+            {postcategory.map((cate, i) => (
+              <button
+                key={i}
+                className={selectedCate === cate ? 'cateSelect' : ''}
+                value={cate}
+                onClick={categoryHandler}
+              >
+                {cate}(2)
+              </button>
+            ))}
+          </PostCategory>
+          <PostCard>
+            {selectedCate === '좋아요'
+              ? exPost
+                  .map((post) => (
+                    <SquareCard
+                      key={post.id}
+                      thumbnail={post.thumbnail}
+                      menu={post.menu}
+                      title={post.title}
+                      category={post.category}
+                      date={new Date(post.date)}
+                      like={post.like}
+                    />
+                  ))
+                  .filter((post) => post.props.like === true)
+              : exPost.map((post) => (
                   <SquareCard
                     key={post.id}
                     thumbnail={post.thumbnail}
@@ -61,26 +80,20 @@ const Profile = () => {
                     date={new Date(post.date)}
                     like={post.like}
                   />
-                ))
-                .filter((post) => post.props.like === true)
-            : exPost.map((post) => (
-                <SquareCard
-                  key={post.id}
-                  thumbnail={post.thumbnail}
-                  menu={post.menu}
-                  title={post.title}
-                  category={post.category}
-                  date={new Date(post.date)}
-                  like={post.like}
-                />
-              ))}
-        </PostCard>
-      </div>
-    </Wrapper>
+                ))}
+          </PostCard>
+        </div>
+      </Wrapper>
+    </Container>
   );
 };
 
 export default Profile;
+
+const Container = styled.div`
+  height: 100%;
+  overflow-y: auto;
+`;
 
 const Wrapper = styled.div`
   width: 89.6%;

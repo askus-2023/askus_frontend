@@ -3,9 +3,11 @@ import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import profile from '../../assets/images/default-profile.png';
 import icCancel from '../../assets/icons/cancel.svg';
+import Header from '../../components/header/Header';
 import TextInput from '../../components/common/input/TextInput';
 import useFormValidation from '../../components/auth/entry/useFormValidation';
 import ContainedButton from '../../components/common/button/ContainedButton';
+import useScroll from '../../hooks/useScroll';
 
 const ProfileEdit = () => {
   const fileInputRef = useRef(null);
@@ -14,6 +16,9 @@ const ProfileEdit = () => {
   const [nickname, setNickname] = useState('');
   const [formValid, setFormValid] = useState({});
   const [image, setImage] = useState({});
+
+  const ref = useRef(null);
+  const { scrollTop } = useScroll(ref);
 
   const { validatePassword, validateNickname } = useFormValidation();
 
@@ -35,7 +40,8 @@ const ProfileEdit = () => {
   };
 
   return (
-    <Wrapper>
+    <Wrapper ref={ref}>
+      <Header scrollTop={scrollTop} />
       <ProfileSection>
         <label htmlFor='profile-image'>
           <img
@@ -95,10 +101,12 @@ const ProfileEdit = () => {
 export default ProfileEdit;
 
 const Wrapper = styled.div`
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 13rem auto auto;
+  overflow-y: auto;
   .editbt {
     width: 40rem;
   }

@@ -11,12 +11,13 @@ const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formValid, setFormValid] = useState({});
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const { validateEmail, validatePassword } = useFormValidation();
-  
-  const signin = useMutation(signIn)
-  
-  const handleClickSignIn = () => {
+
+  const signin = useMutation(signIn);
+
+  const handleClickSignIn = (e) => {
+    e.preventDefault();
     const newFormValid = {
       ...formValid,
       EMAIL: !validateEmail(email).isValid,
@@ -25,23 +26,23 @@ const SignIn = () => {
     setFormValid(newFormValid);
 
     if (!Object.values(newFormValid).includes(true)) {
-      setIsLoading(true)
+      setIsLoading(true);
       const data = new URLSearchParams({
         email,
-        password
-      })
+        password,
+      });
       signin.mutate(data, {
         onSuccess: (res) => console.log(res),
         onError: (res) => console.log(res),
-        onSettled: () => setIsLoading(false)
-      })
+        onSettled: () => setIsLoading(false),
+      });
     }
   };
 
   return (
     <Wrapper>
       <div className='form-wrapper form-wrapper-signin'>
-        <form>
+        <form onSubmit={handleClickSignIn}>
           <TextInput
             type='email'
             placeholder='이메일'
@@ -60,7 +61,9 @@ const SignIn = () => {
             error={formValid.PASSWORD}
             errMsg={validatePassword(password).errMsg}
           />
-          <ContainedButton onClick={handleClickSignIn}>{isLoading ? <Spinner color='white' /> : '로그인'}</ContainedButton>
+          <ContainedButton type='submit'>
+            {isLoading ? <Spinner color='white' /> : '로그인'}
+          </ContainedButton>
         </form>
       </div>
     </Wrapper>
