@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import Header from '../../components/header/Header';
 import Tag from '../../components/tag/Tag';
 import SearchInput from '../../components/common/input/SearchInput';
 import bgImage from '../../assets/images/mainPage/bg-01.jpg';
 import icSearch from '../../assets/icons/search-grey.svg';
 import { theme } from '../../styles/Theme';
+import useScroll from '../../hooks/useScroll';
 
 const MainPage = () => {
+  const ref = useRef(null);
   const navigate = useNavigate();
+  const { scrollTop } = useScroll(ref);
+
   return (
-    <Wrapper>
+    <Wrapper ref={ref}>
+      <Header scrollTop={scrollTop} />
       <SectionTop className='section-top'>
         <Copy>
           Ask. Share. Cook.

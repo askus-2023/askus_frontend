@@ -11,7 +11,7 @@ const AuthModal = ({ phase, setPhase, openModal }) => {
       <Overlay className='overlay' />
       <ModalWrapper>
         <Header>
-          <div></div>
+          <div />
           <div className='modal__header-title'>
             {phase === 'signup' ? '회원가입' : '로그인'}
           </div>
@@ -19,23 +19,25 @@ const AuthModal = ({ phase, setPhase, openModal }) => {
             <img src={icClose} alt='닫기' />
           </button>
         </Header>
-        <Welcome>
-          <span>Cookle에 오신 것을 환영합니다.</span>
-        </Welcome>
-        {phase === 'signup' ? <SignUp setPhase={setPhase} /> : <SignIn />}
-        <Toggle>
-          {phase === 'signup' ? (
-            <>
-              이미 계정이 있으신가요?{' '}
-              <button onClick={() => setPhase('signin')}>로그인</button>
-            </>
-          ) : (
-            <>
-              아직 Cookle을 이용해본 적이 없으신가요?{' '}
-              <button onClick={() => setPhase('signup')}>가입하기</button>
-            </>
-          )}
-        </Toggle>
+        <InputForm>
+          <Welcome>
+            <span>Cookle에 오신 것을 환영합니다.</span>
+          </Welcome>
+          {phase === 'signup' ? <SignUp setPhase={setPhase} /> : <SignIn />}
+          <Toggle>
+            {phase === 'signup' ? (
+              <>
+                이미 계정이 있으신가요?{' '}
+                <button onClick={() => setPhase('signin')}>로그인</button>
+              </>
+            ) : (
+              <>
+                아직 Cookle을 이용해본 적이 없으신가요?{' '}
+                <button onClick={() => setPhase('signup')}>가입하기</button>
+              </>
+            )}
+          </Toggle>
+        </InputForm>
       </ModalWrapper>
     </Wrapper>
   );
@@ -46,7 +48,7 @@ const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
   position: fixed;
-  z-index: 5;
+  z-index: 10;
 `;
 const Overlay = styled.div`
   position: fixed;
@@ -89,6 +91,7 @@ const Welcome = styled.div`
   padding: 2rem;
   font-size: 2.2rem;
   font-weight: bold;
+  text-align: center;
 `;
 const Toggle = styled.div`
   font-size: 1.2rem;
@@ -97,4 +100,8 @@ const Toggle = styled.div`
     font-weight: bold;
     cursor: pointer;
   }
+`;
+const InputForm = styled.div`
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
 `;

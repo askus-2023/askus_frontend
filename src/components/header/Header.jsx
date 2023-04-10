@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import SearchInput from '../common/input/SearchInput';
@@ -8,22 +8,39 @@ import AuthModal from '../auth/entry/AuthModal';
 import logo from '../../assets/images/logo.png';
 import icBurgerSimple from '../../assets/icons/burger-simple.svg';
 import icProfile from '../../assets/icons/default-profile.svg';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-const Header = () => {
+const Header = ({ scrollTop }) => {
   const [isOpenModal, openModal] = useState(false);
   const [phase, setPhase] = useState('');
+  const [alpha, setAlpha] = useState(0);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    if (scrollTop < 200) {
+      setAlpha(scrollTop / 200);
+    } else setAlpha(1);
+  }, [scrollTop]);
+
   return (
     <>
-      <Wrapper>
-        <LogoArea onClick={() => navigate('main')}>
+      <Wrapper alpha={alpha}>
+        <LogoArea onClick={() => navigate('/main')}>
           <img src={logo} alt='로고' />
         </LogoArea>
         <ul className='header-action'>
-          <li className='header-action__search'>
-            <SearchInput />
-          </li>
+          {pathname === '/main' ? (
+            scrollTop > 480 && (
+              <li className='header-action__search'>
+                <SearchInput />
+              </li>
+            )
+          ) : (
+            <li className='header-action__search'>
+              <SearchInput />
+            </li>
+          )}
           {false ? (
             <li className='header-action__profile'>
               <ProfileWrapper>
@@ -66,18 +83,20 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default React.memo(Header);
 
 const Wrapper = styled.div`
   width: 100%;
   padding: 0 4rem;
-  position: absolute;
+  position: fixed;
   top: 0;
   z-index: 10;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: ${({ alpha }) => `rgba(255, 255, 255, ${alpha})`};
   .header-action {
+    min-height: 8.4rem;
     display: flex;
     padding: 2rem 1.2rem;
     gap: 0.8rem;
