@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import ContentEditable from 'react-contenteditable';
+import InlineTooltip from '../../board/InlineTooltip';
 
 const WriteTxt = () => {
   const [txt, setTxt] = useState({ html: '...' });
@@ -35,6 +36,12 @@ const WriteTxt = () => {
     setTxt({ html: e.target.value });
   };
 
+  const handleInput = () => {};
+
+  useEffect(() => {
+    console.log(txt);
+  });
+
   return (
     <DefaultTxt ref={writeRef}>
       <ContentEditable
@@ -45,7 +52,9 @@ const WriteTxt = () => {
         tagName='article' // Use a custom HTML tag (uses a div by default)
         onChange={handleChange} // handle innerHTML change
         onSelect={handleSelect}
+        onInput={handleInput}
       />
+      <InlineTooltip />
       {isDrag && (
         <div className='bubbleMenu'>
           <div className='bubbleMenu-inner'></div>
@@ -63,10 +72,12 @@ export default WriteTxt;
 const DefaultTxt = styled.div`
   font-size: 2rem;
   margin-top: 3rem;
+  position: relative;
   /* margin-left: 2rem; */
   resize: none;
   border: 0rem;
   .editTxt {
+    line-height: 1.6;
     padding-left: 5rem;
     outline: 0px solid transparent;
   }

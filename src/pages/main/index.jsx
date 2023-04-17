@@ -12,11 +12,10 @@ import useScroll from '../../hooks/useScroll';
 const MainPage = () => {
   const ref = useRef(null);
   const navigate = useNavigate();
-  const { scrollTop } = useScroll(ref);
+  useScroll(ref);
 
   return (
     <Wrapper ref={ref}>
-      <Header scrollTop={scrollTop} />
       <SectionTop className='section-top'>
         <Copy>
           Ask. Share. Cook.

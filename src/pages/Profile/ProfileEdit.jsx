@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import profile from '../../assets/images/default-profile.png';
 import icCancel from '../../assets/icons/cancel.svg';
-import Header from '../../components/header/Header';
 import TextInput from '../../components/common/input/TextInput';
 import useFormValidation from '../../components/auth/entry/useFormValidation';
 import ContainedButton from '../../components/common/button/ContainedButton';
@@ -18,7 +17,7 @@ const ProfileEdit = () => {
   const [image, setImage] = useState({});
 
   const ref = useRef(null);
-  const { scrollTop } = useScroll(ref);
+  useScroll(ref);
 
   const { validatePassword, validateNickname } = useFormValidation();
 
@@ -41,7 +40,6 @@ const ProfileEdit = () => {
 
   return (
     <Wrapper ref={ref}>
-      <Header scrollTop={scrollTop} />
       <ProfileSection>
         <label htmlFor='profile-image'>
           <img

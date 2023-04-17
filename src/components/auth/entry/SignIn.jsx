@@ -6,14 +6,18 @@ import useFormValidation from './useFormValidation';
 import { useMutation } from 'react-query';
 import { signIn } from '../../../apis/auth';
 import Spinner from '../../common/spinner/Spinner';
+import { useRecoilState } from 'recoil';
+import authState from '../../../recoil/auth/atom';
+import { useNavigate } from 'react-router';
 
-const SignIn = () => {
+const SignIn = ({ openModal }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formValid, setFormValid] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [accessToken, setAccessToken] = useRecoilState(authState);
   const { validateEmail, validatePassword } = useFormValidation();
-
+  const navigate = useNavigate();
   const signin = useMutation(signIn);
 
   const handleClickSignIn = (e) => {
@@ -32,7 +36,12 @@ const SignIn = () => {
         password,
       });
       signin.mutate(data, {
-        onSuccess: (res) => console.log(res),
+        onSuccess: (res) => {
+          setAccessToken(res.data.accessToken);
+          window.localStorage.setItem('refresh_token', res.data.refreshToken);
+          openModal(() => false);
+          navigate('/board');
+        },
         onError: (res) => console.log(res),
         onSettled: () => setIsLoading(false),
       });

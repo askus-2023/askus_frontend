@@ -9,17 +9,22 @@ import logo from '../../assets/images/logo.png';
 import icBurgerSimple from '../../assets/icons/burger-simple.svg';
 import icProfile from '../../assets/icons/default-profile.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import authState from '../../recoil/auth/atom';
+import scrollState from '../../recoil/scroll/atom';
 
-const Header = ({ scrollTop }) => {
+const Header = () => {
   const [isOpenModal, openModal] = useState(false);
   const [phase, setPhase] = useState('');
   const [alpha, setAlpha] = useState(0);
   const navigate = useNavigate();
   const { pathname } = useLocation();
-
+  const [accessToken] = useRecoilState(authState);
+  const [scrollTop] = useRecoilState(scrollState);
+  const profileImage = window.localStorage.getItem('profile_image') ?? ''
   useEffect(() => {
-    if (scrollTop < 200) {
-      setAlpha(scrollTop / 200);
+    if (scrollTop < 400) {
+      setAlpha(scrollTop / 400);
     } else setAlpha(1);
   }, [scrollTop]);
 
@@ -41,11 +46,11 @@ const Header = ({ scrollTop }) => {
               <SearchInput />
             </li>
           )}
-          {false ? (
+          {accessToken ? (
             <li className='header-action__profile'>
               <ProfileWrapper>
                 <img src={icBurgerSimple} alt='메뉴 아이콘' />
-                <img src={icProfile} alt='프로필 아이콘' />
+                <img src={profileImage ? profileImage : icProfile} alt='프로필 아이콘' />
               </ProfileWrapper>
             </li>
           ) : (
@@ -90,6 +95,7 @@ const Wrapper = styled.div`
   padding: 0 4rem;
   position: fixed;
   top: 0;
+  left: 0;
   z-index: 10;
   display: flex;
   justify-content: space-between;

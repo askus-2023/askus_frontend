@@ -54,18 +54,20 @@ const SignUp = ({ setPhase }) => {
       !duplicated &&
       !Object.values(newFormValid).includes(true)
     ) {
-      const data = new URLSearchParams({
-        email,
-        password,
-        checkedPassword: passwordCheck,
-        nickname,
-      });
-      signup.mutate(data, {
-        onSuccess: () => {
+      const formData = new FormData();
+      formData.append('email', email);
+      formData.append('password', password);
+      formData.append('checkedPassword', passwordCheck);
+      formData.append('nickname', nickname);
+      image.image && formData.append('profileImage', image.image);
+      signup.mutate(formData, {
+        onSuccess: (res) => {
           setIsLoadingSignUp(false);
+          window.localStorage.setItem('profile_image', res.data?.imageUrl);
           setPhase('signin');
         },
-        onError: (err) => console.log(err.response.data),
+        onError: (err) => console.log(err.response?.data),
+        onSettled: () => setIsLoading(false),
       });
     }
   };
@@ -84,6 +86,9 @@ const SignUp = ({ setPhase }) => {
           } else {
             setDuplicated(false);
           }
+        },
+        onError: (res) => {
+          console.log(res.response.data);
         },
         onSettled: () => setIsLoading(false),
       });
