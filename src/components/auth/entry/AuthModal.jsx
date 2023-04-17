@@ -23,7 +23,11 @@ const AuthModal = ({ phase, setPhase, openModal }) => {
           <Welcome>
             <span>Cookle에 오신 것을 환영합니다.</span>
           </Welcome>
-          {phase === 'signup' ? <SignUp setPhase={setPhase} /> : <SignIn />}
+          {phase === 'signup' ? (
+            <SignUp setPhase={setPhase} />
+          ) : (
+            <SignIn openModal={openModal} />
+          )}
           <Toggle>
             {phase === 'signup' ? (
               <>

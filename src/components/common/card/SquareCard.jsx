@@ -54,6 +54,7 @@ const Wrapper = styled.div`
   height: 30rem;
   cursor: pointer;
   margin: 1.3rem;
+  position: relative;
   .thumbnail {
     position: absolute;
     width: 30rem;
