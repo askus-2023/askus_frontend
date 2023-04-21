@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { theme } from '../../styles/Theme';
 import profile from '../../assets/images/default-profile.png';
 import icCancel from '../../assets/icons/cancel.svg';
 import TextInput from '../../components/common/input/TextInput';

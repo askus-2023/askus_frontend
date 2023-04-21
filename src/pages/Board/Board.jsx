@@ -7,19 +7,37 @@ import SelectButton from '../../components/common/button/SelectButton';
 import Pagination from '../../components/common/pagination/Pagination';
 import exPost from './DummyPost';
 import useScroll from '../../hooks/useScroll';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { accessTokenState } from '../../recoil/auth/accessToken';
+import { authModalState } from '../../recoil/auth/authModal';
+
+const category = ['전체', '한식', '양식', '일식', '중식', '기타'];
+
+const filterOption = [
+  {
+    text: '최신순',
+    value: 'NEWEST',
+  },
+  {
+    text: '좋아요순',
+    value: 'LIKES',
+  },
+];
+
+const limit = 20;
 
 const Board = () => {
   const [selectedCate, setSelectedCate] = useState('전체');
   const [selectedfilter, setSelectedFilter] = useState('최신순');
   const [isSelected, setIsSelected] = useState(false);
   const [page, setPage] = useState(1);
+  const [accessToken] = useRecoilState(accessTokenState);
+  const [, openModal] = useRecoilState(authModalState);
   const ref = useRef(null);
 
-  const limit = 20;
   const offset = (page - 1) * limit;
-
-  const category = ['전체', '한식', '양식', '일식', '중식', '기타'];
-  const filterOption = ['최신순', '좋아요순'];
+  const navigate = useNavigate();
 
   const categoryHandler = (e) => {
     setSelectedCate(e.target.textContent);
@@ -56,7 +74,18 @@ const Board = () => {
             </Category>
           ))}
         </CategorySection>
-        <ContainedButton className='postButton'>글 작성</ContainedButton>
+        <ContainedButton
+          onClick={() => {
+            if (!accessToken) {
+              openModal(true);
+            } else {
+              navigate('write');
+            }
+          }}
+          className='postButton'
+        >
+          글 작성
+        </ContainedButton>
       </TopSection>
       <SelectSection>
         <SelectButton
@@ -131,16 +160,19 @@ const Wrapper = styled.div`
 const TopSection = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: flex-end;
   height: 20rem;
-  border-bottom: 0.1rem solid ${theme.colors.grey30};
   .postButton {
     height: fit-content;
-    margin: 14rem 0rem 0rem 0rem;
+    button {
+      padding: 0.8rem 1.4rem;
+    }
   }
 `;
 
 const CategorySection = styled.div`
   display: flex;
+  border-bottom: 0.1rem solid ${theme.colors.grey30};
   .defaultCategory {
     color: ${theme.colors.grey90};
     border-bottom: 0.2rem solid ${theme.colors.grey90};

@@ -1,56 +1,69 @@
-import React, { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import thumbnail from '../../../assets/images/thumbnail.png';
-import Header from '../../../components/header/Header';
 import CommentBox from '../../../components/comment/CommentBox';
 import Tag from '../../../components/tag/Tag';
 import defaultProfile from '../../../assets/images/default-profile.png';
-// import useScroll from '../../../hooks/useScroll';
+import useScroll from '../../../hooks/useScroll';
+import { useParams } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import { getDetail } from '../../../apis/board';
+import { useRecoilValue } from 'recoil';
+import { accessTokenState } from '../../../recoil/auth/accessToken';
 
 const BoardDetailPage = () => {
   const ref = useRef(null);
-  // const { scrollTop } = useScroll(ref);
+  const { id } = useParams();
+  const accessToken = useRecoilValue(accessTokenState)
+
+  const { data, isLoading, isSuccess } = useQuery([`boards/${id}`], () => getDetail({
+    id,
+    accessToken
+  }))
+
+  const tags = useMemo(() => isSuccess && data?.tag.split(','), [isSuccess, data]) 
+
+  isSuccess && console.log(data)
+
+  useScroll(ref);
 
   return (
     <Wrapper ref={ref}>
-      {/* <Header scrollTop={scrollTop} /> */}
-      <Thumbnail className='thumbnail thumbnail-container'>
-        <div className='thumbnail__info thumbnail__info-left'>
-          <Name>[중식] 연어포케 샐러드</Name>
-          <Title>맛있게 다이어트 할 수 있는! 다이어트 식단 추천</Title>
-        </div>
-        <div className='thumbnail__info thumbnail__info-right'>
-          <CreatedAt>2023.4.25</CreatedAt>
-        </div>
-      </Thumbnail>
-      <Content>
-        <div className='content content-left'>
-          <Keywords>
-            <Tag type='outline' hash={true}>
-              샐러드
-            </Tag>
-            <Tag type='outline' hash={true}>
-              다이어트
-            </Tag>
-            <Tag type='outline' hash={true}>
-              연어
-            </Tag>
-            <Tag type='outline' hash={true}>
-              연어포케 샐러드
-            </Tag>
-          </Keywords>
-          <MainContent></MainContent>
-        </div>
-        <div className='content content-right'>
-          <AuthorInfo className='author-profile'>
-            <div className='author-profile__image'>
-              <img src={defaultProfile} alt='프로필 이미지' />
-            </div>
-            <div className='author-profile__nickname'>Cookle</div>
-          </AuthorInfo>
-          <CommentBox />
-        </div>
-      </Content>
+      {isSuccess && 
+      <>
+        <Thumbnail url={data.urls[0]} className='thumbnail thumbnail-container'>
+          <div className='thumbnail__info thumbnail__info-left'>
+            <Name>[추가 필요] 음식 명</Name>
+            <Title>{data.title}</Title>
+          </div>
+          <div className='thumbnail__info thumbnail__info-right'>
+            <CreatedAt>{data.createdAt}</CreatedAt>
+          </div>
+        </Thumbnail>
+        <Content>
+          <div className='content content-left'>
+            <Keywords>
+              {tags.map((value) => (
+                <Tag key={value} type='outline' hash={true}>
+                  {value}
+                </Tag>
+              ))}
+            </Keywords>
+            <MainContent>
+              <article dangerouslySetInnerHTML={{__html: data.content}} />
+            </MainContent>
+          </div>
+          <div className='content content-right'>
+            <AuthorInfo className='author-profile'>
+              <div className='author-profile__image'>
+                <img src={defaultProfile} alt='프로필 이미지' />
+              </div>
+              <div className='author-profile__nickname'>Cookle</div>
+            </AuthorInfo>
+            <CommentBox />
+          </div>
+        </Content>
+      </>}
     </Wrapper>
   );
 };
@@ -69,7 +82,7 @@ const Thumbnail = styled.div`
   display: flex;
   align-items: flex-end;
   background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-    url(${thumbnail}) no-repeat;
+    url(${({ url }) => url}) no-repeat;
   background-size: cover;
   background-position: center center;
   .thumbnail__info {
@@ -116,7 +129,12 @@ const Content = styled.div`
   }
 `;
 const Keywords = styled.div``;
-const MainContent = styled.div``;
+const MainContent = styled.div`
+  margin-top: 2rem;
+  article {
+    padding: 0 0.6rem;
+  }
+`;
 const AuthorInfo = styled.div`
   display: flex;
   align-items: center;

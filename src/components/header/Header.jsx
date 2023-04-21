@@ -9,19 +9,21 @@ import logo from '../../assets/images/logo.png';
 import icBurgerSimple from '../../assets/icons/burger-simple.svg';
 import icProfile from '../../assets/icons/default-profile.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import authState from '../../recoil/auth/atom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { accessTokenState } from '../../recoil/auth/accessToken';
 import scrollState from '../../recoil/scroll/atom';
+import { authModalState } from '../../recoil/auth/authModal';
 
 const Header = () => {
-  const [isOpenModal, openModal] = useState(false);
   const [phase, setPhase] = useState('');
   const [alpha, setAlpha] = useState(0);
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [accessToken] = useRecoilState(authState);
+  const accessToken = useRecoilValue(accessTokenState);
+  const [isOpenModal, openModal] = useRecoilState(authModalState);
   const [scrollTop] = useRecoilState(scrollState);
-  const profileImage = window.localStorage.getItem('profile_image') ?? ''
+  const profileImage = window.localStorage.getItem('profile_image') ?? '';
+
   useEffect(() => {
     if (scrollTop < 400) {
       setAlpha(scrollTop / 400);
@@ -50,7 +52,11 @@ const Header = () => {
             <li className='header-action__profile'>
               <ProfileWrapper>
                 <img src={icBurgerSimple} alt='메뉴 아이콘' />
-                <img src={profileImage ? profileImage : icProfile} alt='프로필 아이콘' />
+                <img
+                  className='profile-image'
+                  src={profileImage ? profileImage : icProfile}
+                  alt='프로필 아이콘'
+                />
               </ProfileWrapper>
             </li>
           ) : (
@@ -141,5 +147,11 @@ const ProfileWrapper = styled.div`
   cursor: pointer;
   &:hover {
     background: rgba(255, 255, 255, 0.5);
+  }
+  .profile-image {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    object-fit: cover;
   }
 `;

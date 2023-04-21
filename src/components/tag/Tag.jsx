@@ -28,9 +28,10 @@ const Wrapper = styled.div`
       type === 'outline' ? `0.1rem solid ${theme.colors.grey90}` : 'none'};
   }
   .tag-hash {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
   }
   .tag-name {
     font-size: 1.4rem;
+    line-height: 1.2;
   }
 `;

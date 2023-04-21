@@ -7,7 +7,7 @@ const useScroll = (ref) => {
 
   const onScroll = useCallback(() => {
     setScrollTop(ref.current?.scrollTop);
-  }, [ref]);
+  }, [ref, setScrollTop]);
 
   useEffect(() => {
     setScrollTop(0);

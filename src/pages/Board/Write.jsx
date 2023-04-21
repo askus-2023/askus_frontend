@@ -1,141 +1,204 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import useScroll from '../../hooks/useScroll';
-import { EditorState, convertToRaw } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { theme } from '../../styles/Theme';
 import ContainedButton from '../../components/common/button/ContainedButton';
 import SelectButton from '../../components/common/button/SelectButton';
-import profile from '../../assets/images/default-profile.png';
 import icCancel from '../../assets/icons/cancel.svg';
 import SearchInput from '../../components/common/input/SearchInput';
+import icAdd from '../../assets/icons/add.svg';
+import TextEditor from '../../components/board/TextEditor';
+import { useMutation } from 'react-query';
+import { upload } from '../../apis/board';
+import { useRecoilValue } from 'recoil';
+import { accessTokenState } from '../../recoil/auth/accessToken';
+
+const filterOption = [
+  {
+    text: '한식',
+    value: 'KOREAN',
+  },
+  {
+    text: '양식',
+    value: 'WESTERN',
+  },
+  {
+    text: '일식',
+    value: 'JAPANESE',
+  },
+  {
+    text: '중식',
+    value: 'CHINESE',
+  },
+  {
+    text: '기타',
+    value: 'ETC',
+  },
+];
 
 const BoardWritePage = () => {
   const fileInputRef = useRef(null);
   const ref = useRef(null);
-  const [selectedfilter, setSelectedFilter] = useState('한식');
+  const [selectedfilter, setSelectedFilter] = useState('KOREAN');
+  const [title, setTitle] = useState('');
+  const [menu, setMenu] = useState('');
+  const [ingredients, setIngredients] = useState('');
+  const [content, setContent] = useState(null);
   const [image, setImage] = useState({});
   const [tag, setTag] = useState('');
   const [allTag, setAllTag] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const accessToken = useRecoilValue(accessTokenState);
+  const uploadMutation = useMutation(upload);
 
   useScroll(ref);
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   const uploadImage = () => {
     const file = fileInputRef.current?.files;
     if (file && file[0]) {
       setImage({ image: file[0], url: URL.createObjectURL(file[0]) });
     }
-  };
-
-  const onEditorStateChange = (editorState) => {
-    // editorState에 값 설정
-    setEditorState(editorState);
+    console.log(file, file[0]);
   };
 
   const hashtagHandler = (e) => {
     e.preventDefault();
-    setAllTag([...allTag, tag]);
-    setTag('');
+    if (tag) {
+      setAllTag([...allTag, tag]);
+      setTag('');
+    }
   };
 
   const filterHandler = (e) => {
     setSelectedFilter(e.target.value);
   };
 
-  const filterOption = ['한식', '양식', '일식', '중식', '기타'];
+  const deleteHashTag = (index) => {
+    const tagList = [...allTag];
+    tagList.splice(index, 1);
+    setAllTag(tagList);
+  };
+
+  const uploadHandler = () => {
+    setIsLoading(true);
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('category', selectedfilter);
+    formData.append('ingredients', ingredients);
+    formData.append('content', content);
+    formData.append('tag', allTag.toString());
+    formData.append('thumbnailImage', image.image);
+    formData.append('representativeImages', image.image);
+    uploadMutation.mutate(
+      {
+        data: formData,
+        accessToken,
+      },
+      {
+        onSuccess: (res) => console.log(res),
+        onError: (err) => console.log(err),
+        onSettled: () => {
+          setIsLoading(false);
+        },
+      }
+    );
+  };
 
   return (
     <Wrapper ref={ref}>
-      <div>
-        <Main>
-          <div>
-            <div className='menuSection'>
-              <SelectButton
-                onChange={filterHandler}
-                option={filterOption}
-                selected={selectedfilter}
-              />
-              <Menu>
-                <input placeholder='메뉴명' />
-              </Menu>
-            </div>
-            <Title>
-              <input placeholder='제목' />
-            </Title>
-            <Editor
-              // 에디터와 툴바 모두에 적용되는 클래스
-              wrapperClassName='wrapper-class'
-              // 에디터 주변에 적용된 클래스
-              editorClassName='editor'
-              // 툴바 주위에 적용된 클래스
-              toolbarClassName='toolbar-class'
-              // 툴바 설정
-              toolbar={{
-                // inDropdown: 해당 항목과 관련된 항목을 드롭다운으로 나타낼것인지
-                list: { inDropdown: true },
-                textAlign: { inDropdown: true },
-                link: { inDropdown: true },
-                history: { inDropdown: false },
-              }}
-              placeholder='내용을 작성해주세요.'
-              // 한국어 설정
-              localization={{
-                locale: 'ko',
-              }}
-              // 초기값 설정
-              editorState={editorState}
-              // 에디터의 값이 변경될 때마다 onEditorStateChange 호출
-              onEditorStateChange={onEditorStateChange}
+      <Main>
+        <div className='main-left'>
+          <div className='menuSection'>
+            <SelectButton
+              onChange={filterHandler}
+              option={filterOption}
+              selected={selectedfilter}
             />
-          </div>
-          <div className='main-right'>
-            <ThumbnailSection>
-              <label htmlFor='Thumbnail-image'>
-                {image.url ? (
-                  <img
-                    className='image image-Thumbnail'
-                    src={image?.url ?? profile}
-                    alt='프로필 이미지'
-                  />
-                ) : (
-                  <div className='default-upload'>썸네일을 등록해주세요.</div>
-                )}
+            <Menu>
+              <label htmlFor='menu'>
+                <span>메뉴: </span>
+                <input
+                  id='menu'
+                  className='input-menu'
+                  value={menu}
+                  onChange={(e) => setMenu(e.target.value)}
+                />
               </label>
-              <input
-                ref={fileInputRef}
-                id='Thumbnail-image'
-                type='file'
-                onChange={uploadImage}
-              />
-              {image.url && (
-                <button onClick={() => setImage({})}>
-                  <img className='ic ic-cancel' src={icCancel} alt='취소' />
-                </button>
-              )}
-            </ThumbnailSection>
-            <HashtagSection>
-              <SearchInput
-                className='hashtag'
-                placeholder='#해시태그'
-                value={tag}
-                alwaysVisible={true}
-                onSubmit={hashtagHandler}
-                onChange={(e) => setTag(e.target.value)}
-              />
-              <div className='hashtagword'>
-                {allTag.map((tag, idx) => (
-                  <>
-                    <Hashtag key={idx}>#{tag}</Hashtag>
-                  </>
-                ))}
-              </div>
-            </HashtagSection>
-            <ContainedButton className='button'>등록</ContainedButton>
+              <div className='partition' />
+              <label htmlFor='ingredients'>
+                <span>재료:</span>
+                <input
+                  className='input-ingredients'
+                  value={ingredients}
+                  onChange={(e) => setIngredients(e.target.value)}
+                />
+              </label>
+            </Menu>
           </div>
-        </Main>
-      </div>
+          <Title>
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder='제목'
+            />
+          </Title>
+          <TextEditor content={content} setContent={setContent} />
+        </div>
+        <div className='main-right'>
+          <ThumbnailSection>
+            <label htmlFor='Thumbnail-image'>
+              {image.url ? (
+                <img
+                  className='image image-Thumbnail'
+                  src={image?.url}
+                  alt='썸네일 이미지'
+                />
+              ) : (
+                <div className='default-upload'>썸네일을 등록해주세요.</div>
+              )}
+            </label>
+            <input
+              ref={fileInputRef}
+              id='Thumbnail-image'
+              type='file'
+              onChange={uploadImage}
+            />
+            {image.url && (
+              <button onClick={() => setImage({})}>
+                <img className='ic ic-cancel' src={icCancel} alt='취소' />
+              </button>
+            )}
+          </ThumbnailSection>
+          <HashtagSection>
+            <SearchInput
+              className='hashtag'
+              placeholder='# 해시태그'
+              value={tag}
+              alwaysVisible={true}
+              onSubmit={hashtagHandler}
+              onChange={(e) => setTag(e.target.value)}
+            />
+            <div className='hashtagword'>
+              {allTag.map((tag, idx) => (
+                <div className='hashtag' key={idx}>
+                  <Hashtag>
+                    <span># {tag}</span>
+                    <button
+                      className='btn-delete'
+                      onClick={() => deleteHashTag(idx)}
+                    >
+                      <img className='ic ic-delete' src={icAdd} alt='삭제' />
+                    </button>
+                  </Hashtag>
+                </div>
+              ))}
+            </div>
+          </HashtagSection>
+          <ContainedButton onClick={uploadHandler} className='button'>
+            등록
+          </ContainedButton>
+        </div>
+      </Main>
     </Wrapper>
   );
 };
@@ -152,6 +215,7 @@ const Wrapper = styled.div`
 const Main = styled.main`
   padding: 13.2rem 16.2rem;
   display: flex;
+  gap: 1.6rem;
   justify-content: space-between;
   article {
     position: relative;
@@ -160,15 +224,19 @@ const Main = styled.main`
   .menuSection {
     display: flex;
   }
-
+  .main-left {
+    flex: 1 1 auto;
+  }
   .main-right {
+    margin-top: 12em;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     width: 38rem;
+    gap: 2rem;
   }
 `;
-const MainRight = styled.main``;
+
 const Title = styled.h3`
   input {
     width: -webkit-fill-available;
@@ -177,22 +245,49 @@ const Title = styled.h3`
   }
 `;
 const Menu = styled.h4`
-  input {
-    width: -webkit-fill-available;
-    font-size: 1.6rem;
-    line-height: 2.8;
-    margin-left: 2rem;
+  padding: 0.4rem 0;
+  display: flex;
+  flex-grow: 1;
+  .partition {
+    width: 1px;
+    height: 100%;
+    background-color: ${theme.colors.grey40};
+  }
+  label {
+    display: flex;
+    margin: 0 1.6rem;
+    span {
+      flex-shrink: 0;
+      font-size: 1.6rem;
+      line-height: 1.6;
+    }
+    :last-child {
+      flex-grow: 1;
+      margin-right: 0;
+    }
+    input {
+      flex-grow: 1;
+      font-size: 1.6rem;
+      line-height: 1.6;
+      display: inline;
+      margin-left: 0.8rem;
+      border-bottom: 1px solid ${theme.colors.grey50};
+    }
   }
 `;
 
 const ThumbnailSection = styled.div`
   position: relative;
+  width: 30rem;
+  height: 18rem;
   label {
+    width: 100%;
+    height: 100%;
     cursor: pointer;
   }
   .image-Thumbnail {
-    width: 23rem;
-    height: 13rem;
+    width: 100%;
+    height: 100%;
     border-radius: 0.5rem;
     object-fit: cover;
   }
@@ -217,14 +312,28 @@ const ThumbnailSection = styled.div`
 const Hashtag = styled.div`
   box-shadow: 1px 1px 2px ${theme.colors.green30};
   width: fit-content;
-  padding: 1rem;
+  padding: 0.4rem 1rem;
   border: 2px solid ${theme.colors.green50};
   border-radius: 2rem;
   color: ${theme.colors.grey70};
-  margin: 0px 1rem 1.5rem 0px;
-  font-size: 1.4rem;
+  margin: 0 1rem 1.2rem 0;
+  display: flex;
+  gap: 0.8rem;
+  span {
+    font-size: 1.4rem;
+    line-height: 1.6;
+  }
   &:hover {
     cursor: pointer;
+  }
+  .btn-delete {
+    align-self: center;
+    transform: rotateZ(45deg);
+  }
+  .ic-delete {
+    display: block;
+    width: 1.2rem;
+    height: 1.2rem;
   }
 `;
 
@@ -233,7 +342,6 @@ const HashtagSection = styled.div`
   flex-direction: column;
   width: 30rem;
   .hashtag {
-    margin-top: 2rem;
     form {
       input {
         padding-right: 4.5rem;
@@ -247,6 +355,6 @@ const HashtagSection = styled.div`
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
-    padding: 1.5rem;
+    padding: 1.5rem 0;
   }
 `;

@@ -7,17 +7,17 @@ import { useMutation } from 'react-query';
 import { signIn } from '../../../apis/auth';
 import Spinner from '../../common/spinner/Spinner';
 import { useRecoilState } from 'recoil';
-import authState from '../../../recoil/auth/atom';
-import { useNavigate } from 'react-router';
+import { accessTokenState } from '../../../recoil/auth/accessToken';
+import { authModalState } from '../../../recoil/auth/authModal';
 
-const SignIn = ({ openModal }) => {
+const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formValid, setFormValid] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [accessToken, setAccessToken] = useRecoilState(authState);
+  const [, setAccessToken] = useRecoilState(accessTokenState);
+  const [, openModal] = useRecoilState(authModalState);
   const { validateEmail, validatePassword } = useFormValidation();
-  const navigate = useNavigate();
   const signin = useMutation(signIn);
 
   const handleClickSignIn = (e) => {
@@ -39,8 +39,7 @@ const SignIn = ({ openModal }) => {
         onSuccess: (res) => {
           setAccessToken(res.data.accessToken);
           window.localStorage.setItem('refresh_token', res.data.refreshToken);
-          openModal(() => false);
-          navigate('/board');
+          openModal(false);
         },
         onError: (res) => console.log(res),
         onSettled: () => setIsLoading(false),

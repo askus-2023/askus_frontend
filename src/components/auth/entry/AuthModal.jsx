@@ -4,8 +4,11 @@ import SignUp from './SignUp';
 import icClose from '../../../assets/icons/close.svg';
 import { theme } from '../../../styles/Theme';
 import SignIn from './SignIn';
+import { useRecoilState } from 'recoil';
+import { authModalState } from '../../../recoil/auth/authModal';
+const AuthModal = ({ phase, setPhase }) => {
+  const [, openModal] = useRecoilState(authModalState);
 
-const AuthModal = ({ phase, setPhase, openModal }) => {
   return (
     <Wrapper>
       <Overlay className='overlay' />

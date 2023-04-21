@@ -10,6 +10,8 @@ import BoardWritePage from './pages/Board/Write';
 import Profile from './pages/Profile/Profile';
 import ProfileEdit from './pages/Profile/ProfileEdit';
 import PersistLogin from './components/auth/PersistLogin';
+// import RequireAuth from './components/auth/RequireAuth';
+import RemoveTrailingSlash from './components/RemoveTrailingSlash';
 
 function App() {
   const queryClient = new QueryClient();
@@ -18,6 +20,7 @@ function App() {
     <div className='App'>
       <RecoilRoot>
         <QueryClientProvider client={queryClient}>
+          <RemoveTrailingSlash />
           <Header />
           <Routes>
             <Route element={<PersistLogin />}>
