@@ -5,15 +5,15 @@ import Header from '../../../components/header/Header';
 import CommentBox from '../../../components/comment/CommentBox';
 import Tag from '../../../components/tag/Tag';
 import defaultProfile from '../../../assets/images/default-profile.png';
-import useScroll from '../../../hooks/useScroll';
+// import useScroll from '../../../hooks/useScroll';
 
 const BoardDetailPage = () => {
   const ref = useRef(null);
-  const { scrollTop } = useScroll(ref);
+  // const { scrollTop } = useScroll(ref);
 
   return (
     <Wrapper ref={ref}>
-      <Header scrollTop={scrollTop} />
+      {/* <Header scrollTop={scrollTop} /> */}
       <Thumbnail className='thumbnail thumbnail-container'>
         <div className='thumbnail__info thumbnail__info-left'>
           <Name>[중식] 연어포케 샐러드</Name>
