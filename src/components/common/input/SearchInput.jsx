@@ -3,14 +3,23 @@ import styled, { css } from 'styled-components';
 import { theme } from '../../../styles/Theme';
 import icSearch from '../../../assets/icons/search-white.svg';
 
-const SearchInput = ({ className, placeholder, alwaysVisible }) => {
+const SearchInput = ({
+  className,
+  placeholder,
+  value,
+  alwaysVisible,
+  onSubmit,
+  onChange,
+}) => {
   return (
     <Wrapper className={className}>
-      <FormEl>
+      <FormEl onSubmit={onSubmit}>
         <InputEl
           type='search'
+          value={value}
           alwaysVisible={alwaysVisible}
           placeholder={placeholder}
+          onChange={onChange}
         />
         <button>
           <img src={icSearch} alt='검색 아이콘' />
