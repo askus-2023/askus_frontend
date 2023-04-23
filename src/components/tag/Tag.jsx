@@ -32,6 +32,6 @@ const Wrapper = styled.div`
   }
   .tag-name {
     font-size: 1.4rem;
-    line-height: 1.2;
+    line-height: 1.6;
   }
 `;

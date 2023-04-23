@@ -10,10 +10,10 @@ export const upload = async ({ data, accessToken }) => {
 
 export const getDetail = async ({ id, accessToken }) => {
   try {
-    const response = await axios.get(`/v1/boards/${id}`, {
+    const { data } = await axios.get(`/v1/boards/${id}`, {
       headers: { Authorization: `Bearer ${accessToken}` }
     })
-    return response.data
+    return data
   } catch (e) {
     throw new Error(e)
   }

@@ -23,7 +23,9 @@ const ProfileEdit = () => {
   const uploadImage = () => {
     const file = fileInputRef.current?.files;
     if (file && file[0]) {
-      setImage({ image: file[0], url: URL.createObjectURL(file[0]) });
+      const fileURL = URL.createObjectURL(file[0])
+      setImage({ image: file[0], url: fileURL });
+      window.URL.revokeObjectURL(fileURL)
     }
   };
 

@@ -10,8 +10,9 @@ import BoardWritePage from './pages/Board/Write';
 import Profile from './pages/Profile/Profile';
 import ProfileEdit from './pages/Profile/ProfileEdit';
 import PersistLogin from './components/auth/PersistLogin';
-// import RequireAuth from './components/auth/RequireAuth';
+import RequireAuth from './components/auth/RequireAuth';
 import RemoveTrailingSlash from './components/RemoveTrailingSlash';
+import RequireLoginPage from './pages/auth/RequireLogin';
 
 function App() {
   const queryClient = new QueryClient();
@@ -27,10 +28,14 @@ function App() {
               <Route path='/' element={<Navigate to='/main' />} />
               <Route path='/main' element={<MainPage />} />
               <Route path='/board' element={<Board />} />
-              <Route path='/board/:id' element={<BoardDetailPage />} />
-              <Route path='/board/write' element={<BoardWritePage />} />
-              <Route path='/profile' element={<Profile />} />
-              <Route path='/profile/edit' element={<ProfileEdit />} />
+              <Route element={<RequireAuth />}>
+                <Route path='/board/:id' element={<BoardDetailPage />} />
+                <Route path='/board/write' element={<BoardWritePage />} />
+                <Route path='/profile' element={<Profile />} />
+                <Route path='/profile/edit' element={<ProfileEdit />} />
+              </Route>
+              
+              <Route path='/require-login' element={<RequireLoginPage />} />
             </Route>
           </Routes>
         </QueryClientProvider>

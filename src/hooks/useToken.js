@@ -12,16 +12,16 @@ const useToken = () => {
 
   const refresh = async () => {
     const aT = window.localStorage.getItem('aT');
-    const data = new URLSearchParams({
+    const formData = new URLSearchParams({
       accessToken: aT,
       refreshToken,
     });
     window.localStorage.setItem('aT', '');
     try {
-      const response = await URLEncodedApi.post('v1/reissue', data);
+      const { data } = await URLEncodedApi.post('/v1/reissue', formData);
 
-      setAccessToken(response.data.accessToken);
-      window.localStorage.setItem('refresh_token', response.data.refreshToken);
+      setAccessToken(data.accessToken);
+      window.localStorage.setItem('refresh_token', data.refreshToken);
     } catch (e) {}
   };
   return {

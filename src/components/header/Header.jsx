@@ -15,7 +15,7 @@ import scrollState from '../../recoil/scroll/atom';
 import { authModalState } from '../../recoil/auth/authModal';
 
 const Header = () => {
-  const [phase, setPhase] = useState('');
+  const [phase, setPhase] = useState('signin');
   const [alpha, setAlpha] = useState(0);
   const navigate = useNavigate();
   const { pathname } = useLocation();

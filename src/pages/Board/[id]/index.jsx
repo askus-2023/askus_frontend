@@ -10,6 +10,7 @@ import { useQuery } from 'react-query';
 import { getDetail } from '../../../apis/board';
 import { useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../../recoil/auth/accessToken';
+import Spinner from '../../../components/common/spinner/Spinner';
 
 const BoardDetailPage = () => {
   const ref = useRef(null);
@@ -29,6 +30,8 @@ const BoardDetailPage = () => {
 
   return (
     <Wrapper ref={ref}>
+      {isLoading && 
+      <Spinner />}
       {isSuccess && 
       <>
         <Thumbnail url={data.urls[0]} className='thumbnail thumbnail-container'>
@@ -50,7 +53,7 @@ const BoardDetailPage = () => {
               ))}
             </Keywords>
             <MainContent>
-              <article dangerouslySetInnerHTML={{__html: data.content}} />
+              <div dangerouslySetInnerHTML={{ __html: data.content }} />
             </MainContent>
           </div>
           <div className='content content-right'>

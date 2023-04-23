@@ -12,6 +12,7 @@ import { useMutation } from 'react-query';
 import { upload } from '../../apis/board';
 import { useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
+import Spinner from '../../components/common/spinner/Spinner';
 
 const filterOption = [
   {
@@ -199,6 +200,8 @@ const BoardWritePage = () => {
           </ContainedButton>
         </div>
       </Main>
+      {isLoading && 
+      <Spinner />}
     </Wrapper>
   );
 };

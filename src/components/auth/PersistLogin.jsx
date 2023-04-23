@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
+import { reloadState } from '../../recoil/reload';
 import useToken from '../../hooks/useToken';
+import Spinner from '../common/spinner/Spinner';
+import styled from 'styled-components';
 
 const PersistLogin = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useRecoilState(reloadState);
   const [accessToken] = useRecoilState(accessTokenState);
   const { beforeRefresh, refresh } = useToken();
 
@@ -30,9 +33,17 @@ const PersistLogin = () => {
     return () => {
       isMounted = false;
     };
-  }, [accessToken, refresh]);
+  }, [accessToken, refresh, setIsLoading]);
 
-  return <>{isLoading ? <p>Loading ...</p> : <Outlet replace />}</>;
+  return <>{isLoading ? <Wrapper><Spinner /></Wrapper> : <Outlet replace />}</>;
 };
 
 export default PersistLogin;
+
+const Wrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
