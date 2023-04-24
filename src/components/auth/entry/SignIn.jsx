@@ -6,14 +6,18 @@ import useFormValidation from './useFormValidation';
 import { useMutation } from 'react-query';
 import { signIn } from '../../../apis/auth';
 import Spinner from '../../common/spinner/Spinner';
+import { useRecoilState } from 'recoil';
+import { accessTokenState } from '../../../recoil/auth/accessToken';
+import { authModalState } from '../../../recoil/auth/authModal';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formValid, setFormValid] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [, setAccessToken] = useRecoilState(accessTokenState);
+  const [, openModal] = useRecoilState(authModalState);
   const { validateEmail, validatePassword } = useFormValidation();
-
   const signin = useMutation(signIn);
 
   const handleClickSignIn = (e) => {
@@ -32,7 +36,11 @@ const SignIn = () => {
         password,
       });
       signin.mutate(data, {
-        onSuccess: (res) => console.log(res),
+        onSuccess: (res) => {
+          setAccessToken(res.data.accessToken);
+          window.localStorage.setItem('refresh_token', res.data.refreshToken);
+          openModal(false);
+        },
         onError: (res) => console.log(res),
         onSettled: () => setIsLoading(false),
       });

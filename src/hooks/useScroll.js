@@ -1,11 +1,17 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
+import { useRecoilState } from 'recoil';
+import scrollState from '../recoil/scroll/atom';
 
 const useScroll = (ref) => {
-  const [scrollTop, setScrollTop] = useState(0);
+  const [, setScrollTop] = useRecoilState(scrollState);
 
   const onScroll = useCallback(() => {
     setScrollTop(ref.current?.scrollTop);
-  }, [ref]);
+  }, [ref, setScrollTop]);
+
+  useEffect(() => {
+    setScrollTop(0);
+  }, []);
 
   useEffect(() => {
     const refObject = ref.current;
@@ -14,10 +20,6 @@ const useScroll = (ref) => {
       refObject?.removeEventListener('scroll', onScroll, { passive: true });
     };
   });
-
-  return {
-    scrollTop,
-  };
 };
 
 export default useScroll;

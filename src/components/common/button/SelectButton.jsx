@@ -8,8 +8,8 @@ const SelectButton = ({ className, onChange, option, selected }) => {
       <select onChange={onChange} value={selected}>
         {option.map((option, idx) => {
           return (
-            <option value={option} key={idx}>
-              {option}
+            <option value={option.value} key={idx}>
+              {option.text}
             </option>
           );
         })}
@@ -33,15 +33,15 @@ const Wrapper = styled.div`
   }
 
   select {
-    width: 11rem;
-    padding: 0.8rem 0.2rem;
+    width: 10rem;
+    padding: 0.6rem 0.4rem;
     color: ${theme.colors.green50};
     border: 0rem;
     border-radius: 0.6rem;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     font-weight: bold;
     outline: none;
-    text-indent: 1rem;
+    text-indent: 0.2rem;
     cursor: pointer;
     &:hover {
       color: ${theme.colors.green70};

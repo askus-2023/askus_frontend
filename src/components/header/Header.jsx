@@ -9,17 +9,24 @@ import logo from '../../assets/images/logo.png';
 import icBurgerSimple from '../../assets/icons/burger-simple.svg';
 import icProfile from '../../assets/icons/default-profile.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { accessTokenState } from '../../recoil/auth/accessToken';
+import scrollState from '../../recoil/scroll/atom';
+import { authModalState } from '../../recoil/auth/authModal';
 
-const Header = ({ scrollTop }) => {
-  const [isOpenModal, openModal] = useState(false);
-  const [phase, setPhase] = useState('');
+const Header = () => {
+  const [phase, setPhase] = useState('signin');
   const [alpha, setAlpha] = useState(0);
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const accessToken = useRecoilValue(accessTokenState);
+  const [isOpenModal, openModal] = useRecoilState(authModalState);
+  const [scrollTop] = useRecoilState(scrollState);
+  const profileImage = window.localStorage.getItem('profile_image') ?? '';
 
   useEffect(() => {
-    if (scrollTop < 200) {
-      setAlpha(scrollTop / 200);
+    if (scrollTop < 400) {
+      setAlpha(scrollTop / 400);
     } else setAlpha(1);
   }, [scrollTop]);
 
@@ -41,11 +48,15 @@ const Header = ({ scrollTop }) => {
               <SearchInput />
             </li>
           )}
-          {false ? (
+          {accessToken ? (
             <li className='header-action__profile'>
               <ProfileWrapper>
                 <img src={icBurgerSimple} alt='메뉴 아이콘' />
-                <img src={icProfile} alt='프로필 아이콘' />
+                <img
+                  className='profile-image'
+                  src={profileImage ? profileImage : icProfile}
+                  alt='프로필 아이콘'
+                />
               </ProfileWrapper>
             </li>
           ) : (
@@ -90,6 +101,7 @@ const Wrapper = styled.div`
   padding: 0 4rem;
   position: fixed;
   top: 0;
+  left: 0;
   z-index: 10;
   display: flex;
   justify-content: space-between;
@@ -135,5 +147,11 @@ const ProfileWrapper = styled.div`
   cursor: pointer;
   &:hover {
     background: rgba(255, 255, 255, 0.5);
+  }
+  .profile-image {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    object-fit: cover;
   }
 `;
