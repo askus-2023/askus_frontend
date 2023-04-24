@@ -33,9 +33,7 @@ const SignUp = ({ setPhase }) => {
   const uploadImage = () => {
     const file = fileInputRef.current?.files;
     if (file && file[0]) {
-      const fileURL = URL.createObjectURL(file[0])
-      setImage({ image: file[0], url: fileURL });
-      window.URL.revokeObjectURL(fileURL)
+      setImage({ image: file[0], url: URL.createObjectURL(file[0]) });
     }
   };
 
@@ -66,6 +64,7 @@ const SignUp = ({ setPhase }) => {
         onSuccess: (res) => {
           setIsLoadingSignUp(false);
           window.localStorage.setItem('profile_image', res.data?.imageUrl);
+          window.URL.revokeObjectURL(image.url);
           setPhase('signin');
         },
         onError: (err) => console.log(err.response?.data),

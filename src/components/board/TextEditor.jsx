@@ -9,7 +9,7 @@ Size.whitelist = ['16px', '24px', '32px', '48px', '64px']
 Quill.register(Size, true);
 
 const Image = Quill.import ('formats/image');
-Image.sanitize = function (url) {return url }
+Image.sanitize = (url) => url
 Quill.register(Image, true);
 
 
@@ -27,7 +27,6 @@ const TextEditor = ({ content, setContent }) => {
       const fileURL = URL.createObjectURL(file)
       const range = quillObj.getSelection()
       quillObj.editor.insertEmbed(range.index, 'image', fileURL)
-      window.URL.revokeObjectURL(fileURL)
     }
   }
 
