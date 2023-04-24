@@ -27,6 +27,7 @@ const TextEditor = ({ content, setContent }) => {
       const fileURL = URL.createObjectURL(file)
       const range = quillObj.getSelection()
       quillObj.editor.insertEmbed(range.index, 'image', fileURL)
+      window.URL.revokeObjectURL(fileURL)
     }
   }
 
