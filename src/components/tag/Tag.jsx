@@ -21,7 +21,7 @@ const Wrapper = styled.div`
   display: inline-block;
   .tag-container {
     width: fit-content;
-    padding: 0.6rem 1.2rem;
+    padding: 0.2rem 1.2rem;
     background-color: white;
     border-radius: 2.4rem;
     border: ${({ type }) =>

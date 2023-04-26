@@ -44,8 +44,9 @@ const BoardWritePage = () => {
   const [title, setTitle] = useState('');
   const [menu, setMenu] = useState('');
   const [ingredients, setIngredients] = useState('');
-  const [content, setContent] = useState(null);
-  const [image, setImage] = useState({});
+  const [content, setContent] = useState('');
+  const [images, setImages] = useState([]);
+  const [thumbnail, setThumbnail] = useState({});
   const [tag, setTag] = useState('');
   const [allTag, setAllTag] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -54,10 +55,10 @@ const BoardWritePage = () => {
 
   useScroll(ref);
 
-  const uploadImage = () => {
+  const uploadThumbnail = () => {
     const file = fileInputRef.current?.files;
     if (file && file[0]) {
-      setImage({ image: file[0], url: URL.createObjectURL(file[0]) });
+      setThumbnail({ image: file[0], url: URL.createObjectURL(file[0]) });
     }
     console.log(file, file[0]);
   };
@@ -82,14 +83,20 @@ const BoardWritePage = () => {
 
   const uploadHandler = () => {
     setIsLoading(true);
+    const imageList = images.map((value) => value.file);
     const formData = new FormData();
     formData.append('title', title);
+    formData.append('foodName', menu);
     formData.append('category', selectedfilter);
     formData.append('ingredients', ingredients);
     formData.append('content', content);
     formData.append('tag', allTag.toString());
-    formData.append('thumbnailImage', image.image);
-    formData.append('representativeImages', image.image);
+    thumbnail.image && formData.append('thumbnailImage', thumbnail.image);
+    if (imageList.length) {
+      for (const image of imageList) {
+        formData.append('representativeImages', image);
+      }
+    }
     uploadMutation.mutate(
       {
         data: formData,
@@ -143,15 +150,20 @@ const BoardWritePage = () => {
               placeholder='제목'
             />
           </Title>
-          <TextEditor content={content} setContent={setContent} />
+          <TextEditor
+            content={content}
+            setContent={setContent}
+            images={images}
+            setImages={setImages}
+          />
         </div>
         <div className='main-right'>
           <ThumbnailSection>
             <label htmlFor='Thumbnail-image'>
-              {image.url ? (
+              {thumbnail.url ? (
                 <img
                   className='image image-Thumbnail'
-                  src={image?.url}
+                  src={thumbnail.url}
                   alt='썸네일 이미지'
                 />
               ) : (
@@ -162,10 +174,10 @@ const BoardWritePage = () => {
               ref={fileInputRef}
               id='Thumbnail-image'
               type='file'
-              onChange={uploadImage}
+              onChange={uploadThumbnail}
             />
-            {image.url && (
-              <button onClick={() => setImage({})}>
+            {thumbnail.url && (
+              <button onClick={() => setThumbnail({})}>
                 <img className='ic ic-cancel' src={icCancel} alt='취소' />
               </button>
             )}
@@ -200,8 +212,7 @@ const BoardWritePage = () => {
           </ContainedButton>
         </div>
       </Main>
-      {isLoading && 
-      <Spinner />}
+      {isLoading && <Spinner />}
     </Wrapper>
   );
 };

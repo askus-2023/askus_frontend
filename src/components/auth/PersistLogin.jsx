@@ -13,9 +13,9 @@ const PersistLogin = () => {
   const { beforeRefresh, refresh } = useToken();
 
   useEffect(() => {
-    window.addEventListener('beforeunload', beforeRefresh);
+    window.addEventListener('unload', beforeRefresh);
     return () => {
-      window.removeEventListener('beforeunload', beforeRefresh);
+      window.removeEventListener('unload', beforeRefresh);
     };
   });
 
@@ -35,7 +35,17 @@ const PersistLogin = () => {
     };
   }, [accessToken, refresh, setIsLoading]);
 
-  return <>{isLoading ? <Wrapper><Spinner /></Wrapper> : <Outlet replace />}</>;
+  return (
+    <>
+      {isLoading ? (
+        <Wrapper>
+          <Spinner />
+        </Wrapper>
+      ) : (
+        <Outlet replace />
+      )}
+    </>
+  );
 };
 
 export default PersistLogin;
@@ -46,4 +56,4 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;

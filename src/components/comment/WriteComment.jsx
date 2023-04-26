@@ -3,13 +3,38 @@ import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import ContainedButton from '../common/button/ContainedButton';
 import TextButton from '../common/button/TextButton';
+import { useMutation, useQueryClient } from 'react-query';
+import { create } from '../../apis/comment';
+import { useRecoilValue } from 'recoil';
+import { accessTokenState } from '../../recoil/auth/accessToken';
 
-const WriteComment = ({ type, onClickCancelReply }) => {
+const WriteComment = ({ boardId, type, onClickCancelReply }) => {
   const [comment, setComment] = useState('');
   const [isOpen, open] = useState(true);
+  const queryClient = useQueryClient();
+  const accessToken = useRecoilValue(accessTokenState);
+  const createMutation = useMutation(create);
+
+  const commentHandler = () => {
+    if (comment) {
+      createMutation.mutate(
+        {
+          boardId,
+          content: comment,
+          accessToken,
+        },
+        {
+          onSuccess: (res) => {
+            console.log(res);
+            queryClient.invalidateQueries([`boards/${boardId}`]);
+          },
+        }
+      );
+    }
+  };
   return (
     <Wrapper onClick={() => open(true)}>
-      <FormEl isOpen={isOpen}>
+      <FormEl isOpen={isOpen} onSubmit={commentHandler}>
         {!comment && <Placeholder>댓글을 작성해보세요</Placeholder>}
         {isOpen && (
           <>
@@ -21,7 +46,7 @@ const WriteComment = ({ type, onClickCancelReply }) => {
               <TextButton
                 onClick={(e) => {
                   if (type === 'reply') {
-                    onClickCancelReply(() => false);
+                    onClickCancelReply();
                   } else {
                     e.stopPropagation();
                     open(false);
@@ -31,7 +56,10 @@ const WriteComment = ({ type, onClickCancelReply }) => {
               >
                 취소
               </TextButton>
-              <ContainedButton className='comment-button comment-button-contained'>
+              <ContainedButton
+                type='submit'
+                className='comment-button comment-button-contained'
+              >
                 작성하기
               </ContainedButton>
             </ButtonWrapper>

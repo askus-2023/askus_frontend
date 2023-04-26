@@ -22,7 +22,7 @@ const Header = () => {
   const accessToken = useRecoilValue(accessTokenState);
   const [isOpenModal, openModal] = useRecoilState(authModalState);
   const [scrollTop] = useRecoilState(scrollState);
-  const profileImage = window.localStorage.getItem('profile_image') ?? '';
+  let profileImage = window.localStorage.getItem('profile_image');
 
   useEffect(() => {
     if (scrollTop < 400) {
@@ -54,7 +54,11 @@ const Header = () => {
                 <img src={icBurgerSimple} alt='메뉴 아이콘' />
                 <img
                   className='profile-image'
-                  src={profileImage ? profileImage : icProfile}
+                  src={
+                    !profileImage || profileImage === 'undefined'
+                      ? icProfile
+                      : profileImage
+                  }
                   alt='프로필 아이콘'
                 />
               </ProfileWrapper>

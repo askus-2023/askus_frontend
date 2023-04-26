@@ -1,6 +1,6 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
-import thumbnail from '../../../assets/images/thumbnail.png';
+// import thumbnail from '../../../assets/images/thumbnail.png';
 import CommentBox from '../../../components/comment/CommentBox';
 import Tag from '../../../components/tag/Tag';
 import defaultProfile from '../../../assets/images/default-profile.png';
@@ -14,59 +14,86 @@ import Spinner from '../../../components/common/spinner/Spinner';
 
 const BoardDetailPage = () => {
   const ref = useRef(null);
+  const articleRef = useRef();
   const { id } = useParams();
-  const accessToken = useRecoilValue(accessTokenState)
+  const accessToken = useRecoilValue(accessTokenState);
 
-  const { data, isLoading, isSuccess } = useQuery([`boards/${id}`], () => getDetail({
-    id,
-    accessToken
-  }))
+  const { data, isLoading, isSuccess } = useQuery([`boards/${id}`], () =>
+    getDetail({
+      id,
+      accessToken,
+    })
+  );
 
-  const tags = useMemo(() => isSuccess && data?.tag.split(','), [isSuccess, data]) 
+  const tags = useMemo(
+    () => isSuccess && data?.tag.split(','),
+    [isSuccess, data]
+  );
 
-  isSuccess && console.log(data)
+  const updateImageUrl = useCallback(() => {
+    if (isSuccess) {
+      const article = articleRef.current;
+      if (article) {
+        const imgTags = article.querySelectorAll('img');
+        for (let i = 0; i < imgTags.length; i++) {
+          imgTags[i].setAttribute('src', data.representativeImageUrls[i]);
+        }
+      }
+    }
+  }, [isSuccess, data]);
+
+  useEffect(() => {
+    updateImageUrl();
+  }, [updateImageUrl]);
 
   useScroll(ref);
 
   return (
     <Wrapper ref={ref}>
-      {isLoading && 
-      <Spinner />}
-      {isSuccess && 
-      <>
-        <Thumbnail url={data.urls[0]} className='thumbnail thumbnail-container'>
-          <div className='thumbnail__info thumbnail__info-left'>
-            <Name>[추가 필요] 음식 명</Name>
-            <Title>{data.title}</Title>
-          </div>
-          <div className='thumbnail__info thumbnail__info-right'>
-            <CreatedAt>{data.createdAt}</CreatedAt>
-          </div>
-        </Thumbnail>
-        <Content>
-          <div className='content content-left'>
-            <Keywords>
-              {tags.map((value) => (
-                <Tag key={value} type='outline' hash={true}>
-                  {value}
-                </Tag>
-              ))}
-            </Keywords>
-            <MainContent>
-              <div dangerouslySetInnerHTML={{ __html: data.content }} />
-            </MainContent>
-          </div>
-          <div className='content content-right'>
-            <AuthorInfo className='author-profile'>
-              <div className='author-profile__image'>
-                <img src={defaultProfile} alt='프로필 이미지' />
-              </div>
-              <div className='author-profile__nickname'>Cookle</div>
-            </AuthorInfo>
-            <CommentBox />
-          </div>
-        </Content>
-      </>}
+      {isLoading && <Spinner />}
+      {isSuccess && (
+        <>
+          <Thumbnail
+            url={data.thumbnailImageUrl}
+            className='thumbnail thumbnail-container'
+          >
+            <div className='thumbnail__info thumbnail__info-left'>
+              <Name>[추가 필요] {data.foodName}</Name>
+              <Title>{data.title}</Title>
+            </div>
+            <div className='thumbnail__info thumbnail__info-right'>
+              <CreatedAt>{data.createdAt}</CreatedAt>
+            </div>
+          </Thumbnail>
+          <Content>
+            <div className='content content-left'>
+              <Keywords>
+                {tags.map((value, idx) => (
+                  <Tag key={idx} type='outline' hash={true}>
+                    {value}
+                  </Tag>
+                ))}
+              </Keywords>
+              <MainContent>
+                <div
+                  ref={articleRef}
+                  className='article'
+                  dangerouslySetInnerHTML={{ __html: data.content }}
+                />
+              </MainContent>
+            </div>
+            <div className='content content-right'>
+              <AuthorInfo className='author-profile'>
+                <div className='author-profile__image'>
+                  <img src={defaultProfile} alt='프로필 이미지' />
+                </div>
+                <div className='author-profile__nickname'>{data.author}</div>
+              </AuthorInfo>
+              <CommentBox comments={data.replies} boardId={id} />
+            </div>
+          </Content>
+        </>
+      )}
     </Wrapper>
   );
 };
@@ -134,8 +161,12 @@ const Content = styled.div`
 const Keywords = styled.div``;
 const MainContent = styled.div`
   margin-top: 2rem;
-  article {
+  .article {
     padding: 0 0.6rem;
+    img {
+      max-width: 100%;
+      max-height: 100%;
+    }
   }
 `;
 const AuthorInfo = styled.div`

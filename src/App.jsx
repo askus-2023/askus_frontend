@@ -34,7 +34,7 @@ function App() {
                 <Route path='/profile' element={<Profile />} />
                 <Route path='/profile/edit' element={<ProfileEdit />} />
               </Route>
-              
+
               <Route path='/require-login' element={<RequireLoginPage />} />
             </Route>
           </Routes>

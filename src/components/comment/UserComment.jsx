@@ -1,37 +1,70 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import TextButton from '../common/button/TextButton';
 import defaultProfile from '../../assets/images/default-profile.png';
 import { theme } from '../../styles/Theme';
 import WriteComment from './WriteComment';
-const UserComment = () => {
-  const [isOpenReply, openReply] = useState(false);
+
+const UserComment = ({ comments }) => {
+  const [isOpenReply, openReply] = useState([]);
+
+  const handleOpenReply = (idx) => {
+    const prev = [...isOpenReply];
+    prev.splice(idx, 1, true);
+    openReply(prev);
+  };
+
+  const handleCloseReply = (idx) => {
+    const prev = [...isOpenReply];
+    prev.splice(idx, 1, false);
+    openReply(prev);
+  };
+
+  useEffect(() => {
+    if (comments.length) {
+      const list = [];
+      for (const _ of comments) {
+        list.push(false);
+      }
+      openReply(list);
+    }
+  }, []);
+
+  console.log(isOpenReply);
+
   return (
     <Wrapper>
-      <Commenter>
-        <img src={defaultProfile} alt='프로필 이미지' />
-        <div>
-          <div className='commenter-nickname'>Cookle</div>
-          <div className='comment-created-at'>3일 전</div>
+      {comments.map((value, idx) => (
+        <div className={`comments-${idx + 1}`} key={idx}>
+          <Commenter>
+            <img src={defaultProfile} alt='프로필 이미지' />
+            <div>
+              <div className='commenter-nickname'>{value.replyAuthor}</div>
+              <div className='comment-created-at'>{value.createdAt}</div>
+            </div>
+          </Commenter>
+          <Comment>
+            <p>{value.content}</p>
+          </Comment>
+          <Reply>
+            <TextButton
+              onClick={() => handleOpenReply(idx)}
+              className='button button-reply'
+            >
+              답글 쓰기
+            </TextButton>
+            {isOpenReply[idx] && (
+              <WriteReply>
+                <div className='bar' />
+                <WriteComment
+                  type='reply'
+                  onClickCancelReply={() => handleCloseReply(idx)}
+                />
+              </WriteReply>
+            )}
+          </Reply>
         </div>
-      </Commenter>
-      <Comment>
-        <p>코멘트입니다.</p>
-      </Comment>
-      <Reply>
-        <TextButton
-          onClick={() => openReply(true)}
-          className='button button-reply'
-        >
-          답글 쓰기
-        </TextButton>
-        {isOpenReply && (
-          <WriteReply>
-            <div className='bar' />
-            <WriteComment type='reply' onClickCancelReply={openReply} />
-          </WriteReply>
-        )}
-      </Reply>
+      ))}
     </Wrapper>
   );
 };
@@ -41,6 +74,9 @@ export default UserComment;
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 3.2rem;
+  .comments {
+  }
 `;
 const Commenter = styled.div`
   display: flex;
