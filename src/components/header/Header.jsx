@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import SearchInput from '../common/input/SearchInput';
@@ -13,14 +13,18 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
 import scrollState from '../../recoil/scroll/atom';
 import { authModalState } from '../../recoil/auth/authModal';
+import HeaderPopup from '../popup/HeaderPopup';
 
 const Header = () => {
   const [phase, setPhase] = useState('signin');
   const [alpha, setAlpha] = useState(0);
+  const profileRef = useRef(null);
+  const popupRef = useRef(null);
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const accessToken = useRecoilValue(accessTokenState);
   const [isOpenModal, openModal] = useRecoilState(authModalState);
+  const [isOpenPopup, openPopup] = useState(false);
   const [scrollTop] = useRecoilState(scrollState);
   let profileImage = window.localStorage.getItem('profile_img');
 
@@ -29,6 +33,23 @@ const Header = () => {
       setAlpha(scrollTop / 400);
     } else setAlpha(1);
   }, [scrollTop]);
+
+  const closePopup = useCallback((e) => {
+    const target = e.target
+    if (isOpenPopup && !popupRef.current?.contains(target)) {
+      openPopup(false)
+    }
+    if (profileRef.current?.contains(target)) {
+      openPopup(true)
+    }
+  }, [isOpenPopup])
+
+  useEffect(() => {
+    document.addEventListener('click', closePopup)
+    return () => {
+      document.removeEventListener('click', closePopup)
+    }
+  }, [closePopup])
 
   return (
     <>
@@ -50,7 +71,7 @@ const Header = () => {
           )}
           {accessToken ? (
             <li className='header-action__profile'>
-              <ProfileWrapper>
+              <ProfileWrapper ref={profileRef} onClick={() => openPopup(true)}>
                 <img src={icBurgerSimple} alt='메뉴 아이콘' />
                 <img
                   className='profile-image'
@@ -62,6 +83,7 @@ const Header = () => {
                   alt='프로필 아이콘'
                 />
               </ProfileWrapper>
+              <HeaderPopup ref={popupRef} isOpen={isOpenPopup} />
             </li>
           ) : (
             <>
@@ -119,6 +141,9 @@ const Wrapper = styled.div`
     li {
       display: flex;
       flex: 1 0 auto;
+    }
+    .header-action__profile {
+      position: relative;
     }
     .header-action__search {
       @media screen and (max-width: 1024px) {
