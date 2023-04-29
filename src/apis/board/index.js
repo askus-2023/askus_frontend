@@ -19,20 +19,19 @@ export const getDetail = async ({ id, accessToken }) => {
   }
 };
 
-export const getList = async ({ tag, dateLoe, dateGoe, sortTarget  }) => {
+export const getList = async ({ tag, dateLoe, dateGoe, sortTarget }) => {
   try {
     const { data } = await axios.get(`/v1/boards`, {
-      params : {
+      params: {
         tag,
         dateLoe,
         dateGoe,
-        sortTarget
+        sortTarget,
       },
-    })
-    return data
+    });
+    return data;
   } catch (e) {
-    console.log(e)
+    console.log(e);
     throw new Error(e);
   }
-  
-}
+};

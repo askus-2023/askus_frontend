@@ -13,9 +13,9 @@ const PersistLogin = () => {
   const { beforeRefresh, refresh } = useToken();
 
   useEffect(() => {
-    window.addEventListener('unload', beforeRefresh);
+    window.addEventListener('pagehide', beforeRefresh);
     return () => {
-      window.removeEventListener('unload', beforeRefresh);
+      window.removeEventListener('pagehide', beforeRefresh);
     };
   });
 

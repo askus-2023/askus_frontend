@@ -34,22 +34,25 @@ const Header = () => {
     } else setAlpha(1);
   }, [scrollTop]);
 
-  const closePopup = useCallback((e) => {
-    const target = e.target
-    if (isOpenPopup && !popupRef.current?.contains(target)) {
-      openPopup(false)
-    }
-    if (profileRef.current?.contains(target)) {
-      openPopup(true)
-    }
-  }, [isOpenPopup])
+  const closePopup = useCallback(
+    (e) => {
+      const target = e.target;
+      if (isOpenPopup && !popupRef.current?.contains(target)) {
+        openPopup(false);
+      }
+      if (profileRef.current?.contains(target)) {
+        openPopup(true);
+      }
+    },
+    [isOpenPopup]
+  );
 
   useEffect(() => {
-    document.addEventListener('click', closePopup)
+    document.addEventListener('click', closePopup);
     return () => {
-      document.removeEventListener('click', closePopup)
-    }
-  }, [closePopup])
+      document.removeEventListener('click', closePopup);
+    };
+  }, [closePopup]);
 
   return (
     <>
@@ -83,7 +86,7 @@ const Header = () => {
                   alt='프로필 아이콘'
                 />
               </ProfileWrapper>
-              <HeaderPopup ref={popupRef} isOpen={isOpenPopup} />
+              {isOpenPopup && <HeaderPopup ref={popupRef} />}
             </li>
           ) : (
             <>

@@ -12,69 +12,70 @@ import { duplicationCheck, signUp } from '../../../apis/auth';
 import Spinner from '../../common/spinner/Spinner';
 import OutlinedButton from '../../common/button/OutlinedButton';
 
-export const EMAIL_ERR_MSG = '올바른 이메일 주소가 아닙니다.'
-const DUPLICATE_EMAIL = '이미 가입된 이메일 주소입니다.'
-export const NOT_FILLED = '이 입력란을 작성하세요.'
-const NOT_CHECKED = '이메일 중복확인을 해주세요.'
-const PW_CHECK_ERR_MSG = '비밀번호가 다릅니다.'
+export const EMAIL_ERR_MSG = '올바른 이메일 주소가 아닙니다.';
+const DUPLICATE_EMAIL = '이미 가입된 이메일 주소입니다.';
+export const NOT_FILLED = '이 입력란을 작성하세요.';
+const NOT_CHECKED = '이메일 중복확인을 해주세요.';
+const PW_CHECK_ERR_MSG = '비밀번호가 다릅니다.';
 
 const formMap = {
   0: 'email',
   1: 'password',
   2: 'passwordCheck',
   3: 'nickname',
-}
+};
 
 const initialState = {
   value: {
     email: '',
     password: '',
     passwordCheck: '',
-    nickname: ''
+    nickname: '',
   },
   error: {
     email: false,
     password: false,
     passwordCheck: false,
-    nickname: false
+    nickname: false,
   },
   errorMsg: {
     email: '',
     password: '',
     passwordCheck: '',
-    nickname: ''
-  }
-}
+    nickname: '',
+  },
+};
 
-const reducer = (state, action) => {
+export const reducer = (state, action) => {
   switch (action.type) {
     case 'VALUE':
       return {
         ...state,
         value: {
           ...state.value,
-          [action.field] : action.payload
-        }
-      }
+          [action.field]: action.payload,
+        },
+      };
     case 'ERROR':
       return {
         ...state,
         error: {
           ...state.error,
-          [action.field]: action.payload
-        }
-      }
+          [action.field]: action.payload,
+        },
+      };
     case 'ERROR_MSG':
       return {
         ...state,
         errorMsg: {
           ...state.errorMsg,
-          [action.field]: action.payload
-        }
-      }
-    default: return state
+          [action.field]: action.payload,
+        },
+      };
+    default:
+      return state;
   }
-}
+};
 
 const SignUp = ({ setPhase }) => {
   const fileInputRef = useRef(null);
@@ -98,49 +99,49 @@ const SignUp = ({ setPhase }) => {
 
   const signUpHandler = (e) => {
     e.preventDefault();
-    const values = Object.values(formState.value)
+    const values = Object.values(formState.value);
     if (!formState.error.passwordCheck) {
       for (let i = 0; i < values.length; i++) {
         if (!values[i]) {
           dispatch({
             type: 'ERROR',
             field: formMap[i],
-            payload: true
-          })
+            payload: true,
+          });
           dispatch({
             type: 'ERROR_MSG',
             field: formMap[i],
-            payload: NOT_FILLED
-          })
+            payload: NOT_FILLED,
+          });
         } else {
           dispatch({
             type: 'ERROR',
             field: formMap[i],
-            payload: false
-          })
+            payload: false,
+          });
           dispatch({
             type: 'ERROR_MSG',
             field: formMap[i],
-            payload: ''
-          })
+            payload: '',
+          });
         }
       }
     } else {
-      return
+      return;
     }
-    
+
     if (!duplicationChecked) {
       dispatch({
         type: 'ERROR',
         field: 'email',
-        payload: true
-      })
+        payload: true,
+      });
       dispatch({
         type: 'ERROR_MSG',
         field: 'email',
-        payload: NOT_CHECKED
-      })
-      return
+        payload: NOT_CHECKED,
+      });
+      return;
     }
     if (values.every((value) => value.length)) {
       setIsLoadingSignUp(true);
@@ -160,11 +161,10 @@ const SignUp = ({ setPhase }) => {
         onSettled: () => setIsLoadingSignUp(false),
       });
     }
-  }
+  };
 
   const duplicationCheckHandler = () => {
-    if (formState.value.email && formState.errorMsg.email !== EMAIL_ERR_MSG
-      ) {
+    if (formState.value.email && formState.errorMsg.email !== EMAIL_ERR_MSG) {
       setIsLoading(true);
       const data = new URLSearchParams({
         email: formState.value.email,
@@ -177,25 +177,25 @@ const SignUp = ({ setPhase }) => {
             dispatch({
               type: 'ERROR',
               field: 'email',
-              payload: true
-            })
+              payload: true,
+            });
             dispatch({
               type: 'ERROR_MSG',
               field: 'email',
-              payload: DUPLICATE_EMAIL
-            })
+              payload: DUPLICATE_EMAIL,
+            });
           } else {
             setDuplicated(false);
             dispatch({
               type: 'ERROR',
               field: 'email',
-              payload: false
-            })
+              payload: false,
+            });
             dispatch({
               type: 'ERROR_MSG',
               field: 'email',
-              payload: ''
-            })
+              payload: '',
+            });
           }
         },
         onError: (res) => {
@@ -211,13 +211,13 @@ const SignUp = ({ setPhase }) => {
     dispatch({
       type: 'ERROR',
       field: 'email',
-      payload: false
-    })
+      payload: false,
+    });
     dispatch({
       type: 'ERROR_MSG',
       field: 'email',
-      payload: ''
-    })
+      payload: '',
+    });
   }, [formState.value.email]);
 
   useEffect(() => {
@@ -226,53 +226,55 @@ const SignUp = ({ setPhase }) => {
       dispatch({
         type: 'ERROR',
         field: 'email',
-        payload: true
-      })
+        payload: true,
+      });
       dispatch({
         type: 'ERROR_MSG',
         field: 'email',
-        payload: EMAIL_ERR_MSG
-      })
+        payload: EMAIL_ERR_MSG,
+      });
     } else {
       dispatch({
         type: 'ERROR',
         field: 'email',
-        payload: false
-      })
+        payload: false,
+      });
       dispatch({
         type: 'ERROR_MSG',
         field: 'email',
-        payload: ''
-      })
+        payload: '',
+      });
     }
-
-  }, [formState.value.email, validateEmail])
+  }, [formState.value.email, validateEmail]);
 
   useEffect(() => {
-    if (formState.value.passwordCheck && formState.value.passwordCheck !== formState.value.password) {
+    if (
+      formState.value.passwordCheck &&
+      formState.value.passwordCheck !== formState.value.password
+    ) {
       dispatch({
         type: 'ERROR',
         field: 'passwordCheck',
-        payload: true
-      })
+        payload: true,
+      });
       dispatch({
         type: 'ERROR_MSG',
         field: 'passwordCheck',
-        payload: PW_CHECK_ERR_MSG
-      })
+        payload: PW_CHECK_ERR_MSG,
+      });
     } else {
       dispatch({
         type: 'ERROR',
         field: 'passwordCheck',
-        payload: false
-      })
+        payload: false,
+      });
       dispatch({
         type: 'ERROR_MSG',
         field: 'passwordCheck',
-        payload: ''
-      })
+        payload: '',
+      });
     }
-  }, [formState.value.password, formState.value.passwordCheck])
+  }, [formState.value.password, formState.value.passwordCheck]);
 
   return (
     <Wrapper>
@@ -302,13 +304,14 @@ const SignUp = ({ setPhase }) => {
             <TextInput
               type='email'
               placeholder='이메일'
-
               value={formState.value.email}
-              onChange={(e) => dispatch({
-                type: 'VALUE',
-                field: 'email',
-                payload: e.target.value
-              })}
+              onChange={(e) =>
+                dispatch({
+                  type: 'VALUE',
+                  field: 'email',
+                  payload: e.target.value,
+                })
+              }
               error={formState.error.email}
               errMsg={formState.errorMsg.email}
             />
@@ -331,11 +334,13 @@ const SignUp = ({ setPhase }) => {
             type='password'
             placeholder='비밀번호'
             value={formState.value.password}
-            onChange={(e) => dispatch({
-              type: 'VALUE',
-              field: 'password',
-              payload: e.target.value
-            })}
+            onChange={(e) =>
+              dispatch({
+                type: 'VALUE',
+                field: 'password',
+                payload: e.target.value,
+              })
+            }
             error={formState.error.password}
             errMsg={formState.errorMsg.password}
           />
@@ -343,22 +348,26 @@ const SignUp = ({ setPhase }) => {
             type='password'
             placeholder='비밀번호 확인'
             value={formState.value.passwordCheck}
-            onChange={(e) => dispatch({
-              type: 'VALUE',
-              field: 'passwordCheck',
-              payload: e.target.value
-            })}
+            onChange={(e) =>
+              dispatch({
+                type: 'VALUE',
+                field: 'passwordCheck',
+                payload: e.target.value,
+              })
+            }
             error={formState.error.passwordCheck}
             errMsg={formState.errorMsg.passwordCheck}
           />
           <TextInput
             placeholder='닉네임'
             value={formState.value.nickname}
-            onChange={(e) => dispatch({
-              type: 'VALUE',
-              field: 'nickname',
-              payload: e.target.value
-            })}
+            onChange={(e) =>
+              dispatch({
+                type: 'VALUE',
+                field: 'nickname',
+                payload: e.target.value,
+              })
+            }
             error={formState.error.nickname}
             errMsg={formState.errorMsg.nickname}
           />

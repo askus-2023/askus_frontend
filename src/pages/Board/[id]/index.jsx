@@ -59,7 +59,9 @@ const BoardDetailPage = () => {
             className='thumbnail thumbnail-container'
           >
             <div className='thumbnail__info thumbnail__info-left'>
-              <Name>[{category[data.category]}] {data.foodName}</Name>
+              <Name>
+                [{category[data.category]}] {data.foodName}
+              </Name>
               <Title>{data.title}</Title>
             </div>
             <div className='thumbnail__info thumbnail__info-right'>

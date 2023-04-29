@@ -51,7 +51,7 @@ const BoardWritePage = () => {
   const [tag, setTag] = useState('');
   const [allTag, setAllTag] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const accessToken = useRecoilValue(accessTokenState);
   const uploadMutation = useMutation(upload);
 
@@ -105,7 +105,10 @@ const BoardWritePage = () => {
         accessToken,
       },
       {
-        onSuccess: (res) => {navigate('/board'); console.log(res)},
+        onSuccess: (res) => {
+          navigate('/board');
+          console.log(res);
+        },
         onError: (err) => console.log(err),
         onSettled: () => {
           setIsLoading(false);

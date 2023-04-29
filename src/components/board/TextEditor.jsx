@@ -103,26 +103,6 @@ const TextEditor = ({ content, setContent, images, setImages }) => {
     }
   });
 
-  useEffect(() => {
-    console.log(images);
-  }, [images]);
-
-  // const imageHandler = useCallback(() => {
-  //   const input = document.createElement('input');
-  //   input.setAttribute('type', 'file');
-  //   input.setAttribute('accept', 'image/*');
-  //   input.click();
-  //   input.onchange = () => {
-  //     let quillObj = quillRef.current.getEditor();
-  //     const file = input.files[0]
-  //     const fileURL = URL.createObjectURL(file)
-  //     const range = quillObj.getSelection()
-  //     setImages((prev) => [...prev, file])
-  //     quillObj.editor.insertEmbed(range.index, 'image', fileURL)
-  //     quillObj.setSelection(range.index + 1)
-  //   }
-  // }, [quillRef])
-
   const modules = useMemo(
     () => ({
       toolbar: {
@@ -141,9 +121,6 @@ const TextEditor = ({ content, setContent, images, setImages }) => {
           ['link', 'image', 'video'],
           ['clean'],
         ],
-        handlers: {
-          // image: imageHandler
-        },
       },
       ImageResize: {
         parchment: Quill.import('parchment'),

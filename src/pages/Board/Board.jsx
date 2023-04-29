@@ -40,15 +40,19 @@ const Board = () => {
 
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
-  const { data, isLoading, isSuccess, error, isError } = useQuery(['/boards'], () => 
-    getList({
-      "tag": "",
-      "dateLoe": "", 
-      "dateGoe":"",
-      "sortTarget": "CREATED_AT_DESC"
-    }), {
-      onError: (res) => console.log(res)
-    })
+  const { data, isLoading, isSuccess } = useQuery(
+    ['/boards'],
+    () =>
+      getList({
+        tag: '',
+        dateLoe: '',
+        dateGoe: '',
+        sortTarget: 'CREATED_AT_DESC',
+      }),
+    {
+      onError: (res) => console.log(res),
+    }
+  );
 
   const categoryHandler = (e) => {
     setSelectedCate(e.target.textContent);
@@ -106,22 +110,23 @@ const Board = () => {
         />
       </SelectSection>
       <CardSection>
-        {isSuccess && data
-          .slice(offset, offset + limit)
-          .map((post) => (
-            <Card
-              key={post.id}
-              thumbnail={post.thumbnailImageUrl}
-              menu={post.menu}
-              title={post.title}
-              date={post.createdAt}
-              nickname={post.author}
-              profile={post.profile}
-              category={post.category ?? ''}
-              liketotal={post.likeCount}
-              onClick={navigate(post.id)}
-            ></Card>
-          ))}
+        {isSuccess &&
+          data
+            .slice(offset, offset + limit)
+            .map((post) => (
+              <Card
+                key={post.id}
+                thumbnail={post.thumbnailImageUrl}
+                menu={post.menu}
+                title={post.title}
+                date={post.createdAt}
+                nickname={post.author}
+                profile={post.profile}
+                category={post.category ?? ''}
+                liketotal={post.likeCount}
+                onClick={() => navigate(post.id)}
+              ></Card>
+            ))}
       </CardSection>
       <footer>
         <Pagination

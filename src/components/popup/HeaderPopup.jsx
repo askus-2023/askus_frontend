@@ -1,12 +1,12 @@
-import React, { forwardRef } from 'react'
-import styled from 'styled-components'
-import { theme } from '../../styles/Theme'
-import { useNavigate } from 'react-router-dom'
+import React, { forwardRef } from 'react';
+import styled from 'styled-components';
+import { theme } from '../../styles/Theme';
+import { useNavigate } from 'react-router-dom';
 
-const HeaderPopup = forwardRef(({ isOpen }, ref) => {
+const HeaderPopup = forwardRef((_, ref) => {
   const navigate = useNavigate();
   return (
-    <Wrapper isOpen={isOpen} className='popup-profile' ref={ref}>
+    <Wrapper className='popup-profile' ref={ref}>
       <ul className='popup-profile__ul'>
         <li className='my-profile'>
           <button onClick={() => navigate('/profile')}>프로필</button>
@@ -22,14 +22,13 @@ const HeaderPopup = forwardRef(({ isOpen }, ref) => {
         </li>
       </ul>
     </Wrapper>
-  )
-})
-HeaderPopup.displayName = 'HeaderPopup'
+  );
+});
+HeaderPopup.displayName = 'HeaderPopup';
 
-export default HeaderPopup
+export default HeaderPopup;
 
 const Wrapper = styled.div`
-  display: ${({ isOpen }) => isOpen ? 'block' : 'none'};
   position: absolute;
   top: 5rem;
   right: 0;
@@ -41,19 +40,23 @@ const Wrapper = styled.div`
     li {
       padding: 0.6rem 10rem 0.6rem 1.2rem;
       button {
-        white-space:nowrap;
+        white-space: nowrap;
         text-align: start;
       }
       &:hover {
-        button { font-weight: bold; }
+        button {
+          font-weight: bold;
+        }
       }
     }
-    .my-profile, .my-likes {
+    .my-profile,
+    .my-likes {
       padding-bottom: 1.2rem;
       border-bottom: 0.1rem solid ${theme.colors.grey30};
     }
-    .my-articles, .logout {
+    .my-articles,
+    .logout {
       padding-top: 1.2rem;
     }
   }
-`
+`;
