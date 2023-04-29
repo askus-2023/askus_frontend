@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import styled from 'styled-components';
 import TextInput from '../../common/input/TextInput';
 import ContainedButton from '../../common/button/ContainedButton';
@@ -9,43 +9,160 @@ import Spinner from '../../common/spinner/Spinner';
 import { useRecoilState } from 'recoil';
 import { accessTokenState } from '../../../recoil/auth/accessToken';
 import { authModalState } from '../../../recoil/auth/authModal';
+import { EMAIL_ERR_MSG, NOT_FILLED } from './SignUp';
+
+const BAD_CREDENTIALS = '이메일 또는 비밀번호가 맞지 않습니다.'
+
+const formMap = {
+  0: 'email',
+  1: 'password'
+}
+
+const initialState = {
+  value: {
+    email: '',
+    password: '',
+  },
+  error: {
+    email: false,
+    password: false,
+  },
+  errorMsg: {
+    email: '',
+    password: '',
+  }
+}
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'VALUE':
+      return {
+        ...state,
+        value: {
+          ...state.value,
+          [action.field] : action.payload
+        }
+      }
+    case 'ERROR':
+      return {
+        ...state,
+        error: {
+          ...state.error,
+          [action.field]: action.payload
+        }
+      }
+    case 'ERROR_MSG':
+      return {
+        ...state,
+        errorMsg: {
+          ...state.errorMsg,
+          [action.field]: action.payload
+        }
+      }
+    default: return state
+  }
+}
 
 const SignIn = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [formValid, setFormValid] = useState({});
+  const [formState, dispatch] = useReducer(reducer, initialState)
   const [isLoading, setIsLoading] = useState(false);
   const [, setAccessToken] = useRecoilState(accessTokenState);
   const [, openModal] = useRecoilState(authModalState);
-  const { validateEmail, validatePassword } = useFormValidation();
+  const { validateEmail } = useFormValidation();
   const signin = useMutation(signIn);
 
   const handleClickSignIn = (e) => {
     e.preventDefault();
-    const newFormValid = {
-      ...formValid,
-      EMAIL: !validateEmail(email).isValid,
-      PASSWORD: !validatePassword(password).isValid,
-    };
-    setFormValid(newFormValid);
-
-    if (!Object.values(newFormValid).includes(true)) {
+    const values = Object.values(formState.value)
+    for (let i = 0; i < values.length; i++) {
+      if (!values[i]) {
+        dispatch({
+          type: 'ERROR',
+          field: formMap[i],
+          payload: true
+        })
+        dispatch({
+          type: 'ERROR_MSG',
+          field: formMap[i],
+          payload: NOT_FILLED
+        })
+      } else {
+        dispatch({
+          type: 'ERROR',
+          field: formMap[i],
+          payload: false
+        })
+        dispatch({
+          type: 'ERROR_MSG',
+          field: formMap[i],
+          payload: ''
+        })
+      }
+    }
+    if (values.every((value) => value.length)) {
       setIsLoading(true);
       const data = new URLSearchParams({
-        email,
-        password,
+        email: formState.value.email,
+        password: formState.value.password,
       });
       signin.mutate(data, {
         onSuccess: (res) => {
+          window.localStorage.setItem('profile_img', res.data.imageUrl)
+          window.localStorage.setItem('nickname', res.data.nickname);
           setAccessToken(res.data.accessToken);
           window.localStorage.setItem('refresh_token', res.data.refreshToken);
           openModal(false);
         },
-        onError: (res) => console.log(res),
+        onError: (res) => {
+          if (res.response?.data?.message === 'Bad credentials') {
+            dispatch({
+              type: 'ERROR',
+              field: 'email',
+              payload: true
+            })
+            dispatch({
+              type: 'ERROR',
+              field: 'password',
+              payload: true
+            })
+            dispatch({
+              type: 'ERROR_MSG',
+              field: 'password',
+              payload: BAD_CREDENTIALS
+            })
+          }
+        },
         onSettled: () => setIsLoading(false),
       });
     }
   };
+
+  useEffect(() => {
+    const isValid = validateEmail(formState.value.email);
+    if (formState.value.email && !isValid) {
+      dispatch({
+        type: 'ERROR',
+        field: 'email',
+        payload: true
+      })
+      dispatch({
+        type: 'ERROR_MSG',
+        field: 'email',
+        payload: EMAIL_ERR_MSG
+      })
+    } else {
+      dispatch({
+        type: 'ERROR',
+        field: 'email',
+        payload: false
+      })
+      dispatch({
+        type: 'ERROR_MSG',
+        field: 'email',
+        payload: ''
+      })
+    }
+  }, [formState.value.email, validateEmail])
 
   return (
     <Wrapper>
@@ -54,20 +171,26 @@ const SignIn = () => {
           <TextInput
             type='email'
             placeholder='이메일'
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={formValid.EMAIL}
-            errMsg={validateEmail(email).errMsg}
+            value={formState.value.email}
+            onChange={(e) => dispatch({
+              type: 'VALUE',
+              field: 'email',
+              payload: e.target.value
+            })}
+            error={formState.error.email}
+            errMsg={formState.errorMsg.email}
           />
           <TextInput
             type='password'
             placeholder='비밀번호'
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            error={formValid.PASSWORD}
-            errMsg={validatePassword(password).errMsg}
+            value={formState.value.password}
+            onChange={(e) => dispatch({
+              type: 'VALUE',
+              field: 'password',
+              payload: e.target.value
+            })}
+            error={formState.error.password}
+            errMsg={formState.errorMsg.password}
           />
           <ContainedButton type='submit'>
             {isLoading ? <Spinner color='white' /> : '로그인'}

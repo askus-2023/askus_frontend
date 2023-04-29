@@ -22,7 +22,7 @@ const Header = () => {
   const accessToken = useRecoilValue(accessTokenState);
   const [isOpenModal, openModal] = useRecoilState(authModalState);
   const [scrollTop] = useRecoilState(scrollState);
-  let profileImage = window.localStorage.getItem('profile_image');
+  let profileImage = window.localStorage.getItem('profile_img');
 
   useEffect(() => {
     if (scrollTop < 400) {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useReducer } from 'react';
 import styled from 'styled-components';
 import TextInput from '../../common/input/TextInput';
 import ContainedButton from '../../common/button/ContainedButton';
@@ -12,20 +12,79 @@ import { duplicationCheck, signUp } from '../../../apis/auth';
 import Spinner from '../../common/spinner/Spinner';
 import OutlinedButton from '../../common/button/OutlinedButton';
 
+export const EMAIL_ERR_MSG = '올바른 이메일 주소가 아닙니다.'
+const DUPLICATE_EMAIL = '이미 가입된 이메일 주소입니다.'
+export const NOT_FILLED = '이 입력란을 작성하세요.'
+const NOT_CHECKED = '이메일 중복확인을 해주세요.'
+const PW_CHECK_ERR_MSG = '비밀번호가 다릅니다.'
+
+const formMap = {
+  0: 'email',
+  1: 'password',
+  2: 'passwordCheck',
+  3: 'nickname',
+}
+
+const initialState = {
+  value: {
+    email: '',
+    password: '',
+    passwordCheck: '',
+    nickname: ''
+  },
+  error: {
+    email: false,
+    password: false,
+    passwordCheck: false,
+    nickname: false
+  },
+  errorMsg: {
+    email: '',
+    password: '',
+    passwordCheck: '',
+    nickname: ''
+  }
+}
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'VALUE':
+      return {
+        ...state,
+        value: {
+          ...state.value,
+          [action.field] : action.payload
+        }
+      }
+    case 'ERROR':
+      return {
+        ...state,
+        error: {
+          ...state.error,
+          [action.field]: action.payload
+        }
+      }
+    case 'ERROR_MSG':
+      return {
+        ...state,
+        errorMsg: {
+          ...state.errorMsg,
+          [action.field]: action.payload
+        }
+      }
+    default: return state
+  }
+}
+
 const SignUp = ({ setPhase }) => {
   const fileInputRef = useRef(null);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordCheck, setPasswordCheck] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [formValid, setFormValid] = useState({});
   const [image, setImage] = useState({});
+  const [formState, dispatch] = useReducer(reducer, initialState);
   const [duplicationChecked, setDuplicationChecked] = useState(false);
   const [duplicated, setDuplicated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingSignUp, setIsLoadingSignUp] = useState(false);
-  const { validateEmail, validatePassword, validateNickname } =
-    useFormValidation();
+  const { validateEmail } = useFormValidation();
 
   const signup = useMutation(signUp);
   const checkEmail = useMutation(duplicationCheck);
@@ -37,71 +96,187 @@ const SignUp = ({ setPhase }) => {
     }
   };
 
-  const handleClickSignUp = async (e) => {
+  const signUpHandler = (e) => {
     e.preventDefault();
-    setIsLoadingSignUp(true);
-    const newFormValid = {
-      ...formValid,
-      EMAIL: !validateEmail(email).isValid,
-      PASSWORD: !validatePassword(password).isValid,
-      PASSWORD_CHECK: password !== passwordCheck,
-      NICKNAME: !validateNickname(nickname).isValid,
-    };
-    setFormValid(newFormValid);
-
-    if (
-      duplicationChecked &&
-      !duplicated &&
-      !Object.values(newFormValid).includes(true)
-    ) {
+    const values = Object.values(formState.value)
+    if (!formState.error.passwordCheck) {
+      for (let i = 0; i < values.length; i++) {
+        if (!values[i]) {
+          dispatch({
+            type: 'ERROR',
+            field: formMap[i],
+            payload: true
+          })
+          dispatch({
+            type: 'ERROR_MSG',
+            field: formMap[i],
+            payload: NOT_FILLED
+          })
+        } else {
+          dispatch({
+            type: 'ERROR',
+            field: formMap[i],
+            payload: false
+          })
+          dispatch({
+            type: 'ERROR_MSG',
+            field: formMap[i],
+            payload: ''
+          })
+        }
+      }
+    } else {
+      return
+    }
+    
+    if (!duplicationChecked) {
+      dispatch({
+        type: 'ERROR',
+        field: 'email',
+        payload: true
+      })
+      dispatch({
+        type: 'ERROR_MSG',
+        field: 'email',
+        payload: NOT_CHECKED
+      })
+      return
+    }
+    if (values.every((value) => value.length)) {
+      setIsLoadingSignUp(true);
       const formData = new FormData();
-      formData.append('email', email);
-      formData.append('password', password);
-      formData.append('checkedPassword', passwordCheck);
-      formData.append('nickname', nickname);
+      formData.append('email', formState.value.email);
+      formData.append('password', formState.value.password);
+      formData.append('checkedPassword', formState.value.passwordCheck);
+      formData.append('nickname', formState.value.nickname);
       image.image && formData.append('profileImage', image.image);
       signup.mutate(formData, {
-        onSuccess: (res) => {
+        onSuccess: () => {
           setIsLoadingSignUp(false);
-          window.localStorage.setItem('profile_image', res.data?.imageUrl);
           window.URL.revokeObjectURL(image.url);
           setPhase('signin');
         },
-        onError: (err) => console.log(err.response?.data),
-        onSettled: () => setIsLoading(false),
+        onError: (err) => alert(err.response?.data),
+        onSettled: () => setIsLoadingSignUp(false),
       });
     }
-  };
+  }
 
-  const handleClickDuplicationCheck = () => {
-    if (email && validateEmail(email).isValid) {
+  const duplicationCheckHandler = () => {
+    if (formState.value.email && formState.errorMsg.email !== EMAIL_ERR_MSG
+      ) {
       setIsLoading(true);
       const data = new URLSearchParams({
-        email,
+        email: formState.value.email,
       });
       checkEmail.mutate(data, {
         onSuccess: (res) => {
           setDuplicationChecked(true);
           if (res.data.duplicated) {
             setDuplicated(true);
+            dispatch({
+              type: 'ERROR',
+              field: 'email',
+              payload: true
+            })
+            dispatch({
+              type: 'ERROR_MSG',
+              field: 'email',
+              payload: DUPLICATE_EMAIL
+            })
           } else {
             setDuplicated(false);
+            dispatch({
+              type: 'ERROR',
+              field: 'email',
+              payload: false
+            })
+            dispatch({
+              type: 'ERROR_MSG',
+              field: 'email',
+              payload: ''
+            })
           }
         },
         onError: (res) => {
-          console.log(res.response.data);
+          alert(res.response.data);
         },
         onSettled: () => setIsLoading(false),
       });
     }
   };
+
   useEffect(() => {
     setDuplicationChecked(false);
-  }, [email]);
+    dispatch({
+      type: 'ERROR',
+      field: 'email',
+      payload: false
+    })
+    dispatch({
+      type: 'ERROR_MSG',
+      field: 'email',
+      payload: ''
+    })
+  }, [formState.value.email]);
+
+  useEffect(() => {
+    const isValid = validateEmail(formState.value.email);
+    if (formState.value.email && !isValid) {
+      dispatch({
+        type: 'ERROR',
+        field: 'email',
+        payload: true
+      })
+      dispatch({
+        type: 'ERROR_MSG',
+        field: 'email',
+        payload: EMAIL_ERR_MSG
+      })
+    } else {
+      dispatch({
+        type: 'ERROR',
+        field: 'email',
+        payload: false
+      })
+      dispatch({
+        type: 'ERROR_MSG',
+        field: 'email',
+        payload: ''
+      })
+    }
+
+  }, [formState.value.email, validateEmail])
+
+  useEffect(() => {
+    if (formState.value.passwordCheck && formState.value.passwordCheck !== formState.value.password) {
+      dispatch({
+        type: 'ERROR',
+        field: 'passwordCheck',
+        payload: true
+      })
+      dispatch({
+        type: 'ERROR_MSG',
+        field: 'passwordCheck',
+        payload: PW_CHECK_ERR_MSG
+      })
+    } else {
+      dispatch({
+        type: 'ERROR',
+        field: 'passwordCheck',
+        payload: false
+      })
+      dispatch({
+        type: 'ERROR_MSG',
+        field: 'passwordCheck',
+        payload: ''
+      })
+    }
+  }, [formState.value.password, formState.value.passwordCheck])
 
   return (
     <Wrapper>
-      <form onSubmit={handleClickSignUp}>
+      <form onSubmit={signUpHandler}>
         <ProfileSection>
           <label htmlFor='profile-image'>
             <img
@@ -127,15 +302,19 @@ const SignUp = ({ setPhase }) => {
             <TextInput
               type='email'
               placeholder='이메일'
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={formValid.EMAIL}
-              errMsg={validateEmail(email).errMsg}
+
+              value={formState.value.email}
+              onChange={(e) => dispatch({
+                type: 'VALUE',
+                field: 'email',
+                payload: e.target.value
+              })}
+              error={formState.error.email}
+              errMsg={formState.errorMsg.email}
             />
             <div className='duplication-check'>
               {!duplicationChecked && (
-                <DuplicationCheckButton onClick={handleClickDuplicationCheck}>
+                <DuplicationCheckButton onClick={duplicationCheckHandler}>
                   중복확인
                 </DuplicationCheckButton>
               )}
@@ -151,28 +330,37 @@ const SignUp = ({ setPhase }) => {
           <TextInput
             type='password'
             placeholder='비밀번호'
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            error={formValid.PASSWORD}
-            errMsg={validatePassword(password).errMsg}
+            value={formState.value.password}
+            onChange={(e) => dispatch({
+              type: 'VALUE',
+              field: 'password',
+              payload: e.target.value
+            })}
+            error={formState.error.password}
+            errMsg={formState.errorMsg.password}
           />
           <TextInput
             type='password'
             placeholder='비밀번호 확인'
-            required
-            value={passwordCheck}
-            onChange={(e) => setPasswordCheck(e.target.value)}
-            error={formValid.PASSWORD_CHECK}
-            errMsg={'비밀번호가 일치하지 않습니다.'}
+            value={formState.value.passwordCheck}
+            onChange={(e) => dispatch({
+              type: 'VALUE',
+              field: 'passwordCheck',
+              payload: e.target.value
+            })}
+            error={formState.error.passwordCheck}
+            errMsg={formState.errorMsg.passwordCheck}
           />
           <TextInput
             placeholder='닉네임'
-            required
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            error={formValid.NICKNAME}
-            errMsg={validateNickname(nickname).errMsg}
+            value={formState.value.nickname}
+            onChange={(e) => dispatch({
+              type: 'VALUE',
+              field: 'nickname',
+              payload: e.target.value
+            })}
+            error={formState.error.nickname}
+            errMsg={formState.errorMsg.nickname}
           />
           <ContainedButton type='submit'>
             {isLoadingSignUp ? <Spinner color='white' /> : '회원가입'}
@@ -216,7 +404,7 @@ const EmailWrapper = styled.div`
   position: relative;
   .duplication-check {
     position: absolute;
-    top: 50%;
+    top: 2.3rem;
     right: 1rem;
     transform: translateY(-50%);
     z-index: 11;
