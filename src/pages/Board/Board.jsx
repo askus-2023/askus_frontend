@@ -8,9 +8,11 @@ import Pagination from '../../components/common/pagination/Pagination';
 import exPost from './DummyPost';
 import useScroll from '../../hooks/useScroll';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
 import { authModalState } from '../../recoil/auth/authModal';
+import { useQuery } from 'react-query';
+import { getList } from '../../apis/board';
 
 const category = ['전체', '한식', '양식', '일식', '중식', '기타'];
 
@@ -32,12 +34,21 @@ const Board = () => {
   const [selectedfilter, setSelectedFilter] = useState('최신순');
   const [isSelected, setIsSelected] = useState(false);
   const [page, setPage] = useState(1);
-  const [accessToken] = useRecoilState(accessTokenState);
+  const accessToken = useRecoilValue(accessTokenState);
   const [, openModal] = useRecoilState(authModalState);
   const ref = useRef(null);
 
   const offset = (page - 1) * limit;
   const navigate = useNavigate();
+  const { data, isLoading, isSuccess, error, isError } = useQuery(['/boards'], () => 
+    getList({
+      "tag": "",
+      "dateLoe": "", 
+      "dateGoe":"",
+      "sortTarget": "CREATED_AT_DESC"
+    }), {
+      onError: (res) => console.log(res)
+    })
 
   const categoryHandler = (e) => {
     setSelectedCate(e.target.textContent);
@@ -95,37 +106,20 @@ const Board = () => {
         />
       </SelectSection>
       <CardSection>
-        {expost
-          .sort((a, b) => {
-            if (selectedfilter === '좋아요순') {
-              if (a.liketotal < b.liketotal) {
-                return 1;
-              } else if (a.liketotal > b.liketotal) {
-                return -1;
-              }
-              return 0;
-            } else {
-              if (a.date < b.date) {
-                return 1;
-              } else if (a.date > b.date) {
-                return -1;
-              }
-              return 0;
-            }
-          })
+        {isSuccess && data
           .slice(offset, offset + limit)
           .map((post) => (
             <Card
               key={post.id}
-              thumbnail={post.thumbnail}
+              thumbnail={post.thumbnailImageUrl}
               menu={post.menu}
               title={post.title}
-              date={new Date(post.date)}
-              nickname={post.nickname}
+              date={post.createdAt}
+              nickname={post.author}
               profile={post.profile}
-              category={post.category}
-              like={post.like}
-              liketotal={post.liketotal}
+              category={post.category ?? ''}
+              liketotal={post.likeCount}
+              onClick={navigate(post.id)}
             ></Card>
           ))}
       </CardSection>

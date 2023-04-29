@@ -14,6 +14,7 @@ const Card = ({
   category,
   like,
   liketotal,
+  onClick,
 }) => {
   const [isLike, setIsLike] = useState(like);
   const [total, setTotal] = useState(liketotal);
@@ -28,11 +29,8 @@ const Card = ({
     }
   };
 
-  const dateFormat =
-    date.getFullYear() + '.' + (date.getMonth() + 1) + '.' + date.getDate();
-
   return (
-    <Wrapper>
+    <Wrapper onClick={onClick}>
       <ImageWrapper>
         <Image src={thumbnail} alt='thumbnail' />
       </ImageWrapper>
@@ -42,7 +40,7 @@ const Card = ({
             [{category}] {menu}
           </Menu>
           <Title>{title}</Title>
-          <Date>{dateFormat}</Date>
+          <Date>{date}</Date>
         </Info>
         <Writer>
           <WriterInfo>

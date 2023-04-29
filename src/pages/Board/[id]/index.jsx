@@ -11,6 +11,7 @@ import { getDetail } from '../../../apis/board';
 import { useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../../recoil/auth/accessToken';
 import Spinner from '../../../components/common/spinner/Spinner';
+import { category } from '../../../infra/category';
 
 const BoardDetailPage = () => {
   const ref = useRef(null);
@@ -58,7 +59,7 @@ const BoardDetailPage = () => {
             className='thumbnail thumbnail-container'
           >
             <div className='thumbnail__info thumbnail__info-left'>
-              <Name>[추가 필요] {data.foodName}</Name>
+              <Name>[{category[data.category]}] {data.foodName}</Name>
               <Title>{data.title}</Title>
             </div>
             <div className='thumbnail__info thumbnail__info-right'>
@@ -163,6 +164,8 @@ const MainContent = styled.div`
   margin-top: 2rem;
   .article {
     padding: 0 0.6rem;
+    display: flex;
+    flex-direction: column;
     img {
       max-width: 100%;
       max-height: 100%;

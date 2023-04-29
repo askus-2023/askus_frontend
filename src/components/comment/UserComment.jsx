@@ -23,14 +23,12 @@ const UserComment = ({ comments }) => {
   useEffect(() => {
     if (comments.length) {
       const list = [];
-      for (const _ of comments) {
+      for (let i = 0; i < comments.length; i++) {
         list.push(false);
       }
       openReply(list);
     }
-  }, []);
-
-  console.log(isOpenReply);
+  }, [comments.length]);
 
   return (
     <Wrapper>
