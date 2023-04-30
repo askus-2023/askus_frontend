@@ -42,7 +42,7 @@ const Card = ({
         },
         {
           onSuccess: (res) => {
-            setLikes(res.likeCount);
+            setLikes(res.data.likeCount);
             setLiked(true);
           },
         }

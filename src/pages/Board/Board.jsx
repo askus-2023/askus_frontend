@@ -84,7 +84,7 @@ const Board = () => {
 
   return (
     <Wrapper ref={ref}>
-      <div>
+      <div className='top-section-wrapper'>
         <TopSection>
           <CategorySection>
             {Object.keys(categoryMap).map((key) => (
@@ -138,17 +138,18 @@ export default Board;
 const Wrapper = styled.div`
   width: 100%;
   padding: 16rem 3.6rem 0 5.2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
   gap: 3rem;
   margin: auto;
+  .top-section-wrapper {
+    max-width: 136rem;
+    margin: 0 auto;
+  }
 `;
 
 const TopSection = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
   .postButton {
     height: fit-content;
     button {
@@ -184,5 +185,5 @@ const Category = styled.div`
 const SelectSection = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-top: 2rem;
+  margin-top: 1.6rem;
 `;

@@ -40,27 +40,31 @@ const CardSection = ({ tag }) => {
           </SpinnerWrapper>
         </>
       )}
-      {isSuccess &&
-        data
-          .slice(offset, offset + limit)
-          .map((post) => (
-            <Card
-              key={post.id}
-              boardId={post.id}
-              profile={post.authorProfileImageUrl}
-              thumbnail={post.thumbnailImageUrl}
-              menu={post.menu}
-              foodName={post.foodsName}
-              title={post.title}
-              date={post.createdAt}
-              nickname={post.author}
-              category={post.category ?? ''}
-              likeCount={post.likeCount}
-              myLike={post.myLike}
-              replyCount={post.replyCount}
-              accessToken={accessToken}
-            />
-          ))}
+      <div>
+        <CardWrapper className='card-wrapper'>
+          {isSuccess &&
+            data
+              .slice(offset, offset + limit)
+              .map((post) => (
+                <Card
+                  key={post.id}
+                  boardId={post.id}
+                  profile={post.authorProfileImageUrl}
+                  thumbnail={post.thumbnailImageUrl}
+                  menu={post.menu}
+                  foodName={post.foodsName}
+                  title={post.title}
+                  date={post.createdAt}
+                  nickname={post.author}
+                  category={post.category ?? ''}
+                  likeCount={post.likeCount}
+                  myLike={post.myLike}
+                  replyCount={post.replyCount}
+                  accessToken={accessToken}
+                />
+              ))}
+        </CardWrapper>
+      </div>
     </Wrapper>
   );
 };
@@ -68,11 +72,10 @@ const CardSection = ({ tag }) => {
 export default CardSection;
 
 const Wrapper = styled.div`
-  width: 100%;
   display: flex;
-  justify-content: flex-start;
-  flex-flow: row wrap;
-  gap: 40px;
+  justify-content: center;
+  margin: 6.8rem 0;
+
 `;
 const SpinnerWrapper = styled.div`
   width: 100%;
@@ -80,3 +83,10 @@ const SpinnerWrapper = styled.div`
   align-items: center;
   justify-content: center;
 `;
+const CardWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  flex-flow: row wrap;
+  gap: 4rem;
+
+`
