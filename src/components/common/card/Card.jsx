@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { theme } from '../../../styles/Theme';
 import defaultProfile from '../../../assets/images/default-profile.png';
 import defaultThumbnail from '../../../assets/images/thumbnail.png';
 import heartEmpty from '../../../assets/icons/heart-empty.svg';
 import heartFill from '../../../assets/icons/heart-fill.svg';
+import icChat from '../../../assets/icons/chat.svg'
 import { categoryMap } from '../../../infra/category';
 import useDatetimeFormat from '../../../hooks/useDatetimeFormat';
+import { useMutation } from 'react-query';
+import { addLike, removeLike } from '../../../apis/like';
 
 const Card = ({
+  boardId,
   thumbnail,
   foodName,
   title,
@@ -17,11 +21,45 @@ const Card = ({
   profile,
   category,
   myLike,
-  likeTotal,
+  likeCount,
+  replyCount,
   onClickTitle,
+  accessToken,
 }) => {
   const { displayDatetime } = useDatetimeFormat();
+  const [likes, setLikes] = useState(likeCount);
+  const [liked, setLiked] = useState(myLike);
 
+  const addLikeMutation = useMutation(addLike);
+  const removeLikeMutation = useMutation(removeLike);
+
+  const addLikeHandler = () => {
+    if (!liked) {
+      addLikeMutation.mutate({
+        boardId,
+        accessToken
+      }, {
+        onSuccess: (res) => {
+          setLikes(res.likeCount)
+          setLiked(true)
+        }
+      })
+    }
+  }
+
+  const removeLikeHandler = () => {
+    if (liked) {
+      removeLikeMutation.mutate({
+        boardId,
+        accessToken
+      }, {
+        onSuccess: () => {
+          setLikes((prev) => prev - 1)
+          setLiked(false)
+        }
+      })
+    }
+  }
   return (
     <Wrapper>
       <ImageWrapper>
@@ -40,14 +78,16 @@ const Card = ({
             <UserImage src={profile ?? defaultProfile} alt='profile' />
             <Nickname>{nickname}</Nickname>
           </WriterInfo>
-          <div>
-            {!myLike ? (
-              <Like src={heartEmpty} alt='heartEmpty' onClick={() => {}} />
+          <ChatandLikes>
+            <img src={icChat} alt='chat' />
+            <div className=' total reply-total'>{replyCount}</div>
+            {!liked ? (
+              <Like src={heartEmpty} alt='heartEmpty' onClick={addLikeHandler} />
             ) : (
-              <Like src={heartFill} alt='heartFill' onClick={() => {}} />
+              <Like src={heartFill} alt='heartFill' onClick={removeLikeHandler} />
             )}
-            <Total>{likeTotal}</Total>
-          </div>
+            <div className='total like-total'>{likes}</div>
+          </ChatandLikes>
         </Writer>
       </InfoWrapper>
     </Wrapper>
@@ -177,16 +217,23 @@ const Nickname = styled.h4`
     font-weight: bold;
   }
 `;
-
-const Total = styled.div`
-  font-size: 1.3rem;
-  color: ${theme.colors.grey50};
-`;
+const ChatandLikes = styled.div`
+  img {
+    width: 2.4rem;
+    height: 2.4rem;
+    object-fit: cover;
+  }
+  .total {
+    margin-left: 0.2rem;
+    font-size: 1.4rem;
+    color: ${theme.colors.grey70};
+  }
+  .reply-total {
+    margin-right: 0.8rem;
+  }
+`
 
 const Like = styled.img`
-  width: 2.4rem;
-  height: 2.4rem;
-  object-fit: cover;
   cursor: pointer;
 `;
 

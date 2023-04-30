@@ -50,6 +50,7 @@ const CardSection = ({ tag }) => {
           .map((post) => (
             <Card
               key={post.id}
+              boardId={post.id}
               profile={post.authorProfileImageUrl}
               thumbnail={post.thumbnailImageUrl}
               menu={post.menu}
@@ -58,9 +59,10 @@ const CardSection = ({ tag }) => {
               date={post.createdAt}
               nickname={post.author}
               category={post.category ?? ''}
-              likeTotal={post.likeCount}
+              likeCount={post.likeCount}
               myLike={post.myLike}
               replyCount={post.replyCount}
+              accessToken={accessToken}
               onClickTitle={() =>
               navigate(`${post.id}`, {
                 state: {

@@ -5,8 +5,9 @@ import { RecoilRoot } from 'recoil';
 import Header from './components/header/Header';
 import MainPage from './pages/main';
 import Board from './pages/Board/Board';
-import BoardDetailPage from './pages/Board/[id]';
-import BoardWritePage from './pages/Board/Write';
+import BoardDetailPage from './pages/Board/[boardId]';
+import BoardWritePage from './pages/Board/BoardWrite';
+import BoardEditPage from './pages/Board/BoardEdit';
 import Profile from './pages/Profile/Profile';
 import ProfileEdit from './pages/Profile/ProfileEdit';
 import PersistLogin from './components/auth/PersistLogin';
@@ -37,8 +38,9 @@ function App() {
                   <Route path='chinese' element={<CardSection tag='CHINESE' />} />
                   <Route path='etc' element={<CardSection tag='ETC' />} />
                 </Route>
-                <Route path='/board/:id' element={<BoardDetailPage />} />
+                <Route path='/board/:boardId' element={<BoardDetailPage />} />
                 <Route path='/board/write' element={<BoardWritePage />} />
+                <Route path='/board/:boardId/edit' element={<BoardEditPage />} />
                 <Route path='/profile' element={<Profile />} />
                 <Route path='/profile/edit' element={<ProfileEdit />} />
               </Route>

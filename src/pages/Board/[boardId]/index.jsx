@@ -18,13 +18,13 @@ const BoardDetailPage = () => {
   const articleRef = useRef();
   const location = useLocation();
   const accessToken = useRecoilValue(accessTokenState);
-  const { id } = useParams();
+  const { boardId } = useParams();
 
   const { data, isLoading, isSuccess } = useQuery(
-    [`boards/${id}`],
+    [`boards/${boardId}`],
     () =>
       getBoardDetail({
-        id,
+        id: boardId,
         accessToken,
       }),
     {
@@ -105,7 +105,7 @@ const BoardDetailPage = () => {
                 </div>
                 <div className='author-profile__nickname'>{data.author}</div>
               </AuthorInfo>
-              <CommentBox comments={data.replies} boardId={id} />
+              <CommentBox comments={data.replies} boardId={boardId} />
             </div>
           </Content>
         </>
