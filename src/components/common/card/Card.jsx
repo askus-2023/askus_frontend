@@ -5,7 +5,7 @@ import defaultProfile from '../../../assets/images/default-profile.png';
 import defaultThumbnail from '../../../assets/images/thumbnail.png';
 import heartEmpty from '../../../assets/icons/heart-empty.svg';
 import heartFill from '../../../assets/icons/heart-fill.svg';
-import { category as categoryMap } from '../../../infra/category';
+import { categoryMap } from '../../../infra/category';
 import useDatetimeFormat from '../../../hooks/useDatetimeFormat';
 
 const Card = ({

@@ -1,14 +1,14 @@
 import { useEffect, useMemo } from 'react';
 import { useRecoilState } from 'recoil';
 import scrollState from '../recoil/scroll/atom';
-import { debounce } from 'lodash';
+import { throttle } from 'lodash';
 
 const useScroll = (ref) => {
   const [, setScrollTop] = useRecoilState(scrollState);
 
-  const onScroll = useMemo(() => debounce(() => {
+  const onScroll = useMemo(() => throttle(() => {
     setScrollTop(ref.current?.scrollTop);
-  }, 200), [ref, setScrollTop]);
+  }, 300), [ref, setScrollTop]);
 
   useEffect(() => {
     setScrollTop(0);
@@ -20,7 +20,7 @@ const useScroll = (ref) => {
     return () => {
       refObject?.removeEventListener('scroll', onScroll, { passive: true });
     };
-  });
+  }, [onScroll, ref]);
 };
 
 export default useScroll;

@@ -41,7 +41,39 @@ const SignIn = () => {
   const { validateEmail } = useFormValidation();
   const signin = useMutation(signIn);
 
-  const handleClickSignIn = (e) => {
+  const emailChangeHandler = (e) => {
+    dispatch({
+      type: 'VALUE',
+      field: 'email',
+      payload: e.target.value,
+    })
+    const isValid = validateEmail(e.target.value);
+    if (formState.value.email && !isValid) {
+      dispatch({
+        type: 'ERROR',
+        field: 'email',
+        payload: true,
+      });
+      dispatch({
+        type: 'ERROR_MSG',
+        field: 'email',
+        payload: EMAIL_ERR_MSG,
+      });
+    } else {
+      dispatch({
+        type: 'ERROR',
+        field: 'email',
+        payload: false,
+      });
+      dispatch({
+        type: 'ERROR_MSG',
+        field: 'email',
+        payload: '',
+      });
+    }
+  }
+
+  const signInHandler = (e) => {
     e.preventDefault();
     const values = Object.values(formState.value);
     for (let i = 0; i < values.length; i++) {
@@ -108,47 +140,18 @@ const SignIn = () => {
   };
 
   useEffect(() => {
-    const isValid = validateEmail(formState.value.email);
-    if (formState.value.email && !isValid) {
-      dispatch({
-        type: 'ERROR',
-        field: 'email',
-        payload: true,
-      });
-      dispatch({
-        type: 'ERROR_MSG',
-        field: 'email',
-        payload: EMAIL_ERR_MSG,
-      });
-    } else {
-      dispatch({
-        type: 'ERROR',
-        field: 'email',
-        payload: false,
-      });
-      dispatch({
-        type: 'ERROR_MSG',
-        field: 'email',
-        payload: '',
-      });
-    }
+    
   }, [formState.value.email, validateEmail]);
 
   return (
     <Wrapper>
       <div className='form-wrapper form-wrapper-signin'>
-        <form onSubmit={handleClickSignIn}>
+        <form onSubmit={signInHandler}>
           <TextInput
             type='email'
             placeholder='이메일'
             value={formState.value.email}
-            onChange={(e) =>
-              dispatch({
-                type: 'VALUE',
-                field: 'email',
-                payload: e.target.value,
-              })
-            }
+            onChange={emailChangeHandler}
             error={formState.error.email}
             errMsg={formState.errorMsg.email}
           />

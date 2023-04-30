@@ -6,11 +6,11 @@ import CommentBox from '../../../components/comment/CommentBox';
 import Tag from '../../../components/tag/Tag';
 import defaultProfile from '../../../assets/images/default-profile.png';
 import useScroll from '../../../hooks/useScroll';
-import { getDetail } from '../../../apis/board';
+import { getBoardDetail } from '../../../apis/board';
 import { useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../../recoil/auth/accessToken';
 import Spinner from '../../../components/common/spinner/Spinner';
-import { category } from '../../../infra/category';
+import { categoryMap } from '../../../infra/category';
 import thumbnail from '../../../assets/images/thumbnail.png';
 
 const BoardDetailPage = () => {
@@ -23,7 +23,7 @@ const BoardDetailPage = () => {
   const { data, isLoading, isSuccess } = useQuery(
     [`boards/${id}`],
     () =>
-      getDetail({
+      getBoardDetail({
         id,
         accessToken,
       }),
@@ -66,7 +66,7 @@ const BoardDetailPage = () => {
           >
             <div className='thumbnail__info thumbnail__info-left'>
               <Name>
-                [{category[data.category]}] {data.foodName}
+                [{categoryMap[data.category]}] {data.foodName}
               </Name>
               <Title>{data.title}</Title>
             </div>

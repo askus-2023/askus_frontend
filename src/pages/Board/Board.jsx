@@ -1,8 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
-import Card from '../../components/common/card/Card';
 import ContainedButton from '../../components/common/button/ContainedButton';
 import SelectButton from '../../components/common/button/SelectButton';
 import Pagination from '../../components/common/pagination/Pagination';
@@ -10,10 +9,7 @@ import useScroll from '../../hooks/useScroll';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
 import { authModalState } from '../../recoil/auth/authModal';
-import { useQuery } from 'react-query';
-import { getList } from '../../apis/board';
-
-const category = ['전체', '한식', '양식', '일식', '중식', '기타'];
+import { categoryMap } from '../../infra/category';
 
 const filterOption = [
   {
@@ -26,10 +22,10 @@ const filterOption = [
   },
 ];
 
-const limit = 20;
+const limit = 20
 
 const Board = () => {
-  const [selectedCate, setSelectedCate] = useState('전체');
+  const [selectedCate, setSelectedCate] = useState('ALL');
   const [selectedfilter, setSelectedFilter] = useState('최신순');
   const [postLength, setPostLength] = useState(0);
   const [isSelected, setIsSelected] = useState(false);
@@ -37,34 +33,21 @@ const Board = () => {
   const accessToken = useRecoilValue(accessTokenState);
   const [, openModal] = useRecoilState(authModalState);
   const ref = useRef(null);
+  const navigate = useNavigate()
 
-  const offset = (page - 1) * limit;
-  const navigate = useNavigate();
-  const { data, isLoading, isSuccess } = useQuery(
-    ['/boards'],
-    () =>
-      getList({
-        tag: '',
-        dateLoe: '',
-        dateGoe: '',
-        sortTarget: 'CREATED_AT_DESC',
-        accessToken,
-      }),
-    {
-      staleTime: 30,
-      onSuccess: (res) => {
-        setPostLength(res.length);
-        console.log(res);
-      },
-      onError: (res) => console.log(res),
-    }
-  );
-
-  const categoryHandler = (e) => {
-    setSelectedCate(e.target.textContent);
+  const categoryHandler = (key) => {
+    setSelectedCate(key);
     setIsSelected(true);
     setPage(1);
     setSelectedFilter('최신순');
+
+    if (key === 'ALL') {
+      key = ''
+    } else if (key === 'EUROPEAN') {
+      key = 'WESTERN'
+    }
+    navigate(`${key.toLowerCase()}`)
+
   };
 
   const filterHandler = (e) => {
@@ -79,14 +62,14 @@ const Board = () => {
     <Wrapper ref={ref}>
       <TopSection>
         <CategorySection>
-          {category.map((cate, i) => (
+          {Object.keys(categoryMap).map((key) => (
             <Category
-              key={i}
-              className={selectedCate === cate && 'cateSelect'}
-              value={cate}
-              onClick={categoryHandler}
+              key={key}
+              className={selectedCate === key && 'cateSelect'}
+              value={key}
+              onClick={() => categoryHandler(key)}
             >
-              {cate}
+              {categoryMap[key]}
             </Category>
           ))}
         </CategorySection>
@@ -110,35 +93,7 @@ const Board = () => {
           selected={selectedfilter}
         />
       </SelectSection>
-      <CardSection>
-        {isSuccess &&
-          data
-            .slice(offset, offset + limit)
-            .map((post) => (
-              <Card
-                key={post.id}
-                profile={post.authorProfileImageUrl}
-                thumbnail={post.thumbnailImageUrl}
-                menu={post.menu}
-                foodName={post.foodsName}
-                title={post.title}
-                date={post.createdAt}
-                nickname={post.author}
-                category={post.category ?? ''}
-                likeTotal={post.likeCount}
-                myLike={post.myLike}
-                replyCount={post.replyCount}
-                onClickTitle={() =>
-                  navigate(`${post.id}`, {
-                    state: {
-                      authorProfile: post.authorProfileImageUrl,
-                      boardId: post.id,
-                    },
-                  })
-                }
-              ></Card>
-            ))}
-      </CardSection>
+      <Outlet context={{ page, setPostLength }}/>
       <footer>
         <Pagination
           total={postLength}
@@ -210,10 +165,3 @@ const SelectSection = styled.div`
   justify-content: flex-end;
 `;
 
-const CardSection = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  flex-flow: row wrap;
-  gap: 40px;
-`;

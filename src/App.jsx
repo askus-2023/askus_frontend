@@ -13,6 +13,7 @@ import PersistLogin from './components/auth/PersistLogin';
 import RequireAuth from './components/auth/RequireAuth';
 import RemoveTrailingSlash from './components/RemoveTrailingSlash';
 import RequireLoginPage from './pages/auth/RequireLogin';
+import CardSection from './components/board/CardSection';
 
 function App() {
   const queryClient = new QueryClient();
@@ -28,7 +29,14 @@ function App() {
               <Route path='/' element={<Navigate to='/main' />} />
               <Route path='/main' element={<MainPage />} />
               <Route element={<RequireAuth />}>
-                <Route path='/board' element={<Board />} />
+                <Route path='/board' element={<Board />}>
+                  <Route path='' element={<CardSection tag='' />} />
+                  <Route path='korean' element={<CardSection tag='KOREAN' />} />
+                  <Route path='japanese' element={<CardSection tag='JAPANESE' />} />
+                  <Route path='western' element={<CardSection tag='EUROPEAN' />} />
+                  <Route path='chinese' element={<CardSection tag='CHINESE' />} />
+                  <Route path='etc' element={<CardSection tag='ETC' />} />
+                </Route>
                 <Route path='/board/:id' element={<BoardDetailPage />} />
                 <Route path='/board/write' element={<BoardWritePage />} />
                 <Route path='/profile' element={<Profile />} />

@@ -8,7 +8,7 @@ export const upload = async ({ data, accessToken }) => {
   return response;
 };
 
-export const getDetail = async ({ id, accessToken }) => {
+export const getBoardDetail = async ({ id, accessToken }) => {
   try {
     const { data } = await axios.get(`/v1/boards/${id}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -19,7 +19,7 @@ export const getDetail = async ({ id, accessToken }) => {
   }
 };
 
-export const getList = async ({
+export const getBoardList = async ({
   tag,
   dateLoe,
   dateGoe,

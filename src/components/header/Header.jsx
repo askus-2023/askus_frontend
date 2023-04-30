@@ -140,7 +140,6 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: background 0.3s ease;
   background: ${({ alpha }) => `rgba(255, 255, 255, ${alpha})`};
   .header-action {
     min-height: 8.4rem;

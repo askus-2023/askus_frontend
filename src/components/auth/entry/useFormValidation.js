@@ -1,15 +1,14 @@
-import { useMemo } from 'react';
-import { debounce } from 'lodash';
+import { useCallback, useMemo } from 'react';
 
 const useFormValidation = () => {
-  const validateEmail = useMemo(() => debounce((email) => {
-    const emailRegEx =
-      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+  const emailRegEx = useMemo(() => /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i, [])
+      
+  const validateEmail = useCallback((email) => {
     if (!email || !emailRegEx.test(email)) {
       return false;
     }
     return true;
-  }, 300), []);
+  }, [emailRegEx]);
 
   // const validatePassword = useCallback((password) => {
   //   if (!password) {
