@@ -15,14 +15,13 @@ html {
 body {
   margin: 0;
   padding: 0;
-  overflow-y:hidden;
+  overflow-y: auto;
   color: #323232;
   font-family: 'Noto Sans KR', sans-serif;
   .App {
     width: 100vw;
     max-width: 100%;
     height: 100vh;
-    overflow-y: hidden;
   }
 button {
   padding: 0;

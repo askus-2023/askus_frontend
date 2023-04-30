@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import icArrow from '../../assets/icons/arrow-up.svg';
 import UserComment from './UserComment';
 import WriteComment from './WriteComment';
+import { useRecoilValue } from 'recoil';
+import { accessTokenState } from '../../recoil/auth/accessToken';
 
 const CommentBox = ({ comments, boardId }) => {
   const [isOpenComment, openComment] = useState(true);
+  const accessToken = useRecoilValue(accessTokenState);
+
   return (
     <Wrapper>
       <Header
@@ -23,7 +28,19 @@ const CommentBox = ({ comments, boardId }) => {
             <WriteComment type='comment' boardId={boardId} />
           </div>
           <div className='body__user-comments'>
-            <UserComment comments={comments} />
+            {comments
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+              .map((value) => (
+                <div key={value.createdAt}>
+                  <UserComment
+                    content={value.content}
+                    replyAuthor={value.replyAuthor}
+                    createdAt={value.createdAt}
+                    boardId={boardId}
+                    accessToken={accessToken}
+                  />
+                </div>
+              ))}
           </div>
         </Body>
       )}

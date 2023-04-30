@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import ContainedButton from '../../components/common/button/ContainedButton';
@@ -33,10 +33,10 @@ const Board = () => {
   const accessToken = useRecoilValue(accessTokenState);
   const [, openModal] = useRecoilState(authModalState);
   const ref = useRef(null);
+  const location = useLocation();
   const navigate = useNavigate();
 
   const categoryHandler = (key) => {
-    setSelectedCate(key);
     setIsSelected(true);
     setPage(1);
     setSelectedFilter('최신순');
@@ -55,43 +55,69 @@ const Board = () => {
     setPage(1);
   };
 
+  useEffect(() => {
+    const category = location.pathname?.split('/').at(-1);
+    console.log(category);
+    switch (category) {
+      case 'korean':
+        setSelectedCate('KOREAN');
+        break;
+      case 'western':
+        setSelectedCate('EUROPEAN');
+        break;
+      case 'japanese':
+        setSelectedCate('JAPANESE');
+        break;
+      case 'chinese':
+        setSelectedCate('CHINESE');
+        break;
+      case 'etc':
+        setSelectedCate('ETC');
+        break;
+      default:
+        setSelectedCate('ALL');
+        break;
+    }
+  }, [location.pathname]);
+
   useScroll(ref);
 
   return (
     <Wrapper ref={ref}>
-      <TopSection>
-        <CategorySection>
-          {Object.keys(categoryMap).map((key) => (
-            <Category
-              key={key}
-              className={selectedCate === key && 'cateSelect'}
-              value={key}
-              onClick={() => categoryHandler(key)}
-            >
-              {categoryMap[key]}
-            </Category>
-          ))}
-        </CategorySection>
-        <ContainedButton
-          onClick={() => {
-            if (!accessToken) {
-              openModal(true);
-            } else {
-              navigate('write');
-            }
-          }}
-          className='postButton'
-        >
-          글 작성
-        </ContainedButton>
-      </TopSection>
-      <SelectSection>
-        <SelectButton
-          onChange={filterHandler}
-          option={filterOption}
-          selected={selectedfilter}
-        />
-      </SelectSection>
+      <div>
+        <TopSection>
+          <CategorySection>
+            {Object.keys(categoryMap).map((key) => (
+              <Category
+                key={key}
+                className={selectedCate === key && 'cateSelect'}
+                onClick={() => categoryHandler(key)}
+              >
+                {categoryMap[key]}
+              </Category>
+            ))}
+          </CategorySection>
+          <ContainedButton
+            onClick={() => {
+              if (!accessToken) {
+                openModal(true);
+              } else {
+                navigate('write');
+              }
+            }}
+            className='postButton'
+          >
+            글 작성
+          </ContainedButton>
+        </TopSection>
+        <SelectSection>
+          <SelectButton
+            onChange={filterHandler}
+            option={filterOption}
+            selected={selectedfilter}
+          />
+        </SelectSection>
+      </div>
       <Outlet context={{ page, setPostLength }} />
       <footer>
         <Pagination
@@ -111,21 +137,18 @@ export default Board;
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 100%;
-  padding: 0 3.6rem 0 5.2rem;
+  padding: 16rem 3.6rem 0 5.2rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 3rem;
   margin: auto;
-  overflow-y: auto;
 `;
 
 const TopSection = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  height: 20rem;
   .postButton {
     height: fit-content;
     button {
@@ -150,7 +173,6 @@ const CategorySection = styled.div`
 const Category = styled.div`
   font-size: 2.5rem;
   color: ${theme.colors.grey30};
-  margin-top: 16rem;
   margin-right: 2rem;
   cursor: pointer;
   &:hover {
@@ -162,4 +184,5 @@ const Category = styled.div`
 const SelectSection = styled.div`
   display: flex;
   justify-content: flex-end;
+  margin-top: 2rem;
 `;

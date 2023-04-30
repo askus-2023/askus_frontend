@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from 'react-query';
 import styled, { keyframes } from 'styled-components';
 import { theme } from '../../../styles/Theme';
 import defaultProfile from '../../../assets/images/default-profile.png';
@@ -8,7 +10,6 @@ import heartFill from '../../../assets/icons/heart-fill.svg';
 import icChat from '../../../assets/icons/chat.svg';
 import { categoryMap } from '../../../infra/category';
 import useDatetimeFormat from '../../../hooks/useDatetimeFormat';
-import { useMutation } from 'react-query';
 import { addLike, removeLike } from '../../../apis/like';
 
 const Card = ({
@@ -23,13 +24,12 @@ const Card = ({
   myLike,
   likeCount,
   replyCount,
-  onClickTitle,
   accessToken,
 }) => {
   const { displayDatetime } = useDatetimeFormat();
   const [likes, setLikes] = useState(likeCount);
   const [liked, setLiked] = useState(myLike);
-
+  const navigate = useNavigate();
   const addLikeMutation = useMutation(addLike);
   const removeLikeMutation = useMutation(removeLike);
 
@@ -66,17 +66,27 @@ const Card = ({
       );
     }
   };
+
+  const navigateHandler = () => {
+    navigate(`${boardId}`, {
+      state: { authorProfile: profile, likes, liked },
+    });
+  };
   return (
     <Wrapper>
       <ImageWrapper>
-        <Image src={thumbnail ?? defaultThumbnail} alt='thumbnail' />
+        <Image
+          src={thumbnail ?? defaultThumbnail}
+          alt='thumbnail'
+          onClick={navigateHandler}
+        />
       </ImageWrapper>
       <InfoWrapper>
         <Info>
           <Menu>
             [{categoryMap[category]}] {foodName}
           </Menu>
-          <Title onClick={onClickTitle}>{title}</Title>
+          <Title onClick={navigateHandler}>{title}</Title>
           <Datetime>{displayDatetime(new Date(date) - new Date())}</Datetime>
         </Info>
         <Writer>
@@ -178,7 +188,7 @@ const Title = styled.h3`
   word-break: break-word;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   line-height: 1.4;
   margin-bottom: 0.3rem;

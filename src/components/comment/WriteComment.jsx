@@ -5,7 +5,7 @@ import { theme } from '../../styles/Theme';
 import ContainedButton from '../common/button/ContainedButton';
 import TextButton from '../common/button/TextButton';
 
-import { create } from '../../apis/comment';
+import { createComment } from '../../apis/comment';
 import { useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
 
@@ -14,7 +14,7 @@ const WriteComment = ({ boardId, type, onClickCancelReply }) => {
   const [isOpen, open] = useState(true);
   const queryClient = useQueryClient();
   const accessToken = useRecoilValue(accessTokenState);
-  const createMutation = useMutation(create);
+  const createMutation = useMutation(createComment);
 
   const commentHandler = (e) => {
     e.preventDefault();
@@ -43,6 +43,7 @@ const WriteComment = ({ boardId, type, onClickCancelReply }) => {
             />
             <ButtonWrapper>
               <TextButton
+                open={open}
                 onClick={(e) => {
                   if (type === 'reply') {
                     onClickCancelReply();
@@ -72,20 +73,26 @@ const WriteComment = ({ boardId, type, onClickCancelReply }) => {
 export default WriteComment;
 
 const Wrapper = styled.div`
+  min-height: 4rem;
   position: relative;
-  min-height: 3.6rem;
   flex: 1 1 auto;
   border-radius: 0.6rem;
   box-shadow: 0.1rem 0.1rem 0.4rem rgba(0, 0, 0, 0.2);
   padding: 1.2rem;
 `;
 const FormEl = styled.form`
+  height: ${({ isOpen }) => (isOpen ? '10rem' : '')};
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   textarea {
     width: 100%;
+    height: 100%;
     padding: 0;
     border: none;
     background: transparent;
     resize: none;
+    font-size: 1.3rem;
     margin-bottom: 1.2rem;
     &:focus {
       outline: none;
@@ -99,16 +106,19 @@ const Placeholder = styled.span`
   position: absolute;
   z-index: -1;
   color: ${theme.colors.grey50};
+  font-size: 1.3rem;
   user-select: none;
 `;
 const ButtonWrapper = styled.div`
+  position: relative;
+  bottom: 0;
   display: flex;
   justify-content: flex-end;
   gap: 0.6rem;
   .comment-button {
     button {
       padding: 0.6rem 1rem;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
     }
   }
   .comment-button-text {

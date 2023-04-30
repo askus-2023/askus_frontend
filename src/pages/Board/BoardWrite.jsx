@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
-import useScroll from '../../hooks/useScroll';
 import { theme } from '../../styles/Theme';
 import ContainedButton from '../../components/common/button/ContainedButton';
 import SelectButton from '../../components/common/button/SelectButton';
@@ -40,7 +39,6 @@ const filterOption = [
 
 const BoardWritePage = () => {
   const fileInputRef = useRef(null);
-  const ref = useRef(null);
   const [selectedfilter, setSelectedFilter] = useState('KOREAN');
   const [title, setTitle] = useState('');
   const [menu, setMenu] = useState('');
@@ -55,7 +53,6 @@ const BoardWritePage = () => {
   const accessToken = useRecoilValue(accessTokenState);
   const uploadMutation = useMutation(upload);
   const queryClient = useQueryClient();
-  useScroll(ref);
 
   const uploadThumbnail = () => {
     const file = fileInputRef.current?.files;
@@ -118,7 +115,7 @@ const BoardWritePage = () => {
   };
 
   return (
-    <Wrapper ref={ref}>
+    <Wrapper>
       <Main>
         <div className='main-left'>
           <div className='menuSection'>
@@ -229,8 +226,6 @@ const BoardWritePage = () => {
 export default BoardWritePage;
 
 const Wrapper = styled.div`
-  height: 100%;
-  overflow-y: auto;
   .button {
     width: max-content;
   }

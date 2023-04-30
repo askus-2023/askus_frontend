@@ -10,7 +10,7 @@ export const addLike = async ({ boardId, accessToken }) => {
       headers: { Authorization: `Bearer ${accessToken}` },
     }
   );
-  return response.data;
+  return response;
 };
 
 export const removeLike = async ({ boardId, accessToken }) => {
@@ -18,5 +18,5 @@ export const removeLike = async ({ boardId, accessToken }) => {
     data: { boardId },
     headers: { Authorization: `Bearer ${accessToken}` },
   });
-  return response.data;
+  return response;
 };

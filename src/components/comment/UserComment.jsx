@@ -1,74 +1,72 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import TextButton from '../common/button/TextButton';
 import defaultProfile from '../../assets/images/default-profile.png';
 import { theme } from '../../styles/Theme';
-import WriteComment from './WriteComment';
+// import WriteComment from './WriteComment';
 import useDatetimeFormat from '../../hooks/useDatetimeFormat';
 
-const UserComment = ({ comments }) => {
-  const [isOpenReply, openReply] = useState([]);
+import { deleteComment } from '../../apis/comment';
+
+const UserComment = ({
+  commentId,
+  boardId,
+  content,
+  replyAuthor,
+  createdAt,
+  accessToken,
+}) => {
   const { displayDatetime } = useDatetimeFormat();
+  const queryClient = useQueryClient();
+  const deleteMutation = useMutation(deleteComment);
 
-  const handleOpenReply = (idx) => {
-    const prev = [...isOpenReply];
-    prev.splice(idx, 1, true);
-    openReply(prev);
-  };
-
-  const handleCloseReply = (idx) => {
-    const prev = [...isOpenReply];
-    prev.splice(idx, 1, false);
-    openReply(prev);
-  };
-
-  useEffect(() => {
-    if (comments.length) {
-      const list = [];
-      for (let i = 0; i < comments.length; i++) {
-        list.push(false);
+  const deleteHandler = () => {
+    deleteMutation.mutate(
+      {
+        boardId,
+        commentId: 8,
+        accessToken,
+      },
+      {
+        onSuccess: () => queryClient.invalidateQueries([`boards/${boardId}`]),
       }
-      openReply(list);
-    }
-  }, [comments.length]);
+    );
+  };
 
   return (
     <Wrapper>
-      {comments
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-        .map((value, idx) => (
-          <div className={`comments-${idx + 1}`} key={idx}>
-            <Commenter>
-              <img src={defaultProfile} alt='프로필 이미지' />
-              <div>
-                <div className='commenter-nickname'>{value.replyAuthor}</div>
-                <div className='comment-created-at'>
-                  {displayDatetime(new Date(value.createdAt) - new Date())}
-                </div>
-              </div>
-            </Commenter>
-            <Comment>
-              <p>{value.content}</p>
-            </Comment>
-            <Reply>
-              <TextButton
-                onClick={() => handleOpenReply(idx)}
-                className='button button-reply'
-              >
-                답글 쓰기
-              </TextButton>
-              {isOpenReply[idx] && (
-                <WriteReply>
-                  <div className='bar' />
-                  <WriteComment
-                    type='reply'
-                    onClickCancelReply={() => handleCloseReply(idx)}
-                  />
-                </WriteReply>
-              )}
-            </Reply>
+      <Commenter>
+        <img src={defaultProfile} alt='프로필 이미지' />
+        <div>
+          <div className='commenter-nickname'>{replyAuthor}</div>
+          <div className='comment-created-at'>
+            {displayDatetime(new Date(createdAt) - new Date())}
           </div>
-        ))}
+        </div>
+      </Commenter>
+      <Comment>
+        <p>{content}</p>
+      </Comment>
+      <Reply>
+        <ButtonWrapper>
+          <TextButton onClick={() => {}} className='button button-reply'>
+            수정
+          </TextButton>
+          <TextButton onClick={deleteHandler} className='button button-reply'>
+            삭제
+          </TextButton>
+        </ButtonWrapper>
+        {/* {isOpenReply[idx] && (
+          <WriteReply>
+            <div className='bar' />
+            <WriteComment
+              type='reply'
+              onClickCancelReply={() => handleCloseReply(idx)}
+            />
+          </WriteReply>
+        )} */}
+      </Reply>
     </Wrapper>
   );
 };
@@ -77,9 +75,10 @@ export default UserComment;
 
 const Wrapper = styled.div`
   padding: 1.2rem;
+  margin-bottom: 0.4rem;
   display: flex;
   flex-direction: column;
-  gap: 3.2rem;
+  gap: 0.8rem;
   .comments {
   }
 `;
@@ -120,13 +119,18 @@ const Reply = styled.div`
     }
   }
 `;
-const WriteReply = styled.div`
+const ButtonWrapper = styled.div`
   display: flex;
+  gap: 1.2rem;
   justify-content: flex-end;
-  gap: 1.8rem;
-  .bar {
-    width: 0.25rem;
-    margin-left: 1.6rem;
-    background-color: ${theme.colors.grey30};
-  }
 `;
+// const WriteReply = styled.div`
+//   display: flex;
+//   justify-content: flex-end;
+//   gap: 1.8rem;
+//   .bar {
+//     width: 0.25rem;
+//     margin-left: 1.6rem;
+//     background-color: ${theme.colors.grey30};
+//   }
+// `;

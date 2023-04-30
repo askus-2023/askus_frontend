@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import SearchInput from '../common/input/SearchInput';
@@ -11,13 +17,14 @@ import icProfile from '../../assets/icons/default-profile.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
-import scrollState from '../../recoil/scroll/atom';
 import { authModalState } from '../../recoil/auth/authModal';
 import HeaderPopup from '../popup/HeaderPopup';
+import { throttle } from 'lodash';
 
 const Header = () => {
   const [phase, setPhase] = useState('signin');
   const [alpha, setAlpha] = useState(0);
+  const [scrollY, setScrollY] = useState(window.scrollY);
   const profileRef = useRef(null);
   const popupRef = useRef(null);
   const navigate = useNavigate();
@@ -25,14 +32,18 @@ const Header = () => {
   const accessToken = useRecoilValue(accessTokenState);
   const [isOpenModal, openModal] = useRecoilState(authModalState);
   const [isOpenPopup, openPopup] = useState(false);
-  const scrollTop = useRecoilValue(scrollState);
   const profileImage = window.localStorage.getItem('profile_img');
 
-  const calculateAlpha = useCallback((scrollTop) => {
-    if (scrollTop < 400) {
-      setAlpha(scrollTop / 400);
-    } else setAlpha(1);
-  }, []);
+  const calculateAlpha = useMemo(
+    () =>
+      throttle(() => {
+        if (window.scrollY < 400) {
+          setAlpha(window.scrollY / 400);
+        } else setAlpha(1);
+        setScrollY(window.scrollY);
+      }, 300),
+    []
+  );
 
   const closePopup = useCallback(
     (e) => {
@@ -48,8 +59,11 @@ const Header = () => {
   );
 
   useEffect(() => {
-    calculateAlpha(scrollTop);
-  }, [calculateAlpha, scrollTop]);
+    document.addEventListener('scroll', calculateAlpha, { passive: true });
+    return () => {
+      document.removeEventListener('scroll', calculateAlpha, { passive: true });
+    };
+  }, [calculateAlpha]);
 
   useEffect(() => {
     document.addEventListener('click', closePopup);
@@ -66,7 +80,7 @@ const Header = () => {
         </LogoArea>
         <ul className='header-action'>
           {pathname === '/main' ? (
-            scrollTop > 480 && (
+            scrollY > 480 && (
               <li className='header-action__search'>
                 <SearchInput />
               </li>
@@ -139,7 +153,9 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: background 0.2s ease;
   background: ${({ alpha }) => `rgba(255, 255, 255, ${alpha})`};
+  box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.3);
   .header-action {
     min-height: 8.4rem;
     display: flex;
