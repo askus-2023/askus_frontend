@@ -1,59 +1,52 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { theme } from '../../../styles/Theme';
+import defaultProfile from '../../../assets/images/default-profile.png';
+import defaultThumbnail from '../../../assets/images/thumbnail.png';
 import heartEmpty from '../../../assets/icons/heart-empty.svg';
 import heartFill from '../../../assets/icons/heart-fill.svg';
+import { category as categoryMap } from '../../../infra/category';
+import useDatetimeFormat from '../../../hooks/useDatetimeFormat';
 
 const Card = ({
   thumbnail,
-  menu,
+  foodName,
   title,
   date,
   nickname,
   profile,
   category,
-  like,
-  liketotal,
-  onClick,
+  myLike,
+  likeTotal,
+  onClickTitle,
 }) => {
-  const [isLike, setIsLike] = useState(like);
-  const [total, setTotal] = useState(liketotal);
-
-  const iconHandler = () => {
-    if (isLike) {
-      setIsLike(!isLike);
-      setTotal((total) => total - 1);
-    } else {
-      setIsLike(!isLike);
-      setTotal((total) => total + 1);
-    }
-  };
+  const { displayDatetime } = useDatetimeFormat();
 
   return (
-    <Wrapper onClick={onClick}>
+    <Wrapper>
       <ImageWrapper>
-        <Image src={thumbnail} alt='thumbnail' />
+        <Image src={thumbnail ?? defaultThumbnail} alt='thumbnail' />
       </ImageWrapper>
       <InfoWrapper>
         <Info>
           <Menu>
-            [{category}] {menu}
+            [{categoryMap[category]}] {foodName}
           </Menu>
-          <Title>{title}</Title>
-          <Date>{date}</Date>
+          <Title onClick={onClickTitle}>{title}</Title>
+          <Datetime>{displayDatetime(new Date(date) - new Date())}</Datetime>
         </Info>
         <Writer>
           <WriterInfo>
-            <UserImage src={profile} alt='profile' />
+            <UserImage src={profile ?? defaultProfile} alt='profile' />
             <Nickname>{nickname}</Nickname>
           </WriterInfo>
           <div>
-            {!isLike ? (
-              <Like src={heartEmpty} alt='heartEmpty' onClick={iconHandler} />
+            {!myLike ? (
+              <Like src={heartEmpty} alt='heartEmpty' onClick={() => {}} />
             ) : (
-              <Like src={heartFill} alt='heartFill' onClick={iconHandler} />
+              <Like src={heartFill} alt='heartFill' onClick={() => {}} />
             )}
-            <Total>{total}</Total>
+            <Total>{likeTotal}</Total>
           </div>
         </Writer>
       </InfoWrapper>
@@ -74,9 +67,12 @@ const Wrapper = styled.div`
   width: 24rem;
   height: 30rem;
   display: flex;
+  overflow: hidden;
   flex-direction: column;
+  justify-content: space-between;
   border: 0.1rem solid ${theme.colors.grey30};
-  transition: all 5s;
+  border-radius: 0.6rem;
+  transition: ${card} 5s;
   animation: ${card} 2s;
 `;
 
@@ -89,9 +85,8 @@ const ImageWrapper = styled.div`
 
 const Image = styled.img`
   width: 100%;
-  height: 17rem;
+  height: 100%;
   object-fit: cover;
-  overflow: hidden;
   &:hover {
     transition: all 0.2s linear;
     transform: scale(1.2);
@@ -112,7 +107,7 @@ const Info = styled.div`
 
 const Menu = styled.h4`
   color: ${theme.colors.grey50};
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -123,7 +118,7 @@ const Menu = styled.h4`
 
 const Title = styled.h3`
   color: ${theme.colors.grey90};
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: bolder;
   overflow: hidden;
   word-break: break-word;
@@ -139,7 +134,7 @@ const Title = styled.h3`
   }
 `;
 
-const Date = styled.p`
+const Datetime = styled.p`
   color: ${theme.colors.grey50};
   font-size: 1.1rem;
   line-height: 1.5rem;
@@ -149,6 +144,7 @@ const Date = styled.p`
 const Writer = styled.div`
   display: flex;
   text-align: left;
+  margin-top: 1.2rem;
   width: 100%;
   div {
     display: flex;
@@ -161,6 +157,7 @@ const WriterInfo = styled.div`
   text-align: left;
   align-items: center;
   width: 100%;
+  gap: 0.8rem;
 `;
 
 const UserImage = styled.img`
@@ -175,7 +172,6 @@ const Nickname = styled.h4`
   font-size: 1.2rem;
   font-weight: unset;
   line-height: 1.5rem;
-  margin: 0 0 0.3rem 1rem;
   cursor: pointer;
   &:hover {
     font-weight: bold;
@@ -188,8 +184,8 @@ const Total = styled.div`
 `;
 
 const Like = styled.img`
-  width: 3rem;
-  height: 3rem;
+  width: 2.4rem;
+  height: 2.4rem;
   object-fit: cover;
   cursor: pointer;
 `;

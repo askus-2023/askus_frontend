@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import ContainedButton from '../common/button/ContainedButton';
 import TextButton from '../common/button/TextButton';
-import { useMutation, useQueryClient } from 'react-query';
+
 import { create } from '../../apis/comment';
 import { useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
@@ -15,7 +16,8 @@ const WriteComment = ({ boardId, type, onClickCancelReply }) => {
   const accessToken = useRecoilValue(accessTokenState);
   const createMutation = useMutation(create);
 
-  const commentHandler = () => {
+  const commentHandler = (e) => {
+    e.preventDefault();
     if (comment) {
       createMutation.mutate(
         {
@@ -24,10 +26,7 @@ const WriteComment = ({ boardId, type, onClickCancelReply }) => {
           accessToken,
         },
         {
-          onSuccess: (res) => {
-            console.log(res);
-            queryClient.invalidateQueries([`boards/${boardId}`]);
-          },
+          onSuccess: () => queryClient.invalidateQueries([`boards/${boardId}`]),
         }
       );
     }

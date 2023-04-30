@@ -27,8 +27,8 @@ function App() {
             <Route element={<PersistLogin />}>
               <Route path='/' element={<Navigate to='/main' />} />
               <Route path='/main' element={<MainPage />} />
-              <Route path='/board' element={<Board />} />
               <Route element={<RequireAuth />}>
+                <Route path='/board' element={<Board />} />
                 <Route path='/board/:id' element={<BoardDetailPage />} />
                 <Route path='/board/write' element={<BoardWritePage />} />
                 <Route path='/profile' element={<Profile />} />

@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import useScroll from '../../hooks/useScroll';
 import { theme } from '../../styles/Theme';
@@ -9,7 +10,6 @@ import icCancel from '../../assets/icons/cancel.svg';
 import SearchInput from '../../components/common/input/SearchInput';
 import icAdd from '../../assets/icons/add.svg';
 import TextEditor from '../../components/board/TextEditor';
-import { useMutation } from 'react-query';
 import { upload } from '../../apis/board';
 import { useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
@@ -54,7 +54,7 @@ const BoardWritePage = () => {
   const navigate = useNavigate();
   const accessToken = useRecoilValue(accessTokenState);
   const uploadMutation = useMutation(upload);
-
+  const queryClient = useQueryClient();
   useScroll(ref);
 
   const uploadThumbnail = () => {
@@ -105,9 +105,9 @@ const BoardWritePage = () => {
         accessToken,
       },
       {
-        onSuccess: (res) => {
+        onSuccess: () => {
+          queryClient.invalidateQueries(['/boards']);
           navigate('/board');
-          console.log(res);
         },
         onError: (err) => console.log(err),
         onSettled: () => {
@@ -217,7 +217,11 @@ const BoardWritePage = () => {
           </ContainedButton>
         </div>
       </Main>
-      {isLoading && <Spinner />}
+      {isLoading && (
+        <Background>
+          <Spinner />
+        </Background>
+      )}
     </Wrapper>
   );
 };
@@ -376,4 +380,15 @@ const HashtagSection = styled.div`
     justify-content: flex-start;
     padding: 1.5rem 0;
   }
+`;
+const Background = styled.div`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.7);
 `;

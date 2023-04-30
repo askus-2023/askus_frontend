@@ -19,7 +19,13 @@ export const getDetail = async ({ id, accessToken }) => {
   }
 };
 
-export const getList = async ({ tag, dateLoe, dateGoe, sortTarget }) => {
+export const getList = async ({
+  tag,
+  dateLoe,
+  dateGoe,
+  sortTarget,
+  accessToken,
+}) => {
   try {
     const { data } = await axios.get(`/v1/boards`, {
       params: {
@@ -27,6 +33,9 @@ export const getList = async ({ tag, dateLoe, dateGoe, sortTarget }) => {
         dateLoe,
         dateGoe,
         sortTarget,
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     return data;

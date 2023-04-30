@@ -1,17 +1,18 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useRecoilState } from 'recoil';
 import scrollState from '../recoil/scroll/atom';
+import { debounce } from 'lodash';
 
 const useScroll = (ref) => {
   const [, setScrollTop] = useRecoilState(scrollState);
 
-  const onScroll = useCallback(() => {
+  const onScroll = useMemo(() => debounce(() => {
     setScrollTop(ref.current?.scrollTop);
-  }, [ref, setScrollTop]);
+  }, 200), [ref, setScrollTop]);
 
   useEffect(() => {
     setScrollTop(0);
-  }, []);
+  }, [setScrollTop]);
 
   useEffect(() => {
     const refObject = ref.current;

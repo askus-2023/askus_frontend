@@ -25,14 +25,15 @@ const Header = () => {
   const accessToken = useRecoilValue(accessTokenState);
   const [isOpenModal, openModal] = useRecoilState(authModalState);
   const [isOpenPopup, openPopup] = useState(false);
-  const [scrollTop] = useRecoilState(scrollState);
-  let profileImage = window.localStorage.getItem('profile_img');
+  const scrollTop = useRecoilValue(scrollState);
+  const profileImage = window.localStorage.getItem('profile_img');
 
-  useEffect(() => {
+
+  const calculateAlpha = useCallback((scrollTop) => {
     if (scrollTop < 400) {
       setAlpha(scrollTop / 400);
     } else setAlpha(1);
-  }, [scrollTop]);
+  }, [])
 
   const closePopup = useCallback(
     (e) => {
@@ -46,6 +47,10 @@ const Header = () => {
     },
     [isOpenPopup]
   );
+
+  useEffect(() => {
+    calculateAlpha(scrollTop);
+  }, [calculateAlpha, scrollTop]);
 
   useEffect(() => {
     document.addEventListener('click', closePopup);
@@ -135,6 +140,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: background 0.3s ease;
   background: ${({ alpha }) => `rgba(255, 255, 255, ${alpha})`};
   .header-action {
     min-height: 8.4rem;

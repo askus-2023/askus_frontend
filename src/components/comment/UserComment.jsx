@@ -4,9 +4,11 @@ import TextButton from '../common/button/TextButton';
 import defaultProfile from '../../assets/images/default-profile.png';
 import { theme } from '../../styles/Theme';
 import WriteComment from './WriteComment';
+import useDatetimeFormat from '../../hooks/useDatetimeFormat';
 
 const UserComment = ({ comments }) => {
   const [isOpenReply, openReply] = useState([]);
+  const { displayDatetime } = useDatetimeFormat();
 
   const handleOpenReply = (idx) => {
     const prev = [...isOpenReply];
@@ -32,37 +34,41 @@ const UserComment = ({ comments }) => {
 
   return (
     <Wrapper>
-      {comments.map((value, idx) => (
-        <div className={`comments-${idx + 1}`} key={idx}>
-          <Commenter>
-            <img src={defaultProfile} alt='프로필 이미지' />
-            <div>
-              <div className='commenter-nickname'>{value.replyAuthor}</div>
-              <div className='comment-created-at'>{value.createdAt}</div>
-            </div>
-          </Commenter>
-          <Comment>
-            <p>{value.content}</p>
-          </Comment>
-          <Reply>
-            <TextButton
-              onClick={() => handleOpenReply(idx)}
-              className='button button-reply'
-            >
-              답글 쓰기
-            </TextButton>
-            {isOpenReply[idx] && (
-              <WriteReply>
-                <div className='bar' />
-                <WriteComment
-                  type='reply'
-                  onClickCancelReply={() => handleCloseReply(idx)}
-                />
-              </WriteReply>
-            )}
-          </Reply>
-        </div>
-      ))}
+      {comments
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .map((value, idx) => (
+          <div className={`comments-${idx + 1}`} key={idx}>
+            <Commenter>
+              <img src={defaultProfile} alt='프로필 이미지' />
+              <div>
+                <div className='commenter-nickname'>{value.replyAuthor}</div>
+                <div className='comment-created-at'>
+                  {displayDatetime(new Date(value.createdAt) - new Date())}
+                </div>
+              </div>
+            </Commenter>
+            <Comment>
+              <p>{value.content}</p>
+            </Comment>
+            <Reply>
+              <TextButton
+                onClick={() => handleOpenReply(idx)}
+                className='button button-reply'
+              >
+                답글 쓰기
+              </TextButton>
+              {isOpenReply[idx] && (
+                <WriteReply>
+                  <div className='bar' />
+                  <WriteComment
+                    type='reply'
+                    onClickCancelReply={() => handleCloseReply(idx)}
+                  />
+                </WriteReply>
+              )}
+            </Reply>
+          </div>
+        ))}
     </Wrapper>
   );
 };
@@ -70,6 +76,7 @@ const UserComment = ({ comments }) => {
 export default UserComment;
 
 const Wrapper = styled.div`
+  padding: 1.2rem;
   display: flex;
   flex-direction: column;
   gap: 3.2rem;

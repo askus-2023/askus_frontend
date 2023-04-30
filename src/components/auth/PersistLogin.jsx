@@ -33,7 +33,8 @@ const PersistLogin = () => {
     return () => {
       isMounted = false;
     };
-  }, [accessToken, refresh, setIsLoading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>

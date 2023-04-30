@@ -16,10 +16,11 @@ const useToken = () => {
       accessToken: aT,
       refreshToken,
     });
-    window.localStorage.setItem('aT', '');
-    try {
-      const { data } = await URLEncodedApi.post('/v1/reissue', formData);
 
+    try {
+      const { data } =
+        aT && (await URLEncodedApi.post('/v1/reissue', formData));
+      window.localStorage.setItem('aT', '');
       setAccessToken(data.accessToken);
       window.localStorage.setItem('refresh_token', data.refreshToken);
     } catch (e) {}

@@ -1,3 +1,5 @@
+import { css } from 'styled-components';
+
 const colors = {
   green10: '#EEFFEE',
   green30: '#8EEAA0',
@@ -14,4 +16,22 @@ const colors = {
   red: '#F22D50',
 };
 
-export const theme = { colors };
+const options = {
+  scrollBar: css`
+    ::-webkit-scrollbar {
+      width: 0.6rem;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #e0e0e0;
+      border-radius: 1.2rem;
+      &:hover {
+        background-color: #bdbdbd;
+      }
+    }
+    ::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+  `,
+};
+
+export const theme = { colors, options };

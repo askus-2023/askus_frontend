@@ -19,8 +19,12 @@ const CommentBox = ({ comments, boardId }) => {
       </Header>
       {isOpenComment && (
         <Body className='body'>
-          <WriteComment type='comment' boardId={boardId} />
-          <UserComment comments={comments} />
+          <div className='body__write-comment'>
+            <WriteComment type='comment' boardId={boardId} />
+          </div>
+          <div className='body__user-comments'>
+            <UserComment comments={comments} />
+          </div>
         </Body>
       )}
     </Wrapper>
@@ -46,8 +50,15 @@ const Header = styled.div`
   }
 `;
 const Body = styled.div`
-  padding: 1.2rem;
   display: flex;
   flex-direction: column;
   gap: 3.2rem;
+  .body__write-comment {
+    padding: 0 1.2rem;
+  }
+  .body__user-comments {
+    max-height: 50rem;
+    overflow: auto;
+    ${theme.options.scrollBar};
+  }
 `;

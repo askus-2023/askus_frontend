@@ -1,13 +1,12 @@
 import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import Card from '../../components/common/card/Card';
 import ContainedButton from '../../components/common/button/ContainedButton';
 import SelectButton from '../../components/common/button/SelectButton';
 import Pagination from '../../components/common/pagination/Pagination';
-import exPost from './DummyPost';
 import useScroll from '../../hooks/useScroll';
-import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
 import { authModalState } from '../../recoil/auth/authModal';
@@ -32,6 +31,7 @@ const limit = 20;
 const Board = () => {
   const [selectedCate, setSelectedCate] = useState('전체');
   const [selectedfilter, setSelectedFilter] = useState('최신순');
+  const [postLength, setPostLength] = useState(0);
   const [isSelected, setIsSelected] = useState(false);
   const [page, setPage] = useState(1);
   const accessToken = useRecoilValue(accessTokenState);
@@ -48,8 +48,14 @@ const Board = () => {
         dateLoe: '',
         dateGoe: '',
         sortTarget: 'CREATED_AT_DESC',
+        accessToken,
       }),
     {
+      staleTime: 30,
+      onSuccess: (res) => {
+        setPostLength(res.length);
+        console.log(res);
+      },
       onError: (res) => console.log(res),
     }
   );
@@ -68,11 +74,6 @@ const Board = () => {
   };
 
   useScroll(ref);
-
-  const expost =
-    selectedCate === '전체'
-      ? exPost
-      : exPost.filter((post) => post.category === selectedCate);
 
   return (
     <Wrapper ref={ref}>
@@ -116,21 +117,31 @@ const Board = () => {
             .map((post) => (
               <Card
                 key={post.id}
+                profile={post.authorProfileImageUrl}
                 thumbnail={post.thumbnailImageUrl}
                 menu={post.menu}
+                foodName={post.foodsName}
                 title={post.title}
                 date={post.createdAt}
                 nickname={post.author}
-                profile={post.profile}
                 category={post.category ?? ''}
-                liketotal={post.likeCount}
-                onClick={() => navigate(post.id)}
+                likeTotal={post.likeCount}
+                myLike={post.myLike}
+                replyCount={post.replyCount}
+                onClickTitle={() =>
+                  navigate(`${post.id}`, {
+                    state: {
+                      authorProfile: post.authorProfileImageUrl,
+                      boardId: post.id,
+                    },
+                  })
+                }
               ></Card>
             ))}
       </CardSection>
       <footer>
         <Pagination
-          total={expost.length}
+          total={postLength}
           limit={limit}
           page={page}
           setPage={setPage}
@@ -202,7 +213,7 @@ const SelectSection = styled.div`
 const CardSection = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-flow: row wrap;
   gap: 40px;
 `;

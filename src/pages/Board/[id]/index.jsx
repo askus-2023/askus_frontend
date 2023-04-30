@@ -1,29 +1,35 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
+import { useQuery } from 'react-query';
 import styled from 'styled-components';
-// import thumbnail from '../../../assets/images/thumbnail.png';
 import CommentBox from '../../../components/comment/CommentBox';
 import Tag from '../../../components/tag/Tag';
 import defaultProfile from '../../../assets/images/default-profile.png';
 import useScroll from '../../../hooks/useScroll';
-import { useParams } from 'react-router-dom';
-import { useQuery } from 'react-query';
 import { getDetail } from '../../../apis/board';
 import { useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../../recoil/auth/accessToken';
 import Spinner from '../../../components/common/spinner/Spinner';
 import { category } from '../../../infra/category';
+import thumbnail from '../../../assets/images/thumbnail.png';
 
 const BoardDetailPage = () => {
   const ref = useRef(null);
   const articleRef = useRef();
-  const { id } = useParams();
+  const location = useLocation();
   const accessToken = useRecoilValue(accessTokenState);
+  const { id } = useParams();
 
-  const { data, isLoading, isSuccess } = useQuery([`boards/${id}`], () =>
-    getDetail({
-      id,
-      accessToken,
-    })
+  const { data, isLoading, isSuccess } = useQuery(
+    [`boards/${id}`],
+    () =>
+      getDetail({
+        id,
+        accessToken,
+      }),
+    {
+      staleTime: 30,
+    }
   );
 
   const tags = useMemo(
@@ -55,7 +61,7 @@ const BoardDetailPage = () => {
       {isSuccess && (
         <>
           <Thumbnail
-            url={data.thumbnailImageUrl}
+            url={data.thumbnailImageUrl ?? thumbnail}
             className='thumbnail thumbnail-container'
           >
             <div className='thumbnail__info thumbnail__info-left'>
@@ -65,11 +71,15 @@ const BoardDetailPage = () => {
               <Title>{data.title}</Title>
             </div>
             <div className='thumbnail__info thumbnail__info-right'>
-              <CreatedAt>{data.createdAt}</CreatedAt>
+              <CreatedAt>
+                {new Intl.DateTimeFormat('ko-KR', { dateStyle: 'full' }).format(
+                  new Date(data.createdAt)
+                )}
+              </CreatedAt>
             </div>
           </Thumbnail>
-          <Content>
-            <div className='content content-left'>
+          <Content className='content'>
+            <div className='content-left'>
               <Keywords>
                 {tags.map((value, idx) => (
                   <Tag key={idx} type='outline' hash={true}>
@@ -85,10 +95,13 @@ const BoardDetailPage = () => {
                 />
               </MainContent>
             </div>
-            <div className='content content-right'>
+            <div className='content-right'>
               <AuthorInfo className='author-profile'>
                 <div className='author-profile__image'>
-                  <img src={defaultProfile} alt='프로필 이미지' />
+                  <img
+                    src={location.state?.authorProfile ?? defaultProfile}
+                    alt='프로필 이미지'
+                  />
                 </div>
                 <div className='author-profile__nickname'>{data.author}</div>
               </AuthorInfo>
@@ -146,7 +159,6 @@ const Title = styled.p`
 `;
 const CreatedAt = styled.p``;
 const Content = styled.div`
-  height: 100rem;
   padding: 4rem;
   display: flex;
   .content-left {
@@ -164,6 +176,7 @@ const Content = styled.div`
 const Keywords = styled.div``;
 const MainContent = styled.div`
   margin-top: 2rem;
+  padding-top: 2.2rem;
   .article {
     padding: 0 0.6rem;
     display: flex;
@@ -177,7 +190,7 @@ const MainContent = styled.div`
 const AuthorInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.2rem;
   img {
     width: 4.2rem;
     height: 4.2rem;
