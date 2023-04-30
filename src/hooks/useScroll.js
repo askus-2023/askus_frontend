@@ -6,9 +6,13 @@ import { throttle } from 'lodash';
 const useScroll = (ref) => {
   const [, setScrollTop] = useRecoilState(scrollState);
 
-  const onScroll = useMemo(() => throttle(() => {
-    setScrollTop(ref.current?.scrollTop);
-  }, 300), [ref, setScrollTop]);
+  const onScroll = useMemo(
+    () =>
+      throttle(() => {
+        setScrollTop(ref.current?.scrollTop);
+      }, 300),
+    [ref, setScrollTop]
+  );
 
   useEffect(() => {
     setScrollTop(0);

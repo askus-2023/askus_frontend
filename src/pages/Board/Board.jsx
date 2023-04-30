@@ -22,7 +22,7 @@ const filterOption = [
   },
 ];
 
-const limit = 20
+const limit = 20;
 
 const Board = () => {
   const [selectedCate, setSelectedCate] = useState('ALL');
@@ -33,7 +33,7 @@ const Board = () => {
   const accessToken = useRecoilValue(accessTokenState);
   const [, openModal] = useRecoilState(authModalState);
   const ref = useRef(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const categoryHandler = (key) => {
     setSelectedCate(key);
@@ -42,12 +42,11 @@ const Board = () => {
     setSelectedFilter('최신순');
 
     if (key === 'ALL') {
-      key = ''
+      key = '';
     } else if (key === 'EUROPEAN') {
-      key = 'WESTERN'
+      key = 'WESTERN';
     }
-    navigate(`${key.toLowerCase()}`)
-
+    navigate(`${key.toLowerCase()}`);
   };
 
   const filterHandler = (e) => {
@@ -93,7 +92,7 @@ const Board = () => {
           selected={selectedfilter}
         />
       </SelectSection>
-      <Outlet context={{ page, setPostLength }}/>
+      <Outlet context={{ page, setPostLength }} />
       <footer>
         <Pagination
           total={postLength}
@@ -164,4 +163,3 @@ const SelectSection = styled.div`
   display: flex;
   justify-content: flex-end;
 `;
-

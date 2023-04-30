@@ -5,7 +5,7 @@ import defaultProfile from '../../../assets/images/default-profile.png';
 import defaultThumbnail from '../../../assets/images/thumbnail.png';
 import heartEmpty from '../../../assets/icons/heart-empty.svg';
 import heartFill from '../../../assets/icons/heart-fill.svg';
-import icChat from '../../../assets/icons/chat.svg'
+import icChat from '../../../assets/icons/chat.svg';
 import { categoryMap } from '../../../infra/category';
 import useDatetimeFormat from '../../../hooks/useDatetimeFormat';
 import { useMutation } from 'react-query';
@@ -35,31 +35,37 @@ const Card = ({
 
   const addLikeHandler = () => {
     if (!liked) {
-      addLikeMutation.mutate({
-        boardId,
-        accessToken
-      }, {
-        onSuccess: (res) => {
-          setLikes(res.likeCount)
-          setLiked(true)
+      addLikeMutation.mutate(
+        {
+          boardId,
+          accessToken,
+        },
+        {
+          onSuccess: (res) => {
+            setLikes(res.likeCount);
+            setLiked(true);
+          },
         }
-      })
+      );
     }
-  }
+  };
 
   const removeLikeHandler = () => {
     if (liked) {
-      removeLikeMutation.mutate({
-        boardId,
-        accessToken
-      }, {
-        onSuccess: () => {
-          setLikes((prev) => prev - 1)
-          setLiked(false)
+      removeLikeMutation.mutate(
+        {
+          boardId,
+          accessToken,
+        },
+        {
+          onSuccess: () => {
+            setLikes((prev) => prev - 1);
+            setLiked(false);
+          },
         }
-      })
+      );
     }
-  }
+  };
   return (
     <Wrapper>
       <ImageWrapper>
@@ -82,9 +88,17 @@ const Card = ({
             <img src={icChat} alt='chat' />
             <div className=' total reply-total'>{replyCount}</div>
             {!liked ? (
-              <Like src={heartEmpty} alt='heartEmpty' onClick={addLikeHandler} />
+              <Like
+                src={heartEmpty}
+                alt='heartEmpty'
+                onClick={addLikeHandler}
+              />
             ) : (
-              <Like src={heartFill} alt='heartFill' onClick={removeLikeHandler} />
+              <Like
+                src={heartFill}
+                alt='heartFill'
+                onClick={removeLikeHandler}
+              />
             )}
             <div className='total like-total'>{likes}</div>
           </ChatandLikes>
@@ -231,7 +245,7 @@ const ChatandLikes = styled.div`
   .reply-total {
     margin-right: 0.8rem;
   }
-`
+`;
 
 const Like = styled.img`
   cursor: pointer;

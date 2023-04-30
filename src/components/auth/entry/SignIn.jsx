@@ -46,7 +46,7 @@ const SignIn = () => {
       type: 'VALUE',
       field: 'email',
       payload: e.target.value,
-    })
+    });
     const isValid = validateEmail(e.target.value);
     if (formState.value.email && !isValid) {
       dispatch({
@@ -71,7 +71,7 @@ const SignIn = () => {
         payload: '',
       });
     }
-  }
+  };
 
   const signInHandler = (e) => {
     e.preventDefault();
@@ -139,9 +139,7 @@ const SignIn = () => {
     }
   };
 
-  useEffect(() => {
-    
-  }, [formState.value.email, validateEmail]);
+  useEffect(() => {}, [formState.value.email, validateEmail]);
 
   return (
     <Wrapper>

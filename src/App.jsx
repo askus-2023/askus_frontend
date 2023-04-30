@@ -33,14 +33,26 @@ function App() {
                 <Route path='/board' element={<Board />}>
                   <Route path='' element={<CardSection tag='' />} />
                   <Route path='korean' element={<CardSection tag='KOREAN' />} />
-                  <Route path='japanese' element={<CardSection tag='JAPANESE' />} />
-                  <Route path='western' element={<CardSection tag='EUROPEAN' />} />
-                  <Route path='chinese' element={<CardSection tag='CHINESE' />} />
+                  <Route
+                    path='japanese'
+                    element={<CardSection tag='JAPANESE' />}
+                  />
+                  <Route
+                    path='western'
+                    element={<CardSection tag='EUROPEAN' />}
+                  />
+                  <Route
+                    path='chinese'
+                    element={<CardSection tag='CHINESE' />}
+                  />
                   <Route path='etc' element={<CardSection tag='ETC' />} />
                 </Route>
                 <Route path='/board/:boardId' element={<BoardDetailPage />} />
                 <Route path='/board/write' element={<BoardWritePage />} />
-                <Route path='/board/:boardId/edit' element={<BoardEditPage />} />
+                <Route
+                  path='/board/:boardId/edit'
+                  element={<BoardEditPage />}
+                />
                 <Route path='/profile' element={<Profile />} />
                 <Route path='/profile/edit' element={<ProfileEdit />} />
               </Route>

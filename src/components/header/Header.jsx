@@ -28,12 +28,11 @@ const Header = () => {
   const scrollTop = useRecoilValue(scrollState);
   const profileImage = window.localStorage.getItem('profile_img');
 
-
   const calculateAlpha = useCallback((scrollTop) => {
     if (scrollTop < 400) {
       setAlpha(scrollTop / 400);
     } else setAlpha(1);
-  }, [])
+  }, []);
 
   const closePopup = useCallback(
     (e) => {

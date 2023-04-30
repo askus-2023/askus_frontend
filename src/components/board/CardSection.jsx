@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
@@ -11,9 +11,9 @@ import Spinner from '../common/spinner/Spinner';
 const limit = 20;
 
 const CardSection = ({ tag }) => {
-  const { page, setPostLength } = useOutletContext()
+  const { page, setPostLength } = useOutletContext();
   const offset = (page - 1) * limit;
-  const accessToken = useRecoilValue(accessTokenState)
+  const accessToken = useRecoilValue(accessTokenState);
   const navigate = useNavigate();
   const { data, isSuccess, isLoading } = useQuery(
     [`/boards/${tag}`],
@@ -37,47 +37,45 @@ const CardSection = ({ tag }) => {
 
   return (
     <Wrapper>
-      {isLoading && 
+      {isLoading && (
         <>
           <SpinnerWrapper>
             <Spinner />
           </SpinnerWrapper>
         </>
-      }
+      )}
       {isSuccess &&
-        data
-          .slice(offset, offset + limit)
-          .map((post) => (
-            <Card
-              key={post.id}
-              boardId={post.id}
-              profile={post.authorProfileImageUrl}
-              thumbnail={post.thumbnailImageUrl}
-              menu={post.menu}
-              foodName={post.foodsName}
-              title={post.title}
-              date={post.createdAt}
-              nickname={post.author}
-              category={post.category ?? ''}
-              likeCount={post.likeCount}
-              myLike={post.myLike}
-              replyCount={post.replyCount}
-              accessToken={accessToken}
-              onClickTitle={() =>
+        data.slice(offset, offset + limit).map((post) => (
+          <Card
+            key={post.id}
+            boardId={post.id}
+            profile={post.authorProfileImageUrl}
+            thumbnail={post.thumbnailImageUrl}
+            menu={post.menu}
+            foodName={post.foodsName}
+            title={post.title}
+            date={post.createdAt}
+            nickname={post.author}
+            category={post.category ?? ''}
+            likeCount={post.likeCount}
+            myLike={post.myLike}
+            replyCount={post.replyCount}
+            accessToken={accessToken}
+            onClickTitle={() =>
               navigate(`${post.id}`, {
                 state: {
                   authorProfile: post.authorProfileImageUrl,
                   boardId: post.id,
                 },
-              })}
-            />
-          ))
-      }
+              })
+            }
+          />
+        ))}
     </Wrapper>
-  )
-}
+  );
+};
 
-export default CardSection
+export default CardSection;
 
 const Wrapper = styled.div`
   width: 100%;
@@ -91,4 +89,4 @@ const SpinnerWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`
+`;
