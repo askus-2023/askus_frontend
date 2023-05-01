@@ -24,12 +24,16 @@ jobs:
 
       - name: Check Node v
         run: node -v
+        
+      - name: Generate Environment Variables File for Production
+        env: 
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Build
-        run: yarn build
+        run: npm run build
         env:
           CI: ""
 
