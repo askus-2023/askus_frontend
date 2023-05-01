@@ -2,7 +2,7 @@ import { api, formDataApi } from '../Config';
 
 export const upload = async ({ data }) => {
   const response = await formDataApi.post('/v1/boards', data, {
-    headers: { 'Content-Type': 'multipart/form-data' }
+    headers: { 'Content-Type': 'multipart/form-data' },
   });
   return response;
 };
@@ -16,12 +16,7 @@ export const getBoardDetail = async ({ id }) => {
   }
 };
 
-export const getBoardList = async ({
-  tag,
-  dateLoe,
-  dateGoe,
-  sortTarget,
-}) => {
+export const getBoardList = async ({ tag, dateLoe, dateGoe, sortTarget }) => {
   try {
     const { data } = await api.get(`/v1/boards`, {
       params: {

@@ -19,23 +19,23 @@ import RequireLoginPage from './pages/auth/RequireLogin';
 import CardSection from './components/board/CardSection';
 import { AccessToken } from './infra/AccessToken';
 
-export const aT = new AccessToken()
+export const aT = new AccessToken();
 
 function App() {
   const queryClient = new QueryClient();
-  const [accessToken, setAccessToken] = useRecoilState(accessTokenState)
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
 
   useEffect(() => {
-    aT.aTSetter(accessToken)
-  }, [accessToken])
+    aT.aTSetter(accessToken);
+  }, [accessToken]);
 
   useEffect(() => {
     if (accessToken) {
       if (aT.newATGetter()) {
-        setAccessToken(aT.newATGetter())
+        setAccessToken(aT.newATGetter());
       }
     }
-  }, [accessToken, setAccessToken])
+  }, [accessToken, setAccessToken]);
 
   return (
     <div className='App'>
@@ -58,18 +58,12 @@ function App() {
                   path='western'
                   element={<CardSection tag='EUROPEAN' />}
                 />
-                <Route
-                  path='chinese'
-                  element={<CardSection tag='CHINESE' />}
-                />
+                <Route path='chinese' element={<CardSection tag='CHINESE' />} />
                 <Route path='etc' element={<CardSection tag='ETC' />} />
               </Route>
               <Route path='/board/:boardId' element={<BoardDetailPage />} />
               <Route path='/board/write' element={<BoardWritePage />} />
-              <Route
-                path='/board/:boardId/edit'
-                element={<BoardEditPage />}
-              />
+              <Route path='/board/:boardId/edit' element={<BoardEditPage />} />
               <Route path='/profile' element={<Profile />} />
               <Route path='/profile/edit' element={<ProfileEdit />} />
             </Route>

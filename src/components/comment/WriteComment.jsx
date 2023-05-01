@@ -27,8 +27,8 @@ const WriteComment = ({ boardId, type, onClickCancelReply }) => {
         },
         {
           onSuccess: () => {
-            setComment('')
-            queryClient.invalidateQueries([`boards/${boardId}`])
+            setComment('');
+            queryClient.invalidateQueries([`boards/${boardId}`]);
           },
         }
       );

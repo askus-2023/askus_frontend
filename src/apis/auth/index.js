@@ -8,19 +8,15 @@ export const signUp = async (data) => {
 };
 
 export const duplicationCheck = async (data) => {
-  const response = await axios.post(
-    '/v1/signup/email/duplicated',
-    data, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    }
-    
-  );
+  const response = await axios.post('/v1/signup/email/duplicated', data, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return response;
 };
 
 export const signIn = async (data) => {
   const response = await axios.post('/v1/signin', data, {
-    headers: { 'Content-Type': 'multipart/form-data' }
+    headers: { 'Content-Type': 'multipart/form-data' },
   });
   return response;
 };

@@ -75,7 +75,6 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   margin: 6.8rem 0;
-
 `;
 const SpinnerWrapper = styled.div`
   width: 100%;
@@ -89,4 +88,4 @@ const CardWrapper = styled.div`
   justify-content: flex-start;
   flex-flow: row wrap;
   gap: 4rem;
-`
+`;

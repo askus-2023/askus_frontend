@@ -86,7 +86,9 @@ const Card = ({
           <Menu>
             [{categoryMap[category]}] {foodName}
           </Menu>
-          <Title title={title} onClick={navigateHandler}>{title}</Title>
+          <Title title={title} onClick={navigateHandler}>
+            {title}
+          </Title>
           <Datetime>{displayDatetime(new Date(date) - new Date())}</Datetime>
         </Info>
         <Writer>

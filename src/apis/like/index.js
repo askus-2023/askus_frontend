@@ -1,11 +1,9 @@
 import { api } from '../Config';
 
 export const addLike = async ({ boardId }) => {
-  const response = await api.post(
-    'v1/likes', {
-      boardId,
-    },
-  );
+  const response = await api.post('v1/likes', {
+    boardId,
+  });
   return response;
 };
 

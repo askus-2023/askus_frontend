@@ -166,8 +166,8 @@ const SignUp = ({ setPhase }) => {
   const duplicationCheckHandler = () => {
     if (formState.value.email && formState.errorMsg.email !== EMAIL_ERR_MSG) {
       setIsLoading(true);
-      const formData = new FormData()
-      formData.append('email', formState.value.email)
+      const formData = new FormData();
+      formData.append('email', formState.value.email);
       checkEmail.mutate(formData, {
         onSuccess: (res) => {
           setDuplicationChecked(true);

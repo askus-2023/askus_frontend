@@ -12,14 +12,15 @@ const useToken = () => {
 
   const refresh = async () => {
     const aT = window.localStorage.getItem('aT');
-    const formData = new FormData()
-    formData.append('accessToken', aT)
-    formData.append('refreshToken', refreshToken)
+    const formData = new FormData();
+    formData.append('accessToken', aT);
+    formData.append('refreshToken', refreshToken);
 
     try {
       const { data } =
-        aT && (await axios.post('/v1/reissue', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
+        aT &&
+        (await axios.post('/v1/reissue', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
         }));
       window.localStorage.setItem('aT', '');
       setAccessToken(data.accessToken);

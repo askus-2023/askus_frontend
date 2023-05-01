@@ -103,7 +103,7 @@ const SignIn = () => {
     }
     if (values.every((value) => value.length)) {
       setIsLoading(true);
-      const formData = new FormData()
+      const formData = new FormData();
       formData.append('email', formState.value.email);
       formData.append('password', formState.value.password);
 
@@ -111,7 +111,7 @@ const SignIn = () => {
         onSuccess: (res) => {
           window.localStorage.setItem('profile_img', res.data.imageUrl);
           window.localStorage.setItem('nickname', res.data.nickname);
-          window.localStorage.setItem('email', res.data.email)
+          window.localStorage.setItem('email', res.data.email);
           setAccessToken(res.data.accessToken);
           window.localStorage.setItem('refresh_token', res.data.refreshToken);
           openModal(false);
