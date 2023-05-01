@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-
 import styled from 'styled-components';
 import { theme } from '../../../styles/Theme';
+import icArrow from '../../../assets/icons/arrow-up-white.svg';
 
 function Pagination({
   total,
@@ -36,7 +36,7 @@ function Pagination({
           }}
           disabled={page === 1}
         >
-          &lt;
+          <img className='arrow-left' src={icArrow} alt='to-next' />
         </Button>
         <Button
           pageChange
@@ -96,7 +96,7 @@ function Pagination({
           }}
           disabled={page === numPages}
         >
-          &gt;
+          <img className='arrow-right' src={icArrow} alt='to-next' />
         </Button>
       </Nav>
     </>
@@ -127,13 +127,13 @@ const Button = styled.button`
     transform: translateY(-0.2rem);
   }
 
-  &[disabled] {
+  &: [disabled] {
     background: ${theme.colors.grey50};
     cursor: pointer;
     transform: revert;
   }
 
-  &[aria-current] {
+  &: [aria-current] {
     background: ${theme.colors.green50};
     font-weight: bold;
     cursor: pointer;
@@ -141,6 +141,12 @@ const Button = styled.button`
   }
   &.arrow {
     background: ${theme.colors.grey50};
+    .arrow-left {
+      transform: rotateZ(-90deg);
+    }
+    .arrow-right {
+      transform: rotateZ(90deg);
+    }
   }
 `;
 

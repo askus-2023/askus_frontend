@@ -13,9 +13,9 @@ const PersistLogin = () => {
   const { beforeRefresh, refresh } = useToken();
 
   useEffect(() => {
-    window.addEventListener('beforeunload', beforeRefresh);
+    window.addEventListener('pagehide', beforeRefresh);
     return () => {
-      window.removeEventListener('beforeunload', beforeRefresh);
+      window.removeEventListener('pagehide', beforeRefresh);
     };
   });
 
@@ -33,9 +33,20 @@ const PersistLogin = () => {
     return () => {
       isMounted = false;
     };
-  }, [accessToken, refresh, setIsLoading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  return <>{isLoading ? <Wrapper><Spinner /></Wrapper> : <Outlet replace />}</>;
+  return (
+    <>
+      {isLoading ? (
+        <Wrapper>
+          <Spinner />
+        </Wrapper>
+      ) : (
+        <Outlet replace />
+      )}
+    </>
+  );
 };
 
 export default PersistLogin;
@@ -46,4 +57,4 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;

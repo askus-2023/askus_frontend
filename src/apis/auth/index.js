@@ -1,19 +1,22 @@
-import { formDataApi, URLEncodedApi } from '../Config';
+import axios from 'axios';
 
 export const signUp = async (data) => {
-  const response = await formDataApi.post('/v1/signup', data);
+  const response = await axios.post('/v1/signup', data, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return response;
 };
 
 export const duplicationCheck = async (data) => {
-  const response = await URLEncodedApi.post(
-    '/v1/signup/email/duplicated',
-    data
-  );
+  const response = await axios.post('/v1/signup/email/duplicated', data, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return response;
 };
 
 export const signIn = async (data) => {
-  const response = await URLEncodedApi.post('/v1/signin', data);
+  const response = await axios.post('/v1/signin', data, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return response;
 };
