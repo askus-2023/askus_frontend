@@ -15,7 +15,7 @@ export const duplicationCheck = async (data) => {
 };
 
 export const signIn = async (data) => {
-  const response = await axios.post(`${import.meta.env}v1/signin`, data, {
+  const response = await axios.post('/v1/signin', data, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
   return response;
