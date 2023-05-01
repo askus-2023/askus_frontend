@@ -84,9 +84,9 @@ const SpinnerWrapper = styled.div`
   justify-content: center;
 `;
 const CardWrapper = styled.div`
+  min-height: 2.4rem;
   display: flex;
   justify-content: flex-start;
   flex-flow: row wrap;
   gap: 4rem;
-
 `

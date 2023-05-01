@@ -44,6 +44,7 @@ input {
 }
 strong { font-weight: bold; }
 em { font-style: italic; }
+.ql-editor { font-size: 16px; }
 .ql-snow .ql-picker.ql-size .ql-picker-label::before, 
 .ql-snow .ql-picker.ql-size .ql-picker-item::before {
   content: attr(data-value);

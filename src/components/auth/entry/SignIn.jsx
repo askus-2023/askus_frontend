@@ -103,14 +103,15 @@ const SignIn = () => {
     }
     if (values.every((value) => value.length)) {
       setIsLoading(true);
-      const data = new URLSearchParams({
-        email: formState.value.email,
-        password: formState.value.password,
-      });
-      signin.mutate(data, {
+      const formData = new FormData()
+      formData.append('email', formState.value.email);
+      formData.append('password', formState.value.password);
+
+      signin.mutate(formData, {
         onSuccess: (res) => {
           window.localStorage.setItem('profile_img', res.data.imageUrl);
           window.localStorage.setItem('nickname', res.data.nickname);
+          window.localStorage.setItem('email', res.data.email)
           setAccessToken(res.data.accessToken);
           window.localStorage.setItem('refresh_token', res.data.refreshToken);
           openModal(false);

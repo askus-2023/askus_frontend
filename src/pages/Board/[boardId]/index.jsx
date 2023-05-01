@@ -9,7 +9,7 @@ import { getBoardDetail } from '../../../apis/board';
 import { useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../../recoil/auth/accessToken';
 import Spinner from '../../../components/common/spinner/Spinner';
-import { categoryMap } from '../../../infra/category';
+import { categoryMap } from '../../../infra/Category';
 import thumbnail from '../../../assets/images/thumbnail.png';
 import { theme } from '../../../styles/Theme';
 import OutlinedButton from '../../../components/common/button/OutlinedButton';
@@ -56,7 +56,7 @@ const BoardDetailPage = () => {
   }, [updateImageUrl]);
 
   return (
-    <Wrapper>
+    <div className='wrapper'>
       {isLoading && <Spinner />}
       {isSuccess && (
         <>
@@ -125,17 +125,12 @@ const BoardDetailPage = () => {
           </Content>
         </>
       )}
-    </Wrapper>
+    </div>
   );
 };
 
 export default BoardDetailPage;
 
-const Wrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-`;
 const Thumbnail = styled.div`
   position: relative;
   padding: 4rem;

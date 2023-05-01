@@ -59,7 +59,6 @@ const BoardWritePage = () => {
     if (file && file[0]) {
       setThumbnail({ image: file[0], url: URL.createObjectURL(file[0]) });
     }
-    console.log(file, file[0]);
   };
 
   const hashtagHandler = (e) => {

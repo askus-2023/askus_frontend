@@ -9,6 +9,7 @@ import ReactQuill, { Quill } from 'react-quill';
 import ImageResize from 'quill-image-resize';
 Quill.register('modules/ImageResize', ImageResize);
 import styled from 'styled-components';
+import { theme } from '../../styles/Theme';
 
 const Size = Quill.import('attributors/style/size');
 Size.whitelist = ['16px', '24px', '32px', '48px', '64px'];
@@ -173,7 +174,8 @@ const Wrapper = styled.div`
   }
   .ql-container {
     min-height: 30rem;
-    max-height: 60rem;
+    max-height: 90rem;
     overflow-y: auto;
+    ${theme.options.scrollBar}
   }
 `;

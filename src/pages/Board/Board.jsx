@@ -9,7 +9,7 @@ import useScroll from '../../hooks/useScroll';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
 import { authModalState } from '../../recoil/auth/authModal';
-import { categoryMap } from '../../infra/category';
+import { categoryMap } from '../../infra/Category';
 
 const filterOption = [
   {
@@ -57,7 +57,7 @@ const Board = () => {
 
   useEffect(() => {
     const category = location.pathname?.split('/').at(-1);
-    console.log(category);
+
     switch (category) {
       case 'korean':
         setSelectedCate('KOREAN');

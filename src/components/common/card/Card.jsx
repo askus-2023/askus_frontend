@@ -8,7 +8,7 @@ import defaultThumbnail from '../../../assets/images/thumbnail.png';
 import heartEmpty from '../../../assets/icons/heart-empty.svg';
 import heartFill from '../../../assets/icons/heart-fill.svg';
 import icChat from '../../../assets/icons/chat.svg';
-import { categoryMap } from '../../../infra/category';
+import { categoryMap } from '../../../infra/Category';
 import useDatetimeFormat from '../../../hooks/useDatetimeFormat';
 import { addLike, removeLike } from '../../../apis/like';
 
@@ -86,7 +86,7 @@ const Card = ({
           <Menu>
             [{categoryMap[category]}] {foodName}
           </Menu>
-          <Title onClick={navigateHandler}>{title}</Title>
+          <Title title={title} onClick={navigateHandler}>{title}</Title>
           <Datetime>{displayDatetime(new Date(date) - new Date())}</Datetime>
         </Info>
         <Writer>
