@@ -50,11 +50,13 @@ const SquareCard = ({ thumbnail, menu, title, date, category, like }) => {
 export default SquareCard;
 
 const Wrapper = styled.div`
-  width: 30rem;
+  display: flex;
+  width: 30%;
   height: 30rem;
   cursor: pointer;
   margin: 1.3rem;
   position: relative;
+  justify-content: center;
   .thumbnail {
     position: absolute;
     width: 30rem;

@@ -54,3 +54,7 @@ formDataApi.interceptors.response.use(responseCallback, async (error) => {
   const prevRequest = responseError(error);
   return formDataApi(prevRequest);
 });
+
+export const rawApi = axios.create({
+  headers: { 'Content-Type': 'application/json' },
+});
