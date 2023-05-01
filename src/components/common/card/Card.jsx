@@ -1,62 +1,119 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from 'react-query';
 import styled, { keyframes } from 'styled-components';
 import { theme } from '../../../styles/Theme';
+import defaultProfile from '../../../assets/images/default-profile.png';
+import defaultThumbnail from '../../../assets/images/thumbnail.png';
 import heartEmpty from '../../../assets/icons/heart-empty.svg';
 import heartFill from '../../../assets/icons/heart-fill.svg';
+import icChat from '../../../assets/icons/chat.svg';
+import { categoryMap } from '../../../infra/Category';
+import useDatetimeFormat from '../../../hooks/useDatetimeFormat';
+import { addLike, removeLike } from '../../../apis/like';
 
 const Card = ({
+  boardId,
   thumbnail,
-  menu,
+  foodName,
   title,
   date,
   nickname,
   profile,
   category,
-  like,
-  liketotal,
+  myLike,
+  likeCount,
+  replyCount,
+  accessToken,
 }) => {
-  const [isLike, setIsLike] = useState(like);
-  const [total, setTotal] = useState(liketotal);
+  const { displayDatetime } = useDatetimeFormat();
+  const [likes, setLikes] = useState(likeCount);
+  const [liked, setLiked] = useState(myLike);
+  const navigate = useNavigate();
+  const addLikeMutation = useMutation(addLike);
+  const removeLikeMutation = useMutation(removeLike);
 
-  const iconHandler = () => {
-    if (isLike) {
-      setIsLike(!isLike);
-      setTotal((total) => total - 1);
-    } else {
-      setIsLike(!isLike);
-      setTotal((total) => total + 1);
+  const addLikeHandler = () => {
+    if (!liked) {
+      addLikeMutation.mutate(
+        {
+          boardId,
+          accessToken,
+        },
+        {
+          onSuccess: (res) => {
+            setLikes(res.data.likeCount);
+            setLiked(true);
+          },
+        }
+      );
     }
   };
 
-  const dateFormat =
-    date.getFullYear() + '.' + (date.getMonth() + 1) + '.' + date.getDate();
+  const removeLikeHandler = () => {
+    if (liked) {
+      removeLikeMutation.mutate(
+        {
+          boardId,
+          accessToken,
+        },
+        {
+          onSuccess: () => {
+            setLikes((prev) => prev - 1);
+            setLiked(false);
+          },
+        }
+      );
+    }
+  };
 
+  const navigateHandler = () => {
+    navigate(`${boardId}`, {
+      state: { authorProfile: profile, likes, liked },
+    });
+  };
   return (
     <Wrapper>
       <ImageWrapper>
-        <Image src={thumbnail} alt='thumbnail' />
+        <Image
+          src={thumbnail ?? defaultThumbnail}
+          alt='thumbnail'
+          onClick={navigateHandler}
+        />
       </ImageWrapper>
       <InfoWrapper>
         <Info>
           <Menu>
-            [{category}] {menu}
+            [{categoryMap[category]}] {foodName}
           </Menu>
-          <Title>{title}</Title>
-          <Date>{dateFormat}</Date>
+          <Title title={title} onClick={navigateHandler}>
+            {title}
+          </Title>
+          <Datetime>{displayDatetime(new Date(date) - new Date())}</Datetime>
         </Info>
         <Writer>
           <WriterInfo>
-            <UserImage src={profile} alt='profile' />
+            <UserImage src={profile ?? defaultProfile} alt='profile' />
             <Nickname>{nickname}</Nickname>
           </WriterInfo>
-          <div>
-            {!isLike ? (
-              <Like src={heartEmpty} alt='heartEmpty' onClick={iconHandler} />
+          <ChatandLikes>
+            <img src={icChat} alt='chat' />
+            <div className=' total reply-total'>{replyCount}</div>
+            {!liked ? (
+              <Like
+                src={heartEmpty}
+                alt='heartEmpty'
+                onClick={addLikeHandler}
+              />
             ) : (
-              <Like src={heartFill} alt='heartFill' onClick={iconHandler} />
+              <Like
+                src={heartFill}
+                alt='heartFill'
+                onClick={removeLikeHandler}
+              />
             )}
-            <Total>{total}</Total>
-          </div>
+            <div className='total like-total'>{likes}</div>
+          </ChatandLikes>
         </Writer>
       </InfoWrapper>
     </Wrapper>
@@ -76,9 +133,12 @@ const Wrapper = styled.div`
   width: 24rem;
   height: 30rem;
   display: flex;
+  overflow: hidden;
   flex-direction: column;
+  justify-content: space-between;
   border: 0.1rem solid ${theme.colors.grey30};
-  transition: all 5s;
+  border-radius: 0.6rem;
+  transition: ${card} 5s;
   animation: ${card} 2s;
 `;
 
@@ -91,9 +151,8 @@ const ImageWrapper = styled.div`
 
 const Image = styled.img`
   width: 100%;
-  height: 17rem;
+  height: 100%;
   object-fit: cover;
-  overflow: hidden;
   &:hover {
     transition: all 0.2s linear;
     transform: scale(1.2);
@@ -114,7 +173,7 @@ const Info = styled.div`
 
 const Menu = styled.h4`
   color: ${theme.colors.grey50};
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -125,13 +184,13 @@ const Menu = styled.h4`
 
 const Title = styled.h3`
   color: ${theme.colors.grey90};
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: bolder;
   overflow: hidden;
   word-break: break-word;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   line-height: 1.4;
   margin-bottom: 0.3rem;
@@ -141,7 +200,7 @@ const Title = styled.h3`
   }
 `;
 
-const Date = styled.p`
+const Datetime = styled.p`
   color: ${theme.colors.grey50};
   font-size: 1.1rem;
   line-height: 1.5rem;
@@ -151,6 +210,7 @@ const Date = styled.p`
 const Writer = styled.div`
   display: flex;
   text-align: left;
+  margin-top: 1.2rem;
   width: 100%;
   div {
     display: flex;
@@ -163,6 +223,7 @@ const WriterInfo = styled.div`
   text-align: left;
   align-items: center;
   width: 100%;
+  gap: 0.8rem;
 `;
 
 const UserImage = styled.img`
@@ -177,22 +238,28 @@ const Nickname = styled.h4`
   font-size: 1.2rem;
   font-weight: unset;
   line-height: 1.5rem;
-  margin: 0 0 0.3rem 1rem;
   cursor: pointer;
   &:hover {
     font-weight: bold;
   }
 `;
-
-const Total = styled.div`
-  font-size: 1.3rem;
-  color: ${theme.colors.grey50};
+const ChatandLikes = styled.div`
+  img {
+    width: 2.4rem;
+    height: 2.4rem;
+    object-fit: cover;
+  }
+  .total {
+    margin-left: 0.2rem;
+    font-size: 1.4rem;
+    color: ${theme.colors.grey70};
+  }
+  .reply-total {
+    margin-right: 0.8rem;
+  }
 `;
 
 const Like = styled.img`
-  width: 3rem;
-  height: 3rem;
-  object-fit: cover;
   cursor: pointer;
 `;
 

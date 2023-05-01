@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
-import useScroll from '../../hooks/useScroll';
 import { theme } from '../../styles/Theme';
 import ContainedButton from '../../components/common/button/ContainedButton';
 import SelectButton from '../../components/common/button/SelectButton';
@@ -8,7 +9,6 @@ import icCancel from '../../assets/icons/cancel.svg';
 import SearchInput from '../../components/common/input/SearchInput';
 import icAdd from '../../assets/icons/add.svg';
 import TextEditor from '../../components/board/TextEditor';
-import { useMutation } from 'react-query';
 import { upload } from '../../apis/board';
 import { useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
@@ -39,27 +39,26 @@ const filterOption = [
 
 const BoardWritePage = () => {
   const fileInputRef = useRef(null);
-  const ref = useRef(null);
   const [selectedfilter, setSelectedFilter] = useState('KOREAN');
   const [title, setTitle] = useState('');
   const [menu, setMenu] = useState('');
   const [ingredients, setIngredients] = useState('');
-  const [content, setContent] = useState(null);
-  const [image, setImage] = useState({});
+  const [content, setContent] = useState('');
+  const [images, setImages] = useState([]);
+  const [thumbnail, setThumbnail] = useState({});
   const [tag, setTag] = useState('');
   const [allTag, setAllTag] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   const accessToken = useRecoilValue(accessTokenState);
   const uploadMutation = useMutation(upload);
+  const queryClient = useQueryClient();
 
-  useScroll(ref);
-
-  const uploadImage = () => {
+  const uploadThumbnail = () => {
     const file = fileInputRef.current?.files;
     if (file && file[0]) {
-      setImage({ image: file[0], url: URL.createObjectURL(file[0]) });
+      setThumbnail({ image: file[0], url: URL.createObjectURL(file[0]) });
     }
-    console.log(file, file[0]);
   };
 
   const hashtagHandler = (e) => {
@@ -82,21 +81,30 @@ const BoardWritePage = () => {
 
   const uploadHandler = () => {
     setIsLoading(true);
+    const imageList = images.map((value) => value.file);
     const formData = new FormData();
     formData.append('title', title);
+    formData.append('foodName', menu);
     formData.append('category', selectedfilter);
     formData.append('ingredients', ingredients);
     formData.append('content', content);
     formData.append('tag', allTag.toString());
-    formData.append('thumbnailImage', image.image);
-    formData.append('representativeImages', image.image);
+    thumbnail.image && formData.append('thumbnailImage', thumbnail.image);
+    if (imageList.length) {
+      for (const image of imageList) {
+        formData.append('representativeImages', image);
+      }
+    }
     uploadMutation.mutate(
       {
         data: formData,
         accessToken,
       },
       {
-        onSuccess: (res) => console.log(res),
+        onSuccess: () => {
+          queryClient.invalidateQueries(['/boards']);
+          navigate('/board');
+        },
         onError: (err) => console.log(err),
         onSettled: () => {
           setIsLoading(false);
@@ -106,7 +114,7 @@ const BoardWritePage = () => {
   };
 
   return (
-    <Wrapper ref={ref}>
+    <Wrapper>
       <Main>
         <div className='main-left'>
           <div className='menuSection'>
@@ -143,15 +151,20 @@ const BoardWritePage = () => {
               placeholder='제목'
             />
           </Title>
-          <TextEditor content={content} setContent={setContent} />
+          <TextEditor
+            content={content}
+            setContent={setContent}
+            images={images}
+            setImages={setImages}
+          />
         </div>
         <div className='main-right'>
           <ThumbnailSection>
             <label htmlFor='Thumbnail-image'>
-              {image.url ? (
+              {thumbnail.url ? (
                 <img
                   className='image image-Thumbnail'
-                  src={image?.url}
+                  src={thumbnail.url}
                   alt='썸네일 이미지'
                 />
               ) : (
@@ -162,10 +175,10 @@ const BoardWritePage = () => {
               ref={fileInputRef}
               id='Thumbnail-image'
               type='file'
-              onChange={uploadImage}
+              onChange={uploadThumbnail}
             />
-            {image.url && (
-              <button onClick={() => setImage({})}>
+            {thumbnail.url && (
+              <button onClick={() => setThumbnail({})}>
                 <img className='ic ic-cancel' src={icCancel} alt='취소' />
               </button>
             )}
@@ -200,8 +213,11 @@ const BoardWritePage = () => {
           </ContainedButton>
         </div>
       </Main>
-      {isLoading && 
-      <Spinner />}
+      {isLoading && (
+        <Background>
+          <Spinner />
+        </Background>
+      )}
     </Wrapper>
   );
 };
@@ -209,8 +225,6 @@ const BoardWritePage = () => {
 export default BoardWritePage;
 
 const Wrapper = styled.div`
-  height: 100%;
-  overflow-y: auto;
   .button {
     width: max-content;
   }
@@ -360,4 +374,15 @@ const HashtagSection = styled.div`
     justify-content: flex-start;
     padding: 1.5rem 0;
   }
+`;
+const Background = styled.div`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.7);
 `;

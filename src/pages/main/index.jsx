@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Tag from '../../components/tag/Tag';
@@ -6,15 +6,12 @@ import SearchInput from '../../components/common/input/SearchInput';
 import bgImage from '../../assets/images/mainPage/bg-01.jpg';
 import icSearch from '../../assets/icons/search-grey.svg';
 import { theme } from '../../styles/Theme';
-import useScroll from '../../hooks/useScroll';
 
 const MainPage = () => {
-  const ref = useRef(null);
   const navigate = useNavigate();
-  useScroll(ref);
 
   return (
-    <Wrapper ref={ref}>
+    <Wrapper>
       <SectionTop className='section-top'>
         <Copy>
           Ask. Share. Cook.
@@ -90,10 +87,7 @@ const MainPage = () => {
 
 export default MainPage;
 
-const Wrapper = styled.div`
-  height: 100%;
-  overflow-y: auto;
-`;
+const Wrapper = styled.div``;
 const SectionTop = styled.section`
   background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
     url(${bgImage});

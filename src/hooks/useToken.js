@@ -1,6 +1,6 @@
 import { useRecoilState } from 'recoil';
 import { accessTokenState } from '../recoil/auth/accessToken';
-import { URLEncodedApi } from '../apis/Config';
+import axios from 'axios';
 
 const useToken = () => {
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
@@ -12,17 +12,22 @@ const useToken = () => {
 
   const refresh = async () => {
     const aT = window.localStorage.getItem('aT');
-    const formData = new URLSearchParams({
-      accessToken: aT,
-      refreshToken,
-    });
-    window.localStorage.setItem('aT', '');
-    try {
-      const { data } = await URLEncodedApi.post('/v1/reissue', formData);
+    const formData = new FormData();
+    formData.append('accessToken', aT);
+    formData.append('refreshToken', refreshToken);
 
+    try {
+      const { data } =
+        aT &&
+        (await axios.post('/v1/reissue', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }));
+      window.localStorage.setItem('aT', '');
       setAccessToken(data.accessToken);
       window.localStorage.setItem('refresh_token', data.refreshToken);
-    } catch (e) {}
+    } catch (e) {
+      window.localStorage.setItem('aT', '');
+    }
   };
   return {
     beforeRefresh,

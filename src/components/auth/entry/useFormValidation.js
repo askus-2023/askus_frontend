@@ -1,31 +1,31 @@
+import { useCallback, useMemo } from 'react';
+
 const useFormValidation = () => {
-  const validateEmail = (email) => {
-    const emailRegEx =
-      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-    if (!email || !emailRegEx.test(email)) {
-      return { isValid: false, errMsg: '이메일을 확인해주세요' };
-    }
-    return { isValid: true };
-  };
+  const emailRegEx = useMemo(
+    () =>
+      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i,
+    []
+  );
 
-  const validatePassword = (password) => {
-    if (!password) {
-      return { isValid: false, errMsg: '비밀번호를 입력해주세요' };
-    }
-    return { isValid: true };
-  };
+  const validateEmail = useCallback(
+    (email) => {
+      if (!email || !emailRegEx.test(email)) {
+        return false;
+      }
+      return true;
+    },
+    [emailRegEx]
+  );
 
-  const validateNickname = (nickname) => {
-    if (!nickname) {
-      return { isValid: false, errMsg: '닉네임을 입력해주세요' };
-    }
-    return { isValid: true };
-  };
+  // const validatePassword = useCallback((password) => {
+  //   if (!password) {
+  //     return false;
+  //   }
+  //   return true;
+  // }, []);
 
   return {
     validateEmail,
-    validatePassword,
-    validateNickname,
   };
 };
 
