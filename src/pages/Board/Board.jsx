@@ -5,7 +5,6 @@ import { theme } from '../../styles/Theme';
 import ContainedButton from '../../components/common/button/ContainedButton';
 import SelectButton from '../../components/common/button/SelectButton';
 import Pagination from '../../components/common/pagination/Pagination';
-import useScroll from '../../hooks/useScroll';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
 import { authModalState } from '../../recoil/auth/authModal';
@@ -32,7 +31,6 @@ const Board = () => {
   const [page, setPage] = useState(1);
   const accessToken = useRecoilValue(accessTokenState);
   const [, openModal] = useRecoilState(authModalState);
-  const ref = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -80,10 +78,8 @@ const Board = () => {
     }
   }, [location.pathname]);
 
-  useScroll(ref);
-
   return (
-    <Wrapper ref={ref}>
+    <Wrapper>
       <div className='top-section-wrapper'>
         <TopSection>
           <CategorySection>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
@@ -6,7 +6,6 @@ import profile from '../../assets/images/default-profile.png';
 import OutlinedButton from '../../components/common/button/OutlinedButton';
 import SquareCard from '../../components/common/card/SquareCard';
 import exPost from '../Board/DummyPost';
-import useScroll from '../../hooks/useScroll';
 import { viewProfile } from '../../apis/profile';
 import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
@@ -16,11 +15,8 @@ const Profile = () => {
   const [selectedCate, setSelectedCate] = useState('작성글');
   const [myPost, setMyPost] = useState();
 
-  const ref = useRef(null);
   const navigate = useNavigate();
   const accessToken = useRecoilValue(accessTokenState);
-
-  useScroll(ref);
 
   const { data, isLoading, error } = useQuery('profile', () => {
     return viewProfile({
@@ -52,7 +48,7 @@ const Profile = () => {
   };
 
   return (
-    <Wrapper ref={ref}>
+    <Wrapper>
       <TopSection>
         <Info>
           <img src={data.profileImageUrl} alt='profile' />
@@ -127,13 +123,11 @@ export default Profile;
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 4rem;
   padding: 13rem 0;
-  overflow-y: auto;
 `;
 
 const TopSection = styled.div`

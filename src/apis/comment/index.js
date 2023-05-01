@@ -1,7 +1,7 @@
-import { api } from '../Config';
+import { rawApi } from '../Config';
 
 export const createComment = async ({ boardId, content, accessToken }) => {
-  const response = api.post(
+  const response = rawApi.post(
     `/v1/boards/${boardId}/replies`,
     {
       content,
@@ -19,7 +19,7 @@ export const editComment = async ({
   content,
   accessToken,
 }) => {
-  const response = await api.patch(
+  const response = await rawApi.patch(
     `/v1/boards/${boardId}/replies/${commentId}`,
     {
       data: { content },
@@ -30,7 +30,7 @@ export const editComment = async ({
 };
 
 export const deleteComment = async ({ boardId, commentId, accessToken }) => {
-  const response = await api.delete(
+  const response = await rawApi.delete(
     `/v1/boards/${boardId}/replies/${commentId}`,
     {
       headers: { Authorization: `Bearer ${accessToken}` },

@@ -28,8 +28,7 @@ const BoardDetailPage = () => {
       getBoardDetail({
         id: boardId,
         accessToken,
-      }),
-    {
+      }), {
       staleTime: 30,
     }
   );
