@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
@@ -7,13 +7,43 @@ import OutlinedButton from '../../components/common/button/OutlinedButton';
 import SquareCard from '../../components/common/card/SquareCard';
 import exPost from '../Board/DummyPost';
 import useScroll from '../../hooks/useScroll';
+import { viewProfile } from '../../apis/profile';
+import { useQuery } from 'react-query';
+import { useRecoilValue } from 'recoil';
+import { accessTokenState } from '../../recoil/auth/accessToken';
 
 const Profile = () => {
   const [selectedCate, setSelectedCate] = useState('작성글');
+  const [myPost, setMyPost] = useState();
+
   const ref = useRef(null);
   const navigate = useNavigate();
+  const accessToken = useRecoilValue(accessTokenState);
 
   useScroll(ref);
+
+  const { data, isLoading, error } = useQuery('profile', () => {
+    return viewProfile({
+      accessToken: accessToken,
+    });
+  });
+
+  const profileData = data;
+
+  useEffect(() => {
+    if (data) {
+      setMyPost(data.boards);
+    }
+    console.log(myPost);
+  }, [data, myPost]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>An error has occurred: {error.message}</div>;
+  }
 
   const postcategory = ['작성글', '좋아요'];
 
@@ -25,16 +55,22 @@ const Profile = () => {
     <Wrapper ref={ref}>
       <TopSection>
         <Info>
-          <img src={profile} alt='profile' />
+          <img src={data.profileImageUrl} alt='profile' />
           <div className='infotxt'>
             <Greettxt>
-              <span>아무개</span> 님, 반가워요!
+              <span>{data.nickname}</span> 님, 반가워요!
             </Greettxt>
             <div>abc@email.com</div>
           </div>
         </Info>
         <div>
-          <OutlinedButton onClick={() => navigate('edit')}>
+          <OutlinedButton
+            onClick={() =>
+              navigate('edit', {
+                state: profileData,
+              })
+            }
+          >
             내 정보 수정
           </OutlinedButton>
         </div>
@@ -48,37 +84,40 @@ const Profile = () => {
               value={cate}
               onClick={categoryHandler}
             >
-              {cate}(2)
+              {cate}({myPost && myPost.length})
             </button>
           ))}
         </PostCategory>
-        <PostCard>
-          {selectedCate === '좋아요'
-            ? exPost
-                .map((post) => (
+        <div>
+          <PostCard>
+            {selectedCate === '좋아요'
+              ? exPost
+                  .map((post) => (
+                    <SquareCard
+                      key={post.id}
+                      thumbnail={post.thumbnail}
+                      menu={post.menu}
+                      title={post.title}
+                      category={post.category}
+                      date={new Date(post.date)}
+                      like={post.like}
+                    />
+                  ))
+                  .filter((post) => post.props.like === true)
+              : myPost &&
+                myPost.map((post) => (
                   <SquareCard
-                    key={post.id}
-                    thumbnail={post.thumbnail}
-                    menu={post.menu}
+                    key={post.boardId}
+                    thumbnail={post.thumbnailImage}
+                    menu={post.foodName}
                     title={post.title}
                     category={post.category}
-                    date={new Date(post.date)}
+                    date={post.createdAt}
                     like={post.like}
                   />
-                ))
-                .filter((post) => post.props.like === true)
-            : exPost.map((post) => (
-                <SquareCard
-                  key={post.id}
-                  thumbnail={post.thumbnail}
-                  menu={post.menu}
-                  title={post.title}
-                  category={post.category}
-                  date={new Date(post.date)}
-                  like={post.like}
-                />
-              ))}
-        </PostCard>
+                ))}
+          </PostCard>
+        </div>
       </div>
     </Wrapper>
   );
@@ -91,7 +130,7 @@ const Wrapper = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 4rem;
   padding: 13rem 0;
   overflow-y: auto;
@@ -132,8 +171,8 @@ const Greettxt = styled.div`
 const PostCategory = styled.div`
   display: flex;
   gap: 2rem;
-  border-bottom: 0.1rem solid gray;
-  margin: auto 19rem;
+  border-bottom: 0.1rem solid ${theme.colors.grey40};
+  margin: auto 23rem;
   cursor: pointer;
   button {
     width: 10rem;
@@ -150,8 +189,9 @@ const PostCategory = styled.div`
 
 const PostCard = styled.div`
   display: flex;
-  margin: 2rem 16rem;
+  margin: 2rem 23rem;
   justify-content: space-between;
   flex-direction: row;
+  justify-content: space-between;
   flex-wrap: wrap;
 `;
