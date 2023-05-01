@@ -26,6 +26,8 @@ jobs:
         run: node -v
         
       - name: Generate Environment Variables File for Production
+        run: 
+          echo "VITE_API_URL=$VITE_API_URL" >> .env
         env: 
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
