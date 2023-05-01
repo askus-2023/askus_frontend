@@ -108,11 +108,11 @@ const Profile = () => {
                 myPost.map((post) => (
                   <SquareCard
                     key={post.boardId}
-                    thumbnail={post.thumbnailImage}
+                    thumbnail={post.thumbnailImageUrl}
                     menu={post.foodName}
                     title={post.title}
                     category={post.category}
-                    date={post.createdAt}
+                    date={new Date(post.createdAt)}
                     like={post.like}
                   />
                 ))}

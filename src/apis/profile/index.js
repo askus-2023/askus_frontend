@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { URLEncodedApi, formDataApi, rawApi } from '../config';
+import { formDataApi, rawApi } from '../Config';
 
 export const viewProfile = async ({ accessToken }) => {
   try {
