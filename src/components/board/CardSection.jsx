@@ -40,8 +40,8 @@ const CardSection = ({ tag }) => {
           </SpinnerWrapper>
         </>
       )}
-      <div>
-        <CardWrapper className='card-wrapper'>
+      <div className='container'>
+        <CardWrapper>
           {isSuccess &&
             data
               .slice(offset, offset + limit)
@@ -72,9 +72,10 @@ const CardSection = ({ tag }) => {
 export default CardSection;
 
 const Wrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  margin: 6.8rem 0;
+  margin: 6.8rem auto;
+  .container {
+    display: flex;
+  }
 `;
 const SpinnerWrapper = styled.div`
   width: 100%;
@@ -84,8 +85,9 @@ const SpinnerWrapper = styled.div`
 `;
 const CardWrapper = styled.div`
   min-height: 2.4rem;
-  display: flex;
-  justify-content: flex-start;
-  flex-flow: row wrap;
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(auto-fill, 24rem);
+  justify-content: center;
   gap: 4rem;
 `;
