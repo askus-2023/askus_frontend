@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import useScroll from '../../hooks/useScroll';
 import { useLocation } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import { editPassword, editProfile } from '../../apis/profile';
@@ -8,7 +7,7 @@ import { theme } from '../../styles/Theme';
 import profile from '../../assets/images/default-profile.png';
 import icCancel from '../../assets/icons/cancel.svg';
 import TextInput from '../../components/common/input/TextInput';
-import useFormValidation from '../../components/auth/entry/useFormValidation';
+import useFormValidation from '../../hooks/useFormValidation';
 import ContainedButton from '../../components/common/button/ContainedButton';
 import { useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
@@ -36,7 +35,6 @@ const ProfileEdit = () => {
   } = useMutation(editProfile);
 
   const ref = useRef(null);
-  useScroll(ref);
 
   // console.log(profileData.state);
 
@@ -97,7 +95,7 @@ const ProfileEdit = () => {
   };
 
   return (
-    <Wrapper ref={ref}>
+    <Wrapper>
       <form onSubmit={editSubmitHandler}>
         <ProfileSection>
           <label htmlFor='profile-image'>
@@ -178,7 +176,6 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   margin: 13rem auto auto;
-  overflow-y: auto;
   .editbt {
     width: 40rem;
   }

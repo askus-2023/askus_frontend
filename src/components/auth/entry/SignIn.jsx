@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useState } from 'react';
 import styled from 'styled-components';
 import TextInput from '../../common/input/TextInput';
 import ContainedButton from '../../common/button/ContainedButton';
-import useFormValidation from './useFormValidation';
+import useFormValidation from '../../../hooks/useFormValidation';
 import { useMutation } from 'react-query';
 import { signIn } from '../../../apis/auth';
 import Spinner from '../../common/spinner/Spinner';

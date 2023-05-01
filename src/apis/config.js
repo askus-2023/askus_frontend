@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { aT } from '../App';
 
-export const api = axios.create({
+export const rawApi = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -44,17 +44,14 @@ const responseError = async (error) => {
   }
 };
 
-api.interceptors.request.use(requestCallback, requestErrorCallback);
+rawApi.interceptors.request.use(requestCallback, requestErrorCallback);
 formDataApi.interceptors.request.use(requestCallback, requestErrorCallback);
-api.interceptors.response.use(responseCallback, async (error) => {
+rawApi.interceptors.response.use(responseCallback, async (error) => {
   const prevRequest = responseError(error);
-  return api(prevRequest);
+  return rawApi(prevRequest);
 });
 formDataApi.interceptors.response.use(responseCallback, async (error) => {
   const prevRequest = responseError(error);
   return formDataApi(prevRequest);
 });
 
-export const rawApi = axios.create({
-  headers: { 'Content-Type': 'application/json' },
-});

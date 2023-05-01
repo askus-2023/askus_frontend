@@ -17,15 +17,24 @@ const useFormValidation = () => {
     [emailRegEx]
   );
 
-  // const validatePassword = useCallback((password) => {
-  //   if (!password) {
-  //     return false;
-  //   }
-  //   return true;
-  // }, []);
+  const validatePassword = useCallback((password) => {
+    if (!password) {
+      return false;
+    }
+    return true;
+  }, []);
+
+  const validateNickname = useCallback((nickname) => {
+    if (!nickname) {
+      return false;
+    }
+    return true;
+  }, []);
 
   return {
     validateEmail,
+    validatePassword,
+    validateNickname,
   };
 };
 

@@ -6,7 +6,7 @@ import defaultProfile from '../../../assets/images/default-profile.png';
 import icCancel from '../../../assets/icons/cancel.svg';
 import icCancelRed from '../../../assets/icons/cancel-red.svg';
 import icCheck from '../../../assets/icons/check.svg';
-import useFormValidation from './useFormValidation';
+import useFormValidation from '../../../hooks/useFormValidation';
 import { useMutation } from 'react-query';
 import { duplicationCheck, signUp } from '../../../apis/auth';
 import Spinner from '../../common/spinner/Spinner';
