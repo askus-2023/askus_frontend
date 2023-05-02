@@ -17,38 +17,45 @@ const UserComment = ({
   commentId,
   authorProfileImageUrl,
 }) => {
-  const [editMode, setEditMode] = useState(false)
+  const [editMode, setEditMode] = useState(false);
   const { displayDatetime } = useDatetimeFormat();
   const queryClient = useQueryClient();
   const deleteMutation = useMutation(deleteComment);
-  
+
   const deleteCommentHandler = () => {
     if (myReply) {
       if (confirm('정말 삭제하시겠습니까?')) {
-        deleteMutation.mutate({
-          boardId,
-          commentId,
-        }, {
-          onSuccess: () => queryClient.invalidateQueries([`boards/${boardId}/replies`]),
-        });
+        deleteMutation.mutate(
+          {
+            boardId,
+            commentId,
+          },
+          {
+            onSuccess: () =>
+              queryClient.invalidateQueries([`boards/${boardId}/replies`]),
+          }
+        );
       }
     } else {
-      alert('권한이 없습니다.')
+      alert('권한이 없습니다.');
     }
   };
 
   const editCommentHandler = () => {
     if (myReply) {
-      setEditMode(true)
+      setEditMode(true);
     } else {
-      alert('권한이 없습니다.')
+      alert('권한이 없습니다.');
     }
-  }
+  };
 
   return (
     <Wrapper>
       <Commenter>
-        <img src={authorProfileImageUrl ?? defaultProfile} alt='프로필 이미지' />
+        <img
+          src={authorProfileImageUrl ?? defaultProfile}
+          alt='프로필 이미지'
+        />
         <div>
           <div className='commenter-nickname'>{replyAuthor}</div>
           <div className='comment-created-at'>
@@ -57,22 +64,26 @@ const UserComment = ({
         </div>
       </Commenter>
       <div>
-      {!editMode ? (
-        <>
-          <Comment>
-            <p>{content}</p>
-          </Comment>
-          <Reply>
-            <ButtonWrapper>
-              <TextButton onClick={editCommentHandler} className='btn-edit'>
-                수정
-              </TextButton>
-              <TextButton onClick={deleteCommentHandler} className='btn-delete'>
-                삭제
-              </TextButton>
-            </ButtonWrapper>
-          </Reply>
-        </>) : (
+        {!editMode ? (
+          <>
+            <Comment>
+              <p>{content}</p>
+            </Comment>
+            <Reply>
+              <ButtonWrapper>
+                <TextButton onClick={editCommentHandler} className='btn-edit'>
+                  수정
+                </TextButton>
+                <TextButton
+                  onClick={deleteCommentHandler}
+                  className='btn-delete'
+                >
+                  삭제
+                </TextButton>
+              </ButtonWrapper>
+            </Reply>
+          </>
+        ) : (
           <EditComment>
             <WriteComment
               editMode={editMode}
@@ -121,7 +132,8 @@ const Comment = styled.div`
 const Reply = styled.div`
   width: 100%;
   position: relative;
-  .btn-edit, .btn-delete {
+  .btn-edit,
+  .btn-delete {
     justify-self: flex-end;
     margin-bottom: 1.6rem;
     button {

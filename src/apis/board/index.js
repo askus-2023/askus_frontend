@@ -31,13 +31,13 @@ export const getBoardList = async ({ tag, dateLoe, dateGoe, sortTarget }) => {
 };
 
 export const editBoard = async ({ boardId, data }) => {
-  const response = await formDataApi.patch(`/v1/boards/${boardId}`, data)
-  return response
-}
+  const response = await formDataApi.patch(`/v1/boards/${boardId}`, data);
+  return response;
+};
 
 export const deleteBoard = async ({ boardId }) => {
   const response = await rawApi.delete(`/v1/boards`, {
-    data: { boardIds: [boardId] }
-  })
-  return response
-}
+    data: { boardIds: [boardId] },
+  });
+  return response;
+};

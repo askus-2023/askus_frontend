@@ -6,53 +6,71 @@ import ContainedButton from '../common/button/ContainedButton';
 import TextButton from '../common/button/TextButton';
 import { createComment, editComment } from '../../apis/comment';
 
-const WriteComment = ({ boardId, editMode, commentId, existingComment, setEditMode }) => {
+const WriteComment = ({
+  boardId,
+  editMode,
+  commentId,
+  existingComment,
+  setEditMode,
+}) => {
   const [comment, setComment] = useState('');
-  const [newComment, setNewComment] = useState(existingComment ?? '')
+  const [newComment, setNewComment] = useState(existingComment ?? '');
   const [isOpen, open] = useState(true);
   const queryClient = useQueryClient();
   const createMutation = useMutation(createComment);
-  const editMutation = useMutation(editComment)
+  const editMutation = useMutation(editComment);
 
   const commentHandler = (e) => {
     e.preventDefault();
     if (!editMode) {
       if (comment) {
-        createMutation.mutate({
-          boardId,
-          content: comment,
-        }, {
-          onSuccess: () => {
-          setComment('');
-          queryClient.invalidateQueries([`boards/${boardId}/replies`]);
+        createMutation.mutate(
+          {
+            boardId,
+            content: comment,
           },
-        });
+          {
+            onSuccess: () => {
+              setComment('');
+              queryClient.invalidateQueries([`boards/${boardId}/replies`]);
+            },
+          }
+        );
       }
     } else {
       if (newComment) {
-        editMutation.mutate({
-          boardId,
-          commentId,
-          content: newComment
-        }, {
-          onSuccess: () => {
-            setComment('');
-            setEditMode(() => false)
-            queryClient.invalidateQueries([`boards/${boardId}/replies`]);
+        editMutation.mutate(
+          {
+            boardId,
+            commentId,
+            content: newComment,
+          },
+          {
+            onSuccess: () => {
+              setComment('');
+              setEditMode(() => false);
+              queryClient.invalidateQueries([`boards/${boardId}/replies`]);
+            },
           }
-        })
+        );
       }
     }
   };
   return (
     <Wrapper onClick={() => open(true)}>
       <FormEl isOpen={isOpen} onSubmit={commentHandler}>
-        {(!comment && !editMode) &&  <Placeholder>댓글을 작성해보세요</Placeholder>}
+        {!comment && !editMode && (
+          <Placeholder>댓글을 작성해보세요</Placeholder>
+        )}
         {isOpen && (
           <>
             <textarea
               value={!editMode ? comment : newComment}
-              onChange={(e) => !editMode ? setComment(e.target.value) : setNewComment(e.target.value)}
+              onChange={(e) =>
+                !editMode
+                  ? setComment(e.target.value)
+                  : setNewComment(e.target.value)
+              }
             />
             <ButtonWrapper>
               <TextButton

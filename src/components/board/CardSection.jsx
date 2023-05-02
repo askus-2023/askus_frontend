@@ -8,9 +8,9 @@ import Spinner from '../common/spinner/Spinner';
 
 const limit = 20;
 const filterMap = {
-  'NEWEST': 'CREATED_AT_DESC',
-  'LIKES': 'LIKE_COUNT_DESC'
-}
+  NEWEST: 'CREATED_AT_DESC',
+  LIKES: 'LIKE_COUNT_DESC',
+};
 
 const CardSection = ({ tag }) => {
   const { page, setPostLength, selected } = useOutletContext();
@@ -30,11 +30,11 @@ const CardSection = ({ tag }) => {
       onError: (res) => console.log(res),
     }
   );
-  
+
   useEffect(() => {
-    refetch()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected])
+    refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected]);
 
   return (
     <Wrapper>
@@ -45,12 +45,10 @@ const CardSection = ({ tag }) => {
           </SpinnerWrapper>
         </>
       )}
-      {isSuccess &&
+      {isSuccess && (
         <div className='container'>
           <CardWrapper>
-          {data
-            .slice(offset, offset + limit)
-            .map((post) => (
+            {data.slice(offset, offset + limit).map((post) => (
               <Card
                 key={post.id}
                 boardId={post.id}
@@ -66,10 +64,10 @@ const CardSection = ({ tag }) => {
                 myLike={post.myLike}
                 replyCount={post.replyCount}
               />
-            ))}   
+            ))}
           </CardWrapper>
         </div>
-      }
+      )}
     </Wrapper>
   );
 };

@@ -30,13 +30,16 @@ const BoardWritePage = () => {
   const [loading, setLoading] = useState(false);
   const { boardId } = useParams();
   const navigate = useNavigate();
-  const editMutation = useMutation(editBoard)
+  const editMutation = useMutation(editBoard);
   const queryClient = useQueryClient();
 
-  const { data, isLoading, isSuccess } = useQuery([`boards/${boardId}/edit`], () =>
-    getBoardDetail({ boardId }), {
-      staleTime: Infinity
-    })
+  const { data, isLoading, isSuccess } = useQuery(
+    [`boards/${boardId}/edit`],
+    () => getBoardDetail({ boardId }),
+    {
+      staleTime: Infinity,
+    }
+  );
 
   const uploadThumbnail = () => {
     const file = fileInputRef.current?.files;
@@ -81,156 +84,162 @@ const BoardWritePage = () => {
       }
     }
     formData.append('thumbnailImageUpdate', thumbnailUpdate);
-    formData.append('representativeImageUpdate', true)
-    editMutation.mutate({
-      boardId,
-      data: formData,
-    }, {
-      onSuccess: () => {
-        queryClient.invalidateQueries([`boards/${boardId}/edit`]);
-        queryClient.invalidateQueries([`boards/${boardId}`]);
-        queryClient.invalidateQueries(['boards']);
-        navigate(`/board/${boardId}`);
+    formData.append('representativeImageUpdate', true);
+    editMutation.mutate(
+      {
+        boardId,
+        data: formData,
       },
-      onError: (err) => alert(err),
-      onSettled: () => {
-        setLoading(false);
-      },
-    });
-    setLoading(false)
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries([`boards/${boardId}/edit`]);
+          queryClient.invalidateQueries([`boards/${boardId}`]);
+          queryClient.invalidateQueries(['boards']);
+          navigate(`/board/${boardId}`);
+        },
+        onError: (err) => alert(err),
+        onSettled: () => {
+          setLoading(false);
+        },
+      }
+    );
+    setLoading(false);
   };
 
   useEffect(() => {
     if (isSuccess) {
-      setTitle(data.title)
-      setMenu(data.foodName)
-      setIngredients(data.ingredients)
-      setSelectedFilter(data.category)
-      setContent(data.content)
+      setTitle(data.title);
+      setMenu(data.foodName);
+      setIngredients(data.ingredients);
+      setSelectedFilter(data.category);
+      setContent(data.content);
       setThumbnail((prev) => {
         return {
           ...prev,
-          url: data.thumbnailImageUrl
-        }
-      })
+          url: data.thumbnailImageUrl,
+        };
+      });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccess])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess]);
 
   useEffect(() => {
     if (isSuccess) {
-      const fetchedTags = data.tag?.length && data.tag?.split(',')
-      fetchedTags && setAllTag([...fetchedTags])
+      const fetchedTags = data.tag?.length && data.tag?.split(',');
+      fetchedTags && setAllTag([...fetchedTags]);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccess])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess]);
 
   useEffect(() => {
-    (isSuccess && quillRef) && updateImageUrl(quillRef, data.representativeImageUrls);
+    isSuccess &&
+      quillRef &&
+      updateImageUrl(quillRef, data.representativeImageUrls);
   }, [data, isSuccess, quillRef]);
 
   return (
     <Wrapper>
-      {isSuccess && 
-      <Main>
-        <div className='main-left'>
-          <div className='menuSection'>
-            <SelectButton
-              onChange={filterHandler}
-              option={filterOption}
-              selected={selectedfilter}
-            />
-            <Menu>
-              <label htmlFor='menu'>
-                <span>메뉴: </span>
-                <input
-                  id='menu'
-                  className='input-menu'
-                  value={menu}
-                  onChange={(e) => setMenu(e.target.value)}
-                />
-              </label>
-              <div className='partition' />
-              <label htmlFor='ingredients'>
-                <span>재료:</span>
-                <input
-                  className='input-ingredients'
-                  value={ingredients}
-                  onChange={(e) => setIngredients(e.target.value)}
-                />
-              </label>
-            </Menu>
-          </div>
-          <Title>
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder='제목'
-            />
-          </Title>
-          <TextEditor
-            refCallback={setQuillRef}
-            content={content}
-            setContent={setContent}
-            images={images}
-            setImages={setImages}
-          />
-        </div>
-        <div className='main-right'>
-          <ThumbnailSection>
-            <label htmlFor='Thumbnail-image'>
-              {thumbnail.url ? (
-                <img
-                  className='image image-Thumbnail'
-                  src={thumbnail.url}
-                  alt='썸네일 이미지'
-                />
-              ) : (
-                <div className='default-upload'>썸네일을 등록해주세요.</div>
-              )}
-            </label>
-            <input
-              ref={fileInputRef}
-              id='Thumbnail-image'
-              type='file'
-              onChange={uploadThumbnail}
-            />
-            {thumbnail.url && (
-              <button onClick={() => setThumbnail({})}>
-                <img className='ic ic-cancel' src={icCancel} alt='취소' />
-              </button>
-            )}
-          </ThumbnailSection>
-          <HashtagSection>
-            <SearchInput
-              className='hashtag'
-              placeholder='# 해시태그'
-              value={tag}
-              alwaysVisible={true}
-              onSubmit={hashtagHandler}
-              onChange={(e) => setTag(e.target.value)}
-            />
-            <div className='hashtagword'>
-              {allTag.map((tag, idx) => (
-                <div className='hashtag' key={idx}>
-                  <Hashtag>
-                    <span># {tag}</span>
-                    <button
-                      className='btn-delete'
-                      onClick={() => deleteHashTag(idx)}
-                    >
-                      <img className='ic ic-delete' src={icAdd} alt='삭제' />
-                    </button>
-                  </Hashtag>
-                </div>
-              ))}
+      {isSuccess && (
+        <Main>
+          <div className='main-left'>
+            <div className='menuSection'>
+              <SelectButton
+                onChange={filterHandler}
+                option={filterOption}
+                selected={selectedfilter}
+              />
+              <Menu>
+                <label htmlFor='menu'>
+                  <span>메뉴: </span>
+                  <input
+                    id='menu'
+                    className='input-menu'
+                    value={menu}
+                    onChange={(e) => setMenu(e.target.value)}
+                  />
+                </label>
+                <div className='partition' />
+                <label htmlFor='ingredients'>
+                  <span>재료:</span>
+                  <input
+                    className='input-ingredients'
+                    value={ingredients}
+                    onChange={(e) => setIngredients(e.target.value)}
+                  />
+                </label>
+              </Menu>
             </div>
-          </HashtagSection>
-          <ContainedButton onClick={editBoardHandler} className='button'>
-            등록
-          </ContainedButton>
-        </div>
-      </Main>}
+            <Title>
+              <input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder='제목'
+              />
+            </Title>
+            <TextEditor
+              refCallback={setQuillRef}
+              content={content}
+              setContent={setContent}
+              images={images}
+              setImages={setImages}
+            />
+          </div>
+          <div className='main-right'>
+            <ThumbnailSection>
+              <label htmlFor='Thumbnail-image'>
+                {thumbnail.url ? (
+                  <img
+                    className='image image-Thumbnail'
+                    src={thumbnail.url}
+                    alt='썸네일 이미지'
+                  />
+                ) : (
+                  <div className='default-upload'>썸네일을 등록해주세요.</div>
+                )}
+              </label>
+              <input
+                ref={fileInputRef}
+                id='Thumbnail-image'
+                type='file'
+                onChange={uploadThumbnail}
+              />
+              {thumbnail.url && (
+                <button onClick={() => setThumbnail({})}>
+                  <img className='ic ic-cancel' src={icCancel} alt='취소' />
+                </button>
+              )}
+            </ThumbnailSection>
+            <HashtagSection>
+              <SearchInput
+                className='hashtag'
+                placeholder='# 해시태그'
+                value={tag}
+                alwaysVisible={true}
+                onSubmit={hashtagHandler}
+                onChange={(e) => setTag(e.target.value)}
+              />
+              <div className='hashtagword'>
+                {allTag.map((tag, idx) => (
+                  <div className='hashtag' key={idx}>
+                    <Hashtag>
+                      <span># {tag}</span>
+                      <button
+                        className='btn-delete'
+                        onClick={() => deleteHashTag(idx)}
+                      >
+                        <img className='ic ic-delete' src={icAdd} alt='삭제' />
+                      </button>
+                    </Hashtag>
+                  </div>
+                ))}
+              </div>
+            </HashtagSection>
+            <ContainedButton onClick={editBoardHandler} className='button'>
+              등록
+            </ContainedButton>
+          </div>
+        </Main>
+      )}
       {(loading || isLoading) && (
         <Background>
           <Spinner />

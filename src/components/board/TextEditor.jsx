@@ -19,7 +19,13 @@ const Image = Quill.import('formats/image');
 Image.sanitize = (url) => url;
 Quill.register(Image, true);
 
-const TextEditor = ({ content, setContent, images, setImages, refCallback }) => {
+const TextEditor = ({
+  content,
+  setContent,
+  images,
+  setImages,
+  refCallback,
+}) => {
   const wrapperRef = useRef();
   const [targetNode, setTargetNode] = useState();
   const quillRef = useRef();
@@ -77,9 +83,9 @@ const TextEditor = ({ content, setContent, images, setImages, refCallback }) => 
 
   useEffect(() => {
     if (refCallback) {
-      wrapperRef && refCallback(() => wrapperRef)
+      wrapperRef && refCallback(() => wrapperRef);
     }
-  }, [wrapperRef, refCallback])
+  }, [wrapperRef, refCallback]);
 
   const fileEvent = useCallback(
     (e) => {
