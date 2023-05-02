@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
+import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import icArrow from '../../assets/icons/arrow-up.svg';
 import UserComment from './UserComment';
 import WriteComment from './WriteComment';
-import { useRecoilValue } from 'recoil';
-import { accessTokenState } from '../../recoil/auth/accessToken';
+import Spinner from '../common/spinner/Spinner';
+import { getComments } from '../../apis/comment';
 
-const CommentBox = ({ comments, boardId }) => {
+const CommentBox = ({ boardId }) => {
   const [isOpenComment, openComment] = useState(true);
-  const accessToken = useRecoilValue(accessTokenState);
+  const { data, isLoading, isSuccess } = useQuery([`boards/${boardId}/replies`], () =>
+    getComments({ boardId }))
 
   return (
     <Wrapper>
@@ -18,7 +20,7 @@ const CommentBox = ({ comments, boardId }) => {
         isOpen={isOpenComment}
         onClick={() => openComment(!isOpenComment)}
       >
-        <p>댓글 ({comments.length})</p>
+        <p>댓글 ({data?.length})</p>
         <img src={icArrow} alt='아이콘' />
       </Header>
       {isOpenComment && (
@@ -26,21 +28,30 @@ const CommentBox = ({ comments, boardId }) => {
           <div className='body__write-comment'>
             <WriteComment type='comment' boardId={boardId} />
           </div>
-          <div className='body__user-comments'>
-            {comments
-              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-              .map((value) => (
-                <div key={value.createdAt}>
-                  <UserComment
-                    content={value.content}
-                    replyAuthor={value.replyAuthor}
-                    createdAt={value.createdAt}
-                    boardId={boardId}
-                    accessToken={accessToken}
-                  />
-                </div>
-              ))}
-          </div>
+          {isLoading && 
+            <SpinnerWrapper>
+              <Spinner />
+            </SpinnerWrapper>
+          }
+          {isSuccess && 
+            <div className='body__user-comments'>
+              {data
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .map((value) => (
+                  <div key={value.createdAt}>
+                    <UserComment
+                      content={value.content}
+                      replyAuthor={value.replyAuthor}
+                      createdAt={value.createdAt}
+                      boardId={boardId}
+                      myReply={value.myReply}
+                      commentId={value.replyId}
+                      authorProfileImageUrl={value.authorProfileImageUrl}
+                    />
+                  </div>
+                ))}
+            </div>
+          }
         </Body>
       )}
     </Wrapper>
@@ -50,6 +61,9 @@ const CommentBox = ({ comments, boardId }) => {
 export default CommentBox;
 
 const Wrapper = styled.div`
+  min-width: 28rem;
+  max-width: 45rem;
+  flex-shrink: 0;
   font-size: 1.2rem;
   border: 0.1rem solid ${theme.colors.grey30};
   border-radius: 0.8rem;
@@ -78,3 +92,10 @@ const Body = styled.div`
     ${theme.options.scrollBar};
   }
 `;
+const SpinnerWrapper = styled.div`
+  padding: 2rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+`

@@ -19,7 +19,7 @@ const Image = Quill.import('formats/image');
 Image.sanitize = (url) => url;
 Quill.register(Image, true);
 
-const TextEditor = ({ content, setContent, images, setImages }) => {
+const TextEditor = ({ content, setContent, images, setImages, refCallback }) => {
   const wrapperRef = useRef();
   const [targetNode, setTargetNode] = useState();
   const quillRef = useRef();
@@ -53,8 +53,6 @@ const TextEditor = ({ content, setContent, images, setImages }) => {
           }
         }
       }
-
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
     [images, imageCounter, setImages]
   );
@@ -76,6 +74,10 @@ const TextEditor = ({ content, setContent, images, setImages }) => {
       });
     }
   }, [observer, targetNode]);
+
+  useEffect(() => {
+    wrapperRef && refCallback(() => wrapperRef)
+  }, [wrapperRef, refCallback])
 
   const fileEvent = useCallback(
     (e) => {

@@ -28,13 +28,22 @@ const MainPage = () => {
                   navigate('/board', { state: { category: '한식' } })
                 }
               >
+                <Tag className='category-item'>전체</Tag>
+              </button>
+            </li>
+            <li className='category'>
+              <button
+                onClick={() =>
+                  navigate('/board/korean', { state: { category: '한식' } })
+                }
+              >
                 <Tag className='category-item'>한식</Tag>
               </button>
             </li>
             <li className='category'>
               <button
                 onClick={() =>
-                  navigate('/board', { state: { category: '양식' } })
+                  navigate('/board/western', { state: { category: '양식' } })
                 }
               >
                 <Tag className='category-item'>양식</Tag>
@@ -43,7 +52,7 @@ const MainPage = () => {
             <li className='category'>
               <button
                 onClick={() =>
-                  navigate('/board', { state: { category: '일식' } })
+                  navigate('/board/japanese', { state: { category: '일식' } })
                 }
               >
                 <Tag className='category-item'>일식</Tag>
@@ -52,7 +61,7 @@ const MainPage = () => {
             <li className='category'>
               <button
                 onClick={() =>
-                  navigate('/board', { state: { category: '중식' } })
+                  navigate('/board/chinese', { state: { category: '중식' } })
                 }
               >
                 <Tag className='category-item'>중식</Tag>
@@ -61,7 +70,7 @@ const MainPage = () => {
             <li className='category'>
               <button
                 onClick={() =>
-                  navigate('/board', { state: { category: '기타' } })
+                  navigate('/board/etc', { state: { category: '기타' } })
                 }
               >
                 <Tag className='category-item'>기타</Tag>
@@ -117,8 +126,11 @@ const CategoryWrapper = styled.div`
   }
   .category-item {
     .tag-container {
-      padding: 0.8rem 2.4rem;
+      padding: 0.8rem 1.8rem;
       background: rgba(0, 0, 0, 0.75);
+      .tag-name {
+        font-size: 1.6rem;
+      }
       &:hover {
         background: rgba(0, 0, 0, 0.6);
         box-shadow: -0.2rem -0.2rem 0.4rem rgba(255, 255, 255, 0.2) inset;

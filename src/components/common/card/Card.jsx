@@ -68,7 +68,7 @@ const Card = ({
   };
 
   const navigateHandler = () => {
-    navigate(`${boardId}`, {
+    navigate(`/board/${boardId}`, {
       state: { authorProfile: profile, likes, liked },
     });
   };
