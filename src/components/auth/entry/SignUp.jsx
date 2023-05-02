@@ -277,7 +277,7 @@ const SignUp = ({ setPhase }) => {
 
   return (
     <Wrapper>
-      <form onSubmit={signUpHandler}>
+      <form onSubmit={signUpHandler} className='signup-form'>
         <ProfileSection>
           <label htmlFor='profile-image'>
             <img
@@ -383,8 +383,7 @@ export default SignUp;
 
 const Wrapper = styled.div`
   padding: 2.4rem 2rem;
-
-  form {
+  .signup-form {
     display: flex;
     flex-direction: column;
     align-items: center;

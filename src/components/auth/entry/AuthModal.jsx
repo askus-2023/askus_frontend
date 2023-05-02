@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import SignUp from './SignUp';
 import icClose from '../../../assets/icons/close.svg';
@@ -6,19 +6,27 @@ import { theme } from '../../../styles/Theme';
 import SignIn from './SignIn';
 import { useRecoilState } from 'recoil';
 import { authModalState } from '../../../recoil/auth/authModal';
+import { modalMount, modalUnmount } from '../../../animation/Modal';
+
 const AuthModal = ({ phase, setPhase }) => {
   const [, openModal] = useRecoilState(authModalState);
+  const [animation, setAnimation] = useState('modal-mount');
+
+  const handleCloseModal = (value) => {
+    setAnimation('modal-unmount');
+    setTimeout(() => openModal(value), 150);
+  }
 
   return (
     <Wrapper>
       <Overlay className='overlay' />
-      <ModalWrapper>
+      <ModalWrapper className={animation}>
         <Header>
           <div />
           <div className='modal__header-title'>
             {phase === 'signup' ? '회원가입' : '로그인'}
           </div>
-          <button onClick={() => openModal(false)}>
+          <button onClick={() => handleCloseModal(false)}>
             <img src={icClose} alt='닫기' />
           </button>
         </Header>
@@ -29,7 +37,7 @@ const AuthModal = ({ phase, setPhase }) => {
           {phase === 'signup' ? (
             <SignUp setPhase={setPhase} />
           ) : (
-            <SignIn openModal={openModal} />
+            <SignIn closeModal={handleCloseModal} />
           )}
           <Toggle>
             {phase === 'signup' ? (
@@ -56,6 +64,15 @@ const Wrapper = styled.div`
   height: 100vh;
   position: fixed;
   z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .modal-mount {
+    animation: ${modalMount} 0.2s;
+  }
+  .modal-unmount {
+    animation: ${modalUnmount} 0.2s;
+  }
 `;
 const Overlay = styled.div`
   position: fixed;
@@ -68,10 +85,8 @@ const Overlay = styled.div`
 const ModalWrapper = styled.div`
   max-width: 44rem;
   padding-bottom: 2.4rem;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
+  z-index: 11;
   background-color: white;
   border-radius: 0.6rem;
 `;
@@ -109,6 +124,7 @@ const Toggle = styled.div`
   }
 `;
 const InputForm = styled.div`
-  max-height: calc(100vh - 180px);
+  max-height: calc(100vh - 16rem);
   overflow-y: auto;
+  overflow-x: hidden;
 `;

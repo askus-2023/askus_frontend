@@ -32,6 +32,7 @@ const Header = () => {
   const accessToken = useRecoilValue(accessTokenState);
   const [isOpenModal, openModal] = useRecoilState(authModalState);
   const [isOpenPopup, openPopup] = useState(false);
+  const [animation, setAnimation] = useState('popup-mount');
   const profileImage = window.localStorage.getItem('profile_img');
 
   const calculateAlpha = useMemo(
@@ -48,15 +49,15 @@ const Header = () => {
   const closePopup = useCallback(
     (e) => {
       const target = e.target;
-      if (isOpenPopup && !popupRef.current?.contains(target)) {
-        openPopup(false);
-      }
       if (profileRef.current?.contains(target)) {
+        setAnimation('popup-mount');
         openPopup(true);
+      } else {
+        setAnimation('popup-unmount')
+        setTimeout(() => openPopup(false), 300)
+        console.log('HI')
       }
-    },
-    [isOpenPopup]
-  );
+    }, []);
 
   useEffect(() => {
     document.addEventListener('scroll', calculateAlpha, { passive: true });
@@ -92,7 +93,7 @@ const Header = () => {
           )}
           {accessToken ? (
             <li className='header-action__profile'>
-              <ProfileWrapper ref={profileRef} onClick={() => openPopup(true)}>
+              <ProfileWrapper ref={profileRef}>
                 <img src={icBurgerSimple} alt='메뉴 아이콘' />
                 <img
                   className='profile-image'
@@ -104,7 +105,7 @@ const Header = () => {
                   alt='프로필 아이콘'
                 />
               </ProfileWrapper>
-              {isOpenPopup && <HeaderPopup ref={popupRef} />}
+              {isOpenPopup && <HeaderPopup ref={popupRef} className={animation} />}
             </li>
           ) : (
             <>

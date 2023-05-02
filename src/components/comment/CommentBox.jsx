@@ -7,6 +7,7 @@ import UserComment from './UserComment';
 import WriteComment from './WriteComment';
 import Spinner from '../common/spinner/Spinner';
 import { getComments } from '../../apis/comment';
+import { commentMount } from '../../animation/Comment';
 
 const CommentBox = ({ boardId }) => {
   const [isOpenComment, openComment] = useState(true);
@@ -25,6 +26,7 @@ const CommentBox = ({ boardId }) => {
       </Header>
       {isOpenComment && (
         <Body className='body'>
+          <div className='body-animator' />
           <div className='body__write-comment'>
             <WriteComment type='comment' boardId={boardId} />
           </div>
@@ -80,9 +82,21 @@ const Header = styled.div`
   }
 `;
 const Body = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 3.2rem;
+  .body-animator {
+    width: 102%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 10;
+    animation: ${commentMount} 0.6s;
+    animation-fill-mode: forwards;
+    transform-origin: center bottom;
+    background-color: white;
+  }
   .body__write-comment {
     padding: 0 1.2rem;
   }
