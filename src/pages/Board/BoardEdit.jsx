@@ -26,6 +26,7 @@ const BoardWritePage = () => {
   const [thumbnail, setThumbnail] = useState({});
   const [tag, setTag] = useState('');
   const [allTag, setAllTag] = useState([]);
+  const [thumbnailUpdate, setThumbnailUpdate] = useState(false);
   const [loading, setLoading] = useState(false);
   const { boardId } = useParams();
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ const BoardWritePage = () => {
   const uploadThumbnail = () => {
     const file = fileInputRef.current?.files;
     if (file && file[0]) {
+      setThumbnailUpdate(true);
       setThumbnail({ image: file[0], url: URL.createObjectURL(file[0]) });
     }
   };
@@ -78,6 +80,8 @@ const BoardWritePage = () => {
         formData.append('representativeImages', image);
       }
     }
+    formData.append('thumbnailImageUpdate', thumbnailUpdate);
+    formData.append('representativeImageUpdate', true)
     editMutation.mutate({
       boardId,
       data: formData,

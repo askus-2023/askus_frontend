@@ -101,7 +101,7 @@ const BoardDetailPage = () => {
           >
             <div className='thumbnail__info thumbnail__info-left'>
               <Name>
-                [{categoryMap[data.category]}] {data.foodName}
+                [{categoryMap[data.category]}] {data.foodName}: {data.ingredients}
               </Name>
               <Title>{data.title}</Title>
             </div>
@@ -191,14 +191,14 @@ const Thumbnail = styled.div`
   }
   .thumbnail__info-left {
     padding: 0 2rem 0 1.2rem;
-    flex: 0 1 60%;
+    flex: 0 1 70%;
     gap: 1.6rem;
     font-size: 2.2rem;
     line-height: 2.8rem;
   }
   .thumbnail__info-right {
     padding: 0 1.2rem 0 2rem;
-    flex: 0 1 40%;
+    flex: 0 1 30%;
     display: flex;
     font-size: 1.6rem;
     justify-content: flex-end;
@@ -224,11 +224,12 @@ const Content = styled.div`
     }
   }
   .content-right {
+    direction: rtl;
     padding: 0 1.2rem;
-    flex: 0 1 40%;
-    display: flex;
-    flex-direction: column;
-    gap: 3rem;
+    flex: 1 1 40%;
+  }
+  .content-right > * {
+    direction: ltr;
   }
 `;
 const MainContent = styled.div`
@@ -237,6 +238,7 @@ const MainContent = styled.div`
   padding-top: 1.8rem;
   .article {
     padding: 0 0.6rem;
+    font-size: 1.6rem;
     line-height: 1.6;
     display: flex;
     flex-direction: column;
@@ -303,8 +305,10 @@ const Author = styled.div`
   max-width: 45rem;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 3rem;
   .author-profile {
     display: flex;
+    float: right;
     align-items: center;
     gap: 1.2rem;
     img {

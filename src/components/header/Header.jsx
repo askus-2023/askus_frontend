@@ -37,8 +37,8 @@ const Header = () => {
   const calculateAlpha = useMemo(
     () =>
       throttle(() => {
-        if (window.scrollY < 400) {
-          setAlpha(window.scrollY / 400);
+        if (window.scrollY < 300) {
+          setAlpha(window.scrollY / 300);
         } else setAlpha(1);
         setScrollY(window.scrollY);
       }, 300),

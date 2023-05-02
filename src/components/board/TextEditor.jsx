@@ -76,7 +76,9 @@ const TextEditor = ({ content, setContent, images, setImages, refCallback }) => 
   }, [observer, targetNode]);
 
   useEffect(() => {
-    wrapperRef && refCallback(() => wrapperRef)
+    if (refCallback) {
+      wrapperRef && refCallback(() => wrapperRef)
+    }
   }, [wrapperRef, refCallback])
 
   const fileEvent = useCallback(

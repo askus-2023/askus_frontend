@@ -24,7 +24,6 @@ const Card = ({
   myLike,
   likeCount,
   replyCount,
-  accessToken,
 }) => {
   const { displayDatetime } = useDatetimeFormat();
   const [likes, setLikes] = useState(likeCount);
@@ -38,7 +37,6 @@ const Card = ({
       addLikeMutation.mutate(
         {
           boardId,
-          accessToken,
         },
         {
           onSuccess: (res) => {
@@ -55,7 +53,6 @@ const Card = ({
       removeLikeMutation.mutate(
         {
           boardId,
-          accessToken,
         },
         {
           onSuccess: () => {

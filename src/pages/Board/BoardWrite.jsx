@@ -92,6 +92,8 @@ const BoardWritePage = () => {
         formData.append('representativeImages', image);
       }
     }
+    formData.append('thumbnailImageUpdate', false)
+    formData.append('representativeImageUpdate', false)
     createMutation.mutate({
       data: formData,
     }, {
