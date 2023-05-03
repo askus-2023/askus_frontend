@@ -35,28 +35,32 @@ const BoardDetailPage = () => {
   const navigate = useNavigate();
   const addLikeMutation = useMutation(addLike);
   const removeLikeMutation = useMutation(removeLike);
-  const deleteBoardMutation = useMutation(deleteBoard)
+  const deleteBoardMutation = useMutation(deleteBoard);
   const queryClient = useQueryClient();
   const { data, isLoading, isSuccess } = useQuery(
     [`boards/${boardId}`],
     () =>
       getBoardDetail({
-        boardId
-      }), {
+        boardId,
+      }),
+    {
       staleTime: 30,
     }
   );
 
   const deleteBoardHandler = () => {
     if (confirm('정말 게시글을 삭제하시겠습니까?')) {
-      deleteBoardMutation.mutate({ boardId }, {
-        onSuccess: () => {
-          queryClient.invalidateQueries(['boards'])
-          navigate('/board')
+      deleteBoardMutation.mutate(
+        { boardId },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries(['boards']);
+            navigate('/board');
+          },
         }
-      })
+      );
     }
-  }
+  };
 
   const tags = useMemo(
     () => isSuccess && data.tag.length && data?.tag.split(','),
@@ -65,29 +69,37 @@ const BoardDetailPage = () => {
 
   const likeHandler = () => {
     if (data?.myLike) {
-      removeLikeMutation.mutate({
-        boardId
-      }, {
-        onSuccess: () => Promise.all([
-          queryClient.invalidateQueries([`boards/${boardId}`]),
-          queryClient.invalidateQueries(['boards'])
-        ])
-      })
+      removeLikeMutation.mutate(
+        {
+          boardId,
+        },
+        {
+          onSuccess: () =>
+            Promise.all([
+              queryClient.invalidateQueries([`boards/${boardId}`]),
+              queryClient.invalidateQueries(['boards']),
+            ]),
+        }
+      );
     } else {
-      addLikeMutation.mutate({
-        boardId
-      }, {
-        onSuccess: () => Promise.all([
-          queryClient.invalidateQueries([`boards/${boardId}`]),
-          queryClient.invalidateQueries(['boards'])
-        ])
-      })
+      addLikeMutation.mutate(
+        {
+          boardId,
+        },
+        {
+          onSuccess: () =>
+            Promise.all([
+              queryClient.invalidateQueries([`boards/${boardId}`]),
+              queryClient.invalidateQueries(['boards']),
+            ]),
+        }
+      );
     }
-  }
+  };
 
   useEffect(() => {
     isSuccess && updateImageUrl(articleRef, data.representativeImageUrls);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess]);
 
   return (
@@ -101,7 +113,8 @@ const BoardDetailPage = () => {
           >
             <div className='thumbnail__info thumbnail__info-left'>
               <Name>
-                [{categoryMap[data.category]}] {data.foodName}
+                [{categoryMap[data.category]}] {data.foodName}:{' '}
+                {data.ingredients}
               </Name>
               <Title>{data.title}</Title>
             </div>
@@ -116,13 +129,13 @@ const BoardDetailPage = () => {
           <Content className='content'>
             <div className='content-left'>
               <div className='keywords'>
-                {tags ? 
-                  tags.map((value, idx) => (
-                    <Tag key={idx} type='outline' hash={true}>
-                      {value}
-                    </Tag>
-                  )) : 
-                  null}
+                {tags
+                  ? tags.map((value, idx) => (
+                      <Tag key={idx} type='outline' hash={true}>
+                        {value}
+                      </Tag>
+                    ))
+                  : null}
               </div>
               <MainContent>
                 <div
@@ -138,7 +151,12 @@ const BoardDetailPage = () => {
                   </span>
                 </div>
                 <OutlinedButton className='btn-like-it' onClick={likeHandler}>
-                  <div>좋아요 {data.likeCount && <span className='like-count'>{data.likeCount}</span>}</div>
+                  <div>
+                    좋아요{' '}
+                    {data.likeCount && (
+                      <span className='like-count'>{data.likeCount}</span>
+                    )}
+                  </div>
                   <img
                     className='ic-heart ic-heart-empty'
                     src={data.myLike ? icHeartFill : icHeart}
@@ -156,13 +174,24 @@ const BoardDetailPage = () => {
                       alt='프로필 이미지'
                     />
                   </div>
-                <div className='author-profile__nickname'>{data.author}</div>
+                  <div className='author-profile__nickname'>{data.author}</div>
                 </div>
-                {data.myBoard && 
-                <div className='author-action'>
-                  <OutlinedButton className='btn-board btn-edit-board' onClick={() => navigate('edit')}>게시글 수정</OutlinedButton>
-                  <ContainedButton className='btn-board btn-delete-board' onClick={deleteBoardHandler}>삭제</ContainedButton>
-                </div>}
+                {data.myBoard && (
+                  <div className='author-action'>
+                    <OutlinedButton
+                      className='btn-board btn-edit-board'
+                      onClick={() => navigate('edit')}
+                    >
+                      게시글 수정
+                    </OutlinedButton>
+                    <ContainedButton
+                      className='btn-board btn-delete-board'
+                      onClick={deleteBoardHandler}
+                    >
+                      삭제
+                    </ContainedButton>
+                  </div>
+                )}
               </Author>
               <CommentBox boardId={boardId} />
             </div>
@@ -191,14 +220,14 @@ const Thumbnail = styled.div`
   }
   .thumbnail__info-left {
     padding: 0 2rem 0 1.2rem;
-    flex: 0 1 60%;
+    flex: 0 1 70%;
     gap: 1.6rem;
     font-size: 2.2rem;
     line-height: 2.8rem;
   }
   .thumbnail__info-right {
     padding: 0 1.2rem 0 2rem;
-    flex: 0 1 40%;
+    flex: 0 1 30%;
     display: flex;
     font-size: 1.6rem;
     justify-content: flex-end;
@@ -224,11 +253,12 @@ const Content = styled.div`
     }
   }
   .content-right {
+    direction: rtl;
     padding: 0 1.2rem;
-    flex: 0 1 40%;
-    display: flex;
-    flex-direction: column;
-    gap: 3rem;
+    flex: 1 1 40%;
+  }
+  .content-right > * {
+    direction: ltr;
   }
 `;
 const MainContent = styled.div`
@@ -237,6 +267,7 @@ const MainContent = styled.div`
   padding-top: 1.8rem;
   .article {
     padding: 0 0.6rem;
+    font-size: 1.6rem;
     line-height: 1.6;
     display: flex;
     flex-direction: column;
@@ -303,8 +334,10 @@ const Author = styled.div`
   max-width: 45rem;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 3rem;
   .author-profile {
     display: flex;
+    float: right;
     align-items: center;
     gap: 1.2rem;
     img {

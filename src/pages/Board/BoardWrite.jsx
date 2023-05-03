@@ -92,18 +92,23 @@ const BoardWritePage = () => {
         formData.append('representativeImages', image);
       }
     }
-    createMutation.mutate({
-      data: formData,
-    }, {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['/boards']);
-        navigate('/board');
+    formData.append('thumbnailImageUpdate', false);
+    formData.append('representativeImageUpdate', false);
+    createMutation.mutate(
+      {
+        data: formData,
       },
-      onError: (err) => console.log(err),
-      onSettled: () => {
-        setIsLoading(false);
-      },
-    });
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(['/boards']);
+          navigate('/board');
+        },
+        onError: (err) => console.log(err),
+        onSettled: () => {
+          setIsLoading(false);
+        },
+      }
+    );
   };
 
   return (

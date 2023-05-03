@@ -10,8 +10,10 @@ import { getComments } from '../../apis/comment';
 
 const CommentBox = ({ boardId }) => {
   const [isOpenComment, openComment] = useState(true);
-  const { data, isLoading, isSuccess } = useQuery([`boards/${boardId}/replies`], () =>
-    getComments({ boardId }))
+  const { data, isLoading, isSuccess } = useQuery(
+    [`boards/${boardId}/replies`],
+    () => getComments({ boardId })
+  );
 
   return (
     <Wrapper>
@@ -28,12 +30,12 @@ const CommentBox = ({ boardId }) => {
           <div className='body__write-comment'>
             <WriteComment type='comment' boardId={boardId} />
           </div>
-          {isLoading && 
+          {isLoading && (
             <SpinnerWrapper>
               <Spinner />
             </SpinnerWrapper>
-          }
-          {isSuccess && 
+          )}
+          {isSuccess && (
             <div className='body__user-comments'>
               {data
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -51,7 +53,7 @@ const CommentBox = ({ boardId }) => {
                   </div>
                 ))}
             </div>
-          }
+          )}
         </Body>
       )}
     </Wrapper>
@@ -97,5 +99,4 @@ const SpinnerWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
-`
+`;
