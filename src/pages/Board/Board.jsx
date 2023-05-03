@@ -132,7 +132,7 @@ export default Board;
 
 const Wrapper = styled.div`
   width: 100%;
-  padding: 16rem 3.6rem 0 5.2rem;
+  padding: 16rem 3.6rem 6rem 5.2rem;
   align-items: center;
   gap: 3rem;
   margin: auto;
