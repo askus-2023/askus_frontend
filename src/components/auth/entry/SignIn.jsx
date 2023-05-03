@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import styled from 'styled-components';
 import TextInput from '../../common/input/TextInput';
 import ContainedButton from '../../common/button/ContainedButton';
@@ -8,7 +8,6 @@ import { signIn } from '../../../apis/auth';
 import Spinner from '../../common/spinner/Spinner';
 import { useRecoilState } from 'recoil';
 import { accessTokenState } from '../../../recoil/auth/accessToken';
-import { authModalState } from '../../../recoil/auth/authModal';
 import { reducer, EMAIL_ERR_MSG, NOT_FILLED } from './SignUp';
 
 const BAD_CREDENTIALS = '이메일 또는 비밀번호가 맞지 않습니다.';
@@ -33,11 +32,10 @@ const initialState = {
   },
 };
 
-const SignIn = () => {
+const SignIn = ({ closeModal }) => {
   const [formState, dispatch] = useReducer(reducer, initialState);
   const [isLoading, setIsLoading] = useState(false);
   const [, setAccessToken] = useRecoilState(accessTokenState);
-  const [, openModal] = useRecoilState(authModalState);
   const { validateEmail } = useFormValidation();
   const signin = useMutation(signIn);
 
@@ -114,7 +112,7 @@ const SignIn = () => {
           window.localStorage.setItem('email', res.data.email);
           setAccessToken(res.data.accessToken);
           window.localStorage.setItem('refresh_token', res.data.refreshToken);
-          openModal(false);
+          closeModal(false);
         },
         onError: (res) => {
           if (res.response?.data?.message === 'Bad credentials') {
@@ -139,8 +137,6 @@ const SignIn = () => {
       });
     }
   };
-
-  useEffect(() => {}, [formState.value.email, validateEmail]);
 
   return (
     <Wrapper>
