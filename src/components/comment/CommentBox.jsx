@@ -6,7 +6,7 @@ import icArrow from '../../assets/icons/arrow-up.svg';
 import UserComment from './UserComment';
 import WriteComment from './WriteComment';
 import Spinner from '../common/spinner/Spinner';
-import { getComments } from '../../apis/comment';
+import { getComments } from '../../api/comment';
 import { commentMount } from '../../animation/Comment';
 
 const CommentBox = ({ boardId }) => {

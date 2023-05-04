@@ -9,7 +9,7 @@ import icCancel from '../../assets/icons/cancel.svg';
 import SearchInput from '../../components/common/input/SearchInput';
 import icAdd from '../../assets/icons/add.svg';
 import TextEditor from '../../components/board/TextEditor';
-import { createBoard } from '../../apis/board';
+import { createBoard } from '../../api/board';
 import Spinner from '../../components/common/spinner/Spinner';
 
 export const filterOption = [

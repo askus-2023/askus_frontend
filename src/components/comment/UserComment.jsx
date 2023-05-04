@@ -6,7 +6,7 @@ import defaultProfile from '../../assets/images/default-profile.png';
 import { theme } from '../../styles/Theme';
 import WriteComment from './WriteComment';
 import useDatetimeFormat from '../../hooks/useDatetimeFormat';
-import { deleteComment } from '../../apis/comment';
+import { deleteComment } from '../../api/comment';
 
 const UserComment = ({
   boardId,

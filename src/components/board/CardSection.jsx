@@ -3,7 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import Card from '../common/card/Card';
-import { getBoardList } from '../../apis/board';
+import { getBoardList } from '../../api/board';
 import Spinner from '../common/spinner/Spinner';
 
 const limit = 20;

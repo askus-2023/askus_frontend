@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import CommentBox from '../../../components/comment/CommentBox';
 import Tag from '../../../components/tag/Tag';
 import defaultProfile from '../../../assets/images/default-profile.png';
-import { deleteBoard, getBoardDetail } from '../../../apis/board';
+import { deleteBoard, getBoardDetail } from '../../../api/board';
 import Spinner from '../../../components/common/spinner/Spinner';
 import { categoryMap } from '../../../infra/Category';
 import thumbnail from '../../../assets/images/thumbnail.png';
@@ -13,7 +13,7 @@ import { theme } from '../../../styles/Theme';
 import OutlinedButton from '../../../components/common/button/OutlinedButton';
 import icHeart from '../../../assets/icons/heart-empty.svg';
 import icHeartFill from '../../../assets/icons/heart-fill.svg';
-import { addLike, removeLike } from '../../../apis/like';
+import { addLike, removeLike } from '../../../api/like';
 import ContainedButton from '../../../components/common/button/ContainedButton';
 
 export const updateImageUrl = (ref, images) => {

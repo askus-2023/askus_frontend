@@ -4,7 +4,7 @@ import TextInput from '../../common/input/TextInput';
 import ContainedButton from '../../common/button/ContainedButton';
 import useFormValidation from '../../../hooks/useFormValidation';
 import { useMutation } from 'react-query';
-import { signIn } from '../../../apis/auth';
+import { signIn } from '../../../api/auth';
 import Spinner from '../../common/spinner/Spinner';
 import { useRecoilState } from 'recoil';
 import { accessTokenState } from '../../../recoil/auth/accessToken';

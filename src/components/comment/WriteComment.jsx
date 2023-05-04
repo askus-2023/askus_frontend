@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import ContainedButton from '../common/button/ContainedButton';
 import TextButton from '../common/button/TextButton';
-import { createComment, editComment } from '../../apis/comment';
+import { createComment, editComment } from '../../api/comment';
 
 const WriteComment = ({
   boardId,

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import OutlinedButton from '../../components/common/button/OutlinedButton';
 import SquareCard from '../../components/common/card/SquareCard';
-import { viewProfile, viewProfileBoardLike } from '../../apis/profile';
+import { viewProfile, viewProfileBoardLike } from '../../api/profile';
 import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';

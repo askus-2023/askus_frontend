@@ -9,7 +9,7 @@ import icCancel from '../../assets/icons/cancel.svg';
 import SearchInput from '../../components/common/input/SearchInput';
 import icAdd from '../../assets/icons/add.svg';
 import TextEditor from '../../components/board/TextEditor';
-import { editBoard, getBoardDetail } from '../../apis/board';
+import { editBoard, getBoardDetail } from '../../api/board';
 import Spinner from '../../components/common/spinner/Spinner';
 import { filterOption } from './BoardWrite';
 import { updateImageUrl } from './[boardId]';

@@ -10,7 +10,7 @@ import heartFill from '../../../assets/icons/heart-fill.svg';
 import icChat from '../../../assets/icons/chat.svg';
 import { categoryMap } from '../../../infra/Category';
 import useDatetimeFormat from '../../../hooks/useDatetimeFormat';
-import { addLike, removeLike } from '../../../apis/like';
+import { addLike, removeLike } from '../../../api/like';
 
 const Card = ({
   boardId,

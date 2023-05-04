@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import imageCompression from 'browser-image-compression';
-import { editPassword, editProfile } from '../../apis/profile';
+import { editPassword, editProfile } from '../../api/profile';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import icCancel from '../../assets/icons/cancel.svg';

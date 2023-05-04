@@ -8,7 +8,7 @@ import icCancelRed from '../../../assets/icons/cancel-red.svg';
 import icCheck from '../../../assets/icons/check.svg';
 import useFormValidation from '../../../hooks/useFormValidation';
 import { useMutation } from 'react-query';
-import { duplicationCheck, signUp } from '../../../apis/auth';
+import { duplicationCheck, signUp } from '../../../api/auth';
 import Spinner from '../../common/spinner/Spinner';
 import OutlinedButton from '../../common/button/OutlinedButton';
 
