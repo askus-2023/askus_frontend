@@ -55,7 +55,6 @@ const Header = () => {
       } else {
         setAnimation('popup-unmount')
         setTimeout(() => openPopup(false), 300)
-        console.log('HI')
       }
     }, []);
 

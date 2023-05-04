@@ -6,7 +6,7 @@ import { popupMount, popupUnmount } from '../../animation/Popup';
 
 const HeaderPopup = forwardRef(({ className }, ref) => {
   const navigate = useNavigate();
-  console.log(className)
+
   return (
     <Wrapper className='popup-wrapper' ref={ref}>
       <ul className={`popup-wrapper__ul ${className}`}>
