@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import AIMessage from './AIMessage';
@@ -67,6 +67,10 @@ const ChatWindow = () => {
     scrollToBottom(scrollRef);
   }, [messages]);
 
+  useLayoutEffect(() => {
+    scrollRef.current.scrollIntoView({ behavior: 'instant' });
+  }, []);
+
   return (
     <Wrapper>
       <div className={`wrapper-chat ${animation}`}>
@@ -122,7 +126,7 @@ export default ChatWindow;
 
 const Wrapper = styled.div`
   .wrapper-chat {
-    width: 30rem;
+    width: 36rem;
     position: fixed;
     bottom: 4rem;
     right: 4rem;
@@ -165,7 +169,7 @@ const CloseButton = styled.img`
 `;
 const Body = styled.div`
   position: relative;
-  height: 36rem;
+  height: 40rem;
   background-color: white;
   border-bottom: 0.1rem solid ${theme.colors.grey30};
   .messages-wrapper {
