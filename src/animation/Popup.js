@@ -12,13 +12,10 @@ export const popupMount = keyframes`
   }
 `;
 export const popupUnmount = keyframes`
-  0% {
+  from {
     transform: scale(1);
   }
-  80% {
-    transform: scale(0.2);
-  }
-  100% {
-    transform: scale(0);
+  to {
+    transform: scale(0.4);
   }
 `;

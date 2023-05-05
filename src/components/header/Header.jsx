@@ -53,7 +53,7 @@ const Header = () => {
       openPopup(true);
     } else {
       setAnimation('popup-unmount');
-      setTimeout(() => openPopup(false), 300);
+      setTimeout(() => openPopup(false), 200);
     }
   }, []);
 
