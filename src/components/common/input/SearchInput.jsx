@@ -21,7 +21,7 @@ const SearchInput = ({
           placeholder={placeholder}
           onChange={onChange}
         />
-        <button>
+        <button type='submit'>
           <img src={icSearch} alt='검색 아이콘' />
         </button>
       </FormEl>
