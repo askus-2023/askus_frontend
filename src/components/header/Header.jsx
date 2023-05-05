@@ -46,17 +46,16 @@ const Header = () => {
     []
   );
 
-  const closePopup = useCallback(
-    (e) => {
-      const target = e.target;
-      if (profileRef.current?.contains(target)) {
-        setAnimation('popup-mount');
-        openPopup(true);
-      } else {
-        setAnimation('popup-unmount')
-        setTimeout(() => openPopup(false), 300)
-      }
-    }, []);
+  const closePopup = useCallback((e) => {
+    const target = e.target;
+    if (profileRef.current?.contains(target)) {
+      setAnimation('popup-mount');
+      openPopup(true);
+    } else {
+      setAnimation('popup-unmount');
+      setTimeout(() => openPopup(false), 300);
+    }
+  }, []);
 
   useEffect(() => {
     document.addEventListener('scroll', calculateAlpha, { passive: true });
@@ -104,7 +103,9 @@ const Header = () => {
                   alt='프로필 아이콘'
                 />
               </ProfileWrapper>
-              {isOpenPopup && <HeaderPopup ref={popupRef} className={animation} />}
+              {isOpenPopup && (
+                <HeaderPopup ref={popupRef} className={animation} />
+              )}
             </li>
           ) : (
             <>

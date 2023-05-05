@@ -16,6 +16,7 @@ body {
   margin: 0;
   padding: 0;
   overflow-y: auto;
+  overflow-y: overlay;
   color: #323232;
   font-family: 'Noto Sans KR', sans-serif;
   .App {
