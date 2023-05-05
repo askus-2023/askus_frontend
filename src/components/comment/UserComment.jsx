@@ -1,42 +1,61 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import TextButton from '../common/button/TextButton';
 import defaultProfile from '../../assets/images/default-profile.png';
 import { theme } from '../../styles/Theme';
-// import WriteComment from './WriteComment';
+import WriteComment from './WriteComment';
 import useDatetimeFormat from '../../hooks/useDatetimeFormat';
-import { deleteComment } from '../../apis/comment';
+import { deleteComment } from '../../api/comment';
 
 const UserComment = ({
-  commentId,
   boardId,
   content,
   replyAuthor,
   createdAt,
-  accessToken,
+  myReply,
+  commentId,
+  authorProfileImageUrl,
 }) => {
+  const [editMode, setEditMode] = useState(false);
   const { displayDatetime } = useDatetimeFormat();
   const queryClient = useQueryClient();
   const deleteMutation = useMutation(deleteComment);
 
-  const deleteHandler = () => {
-    deleteMutation.mutate(
-      {
-        boardId,
-        commentId: 8,
-        accessToken,
-      },
-      {
-        onSuccess: () => queryClient.invalidateQueries([`boards/${boardId}`]),
+  const deleteCommentHandler = () => {
+    if (myReply) {
+      if (confirm('정말 삭제하시겠습니까?')) {
+        deleteMutation.mutate(
+          {
+            boardId,
+            commentId,
+          },
+          {
+            onSuccess: () =>
+              queryClient.invalidateQueries([`boards/${boardId}/replies`]),
+          }
+        );
       }
-    );
+    } else {
+      alert('권한이 없습니다.');
+    }
+  };
+
+  const editCommentHandler = () => {
+    if (myReply) {
+      setEditMode(true);
+    } else {
+      alert('권한이 없습니다.');
+    }
   };
 
   return (
     <Wrapper>
       <Commenter>
-        <img src={defaultProfile} alt='프로필 이미지' />
+        <img
+          src={authorProfileImageUrl ?? defaultProfile}
+          alt='프로필 이미지'
+        />
         <div>
           <div className='commenter-nickname'>{replyAuthor}</div>
           <div className='comment-created-at'>
@@ -44,28 +63,38 @@ const UserComment = ({
           </div>
         </div>
       </Commenter>
-      <Comment>
-        <p>{content}</p>
-      </Comment>
-      <Reply>
-        <ButtonWrapper>
-          <TextButton onClick={() => {}} className='button button-reply'>
-            수정
-          </TextButton>
-          <TextButton onClick={deleteHandler} className='button button-reply'>
-            삭제
-          </TextButton>
-        </ButtonWrapper>
-        {/* {isOpenReply[idx] && (
-          <WriteReply>
-            <div className='bar' />
+      <div>
+        {!editMode ? (
+          <>
+            <Comment>
+              <p>{content}</p>
+            </Comment>
+            <Reply>
+              <ButtonWrapper>
+                <TextButton onClick={editCommentHandler} className='btn-edit'>
+                  수정
+                </TextButton>
+                <TextButton
+                  onClick={deleteCommentHandler}
+                  className='btn-delete'
+                >
+                  삭제
+                </TextButton>
+              </ButtonWrapper>
+            </Reply>
+          </>
+        ) : (
+          <EditComment>
             <WriteComment
-              type='reply'
-              onClickCancelReply={() => handleCloseReply(idx)}
+              editMode={editMode}
+              commentId={commentId}
+              existingComment={content}
+              boardId={boardId}
+              setEditMode={setEditMode}
             />
-          </WriteReply>
-        )} */}
-      </Reply>
+          </EditComment>
+        )}
+      </div>
     </Wrapper>
   );
 };
@@ -103,8 +132,8 @@ const Comment = styled.div`
 const Reply = styled.div`
   width: 100%;
   position: relative;
-  display: grid;
-  .button-reply {
+  .btn-edit,
+  .btn-delete {
     justify-self: flex-end;
     margin-bottom: 1.6rem;
     button {
@@ -123,13 +152,8 @@ const ButtonWrapper = styled.div`
   gap: 1.2rem;
   justify-content: flex-end;
 `;
-// const WriteReply = styled.div`
-//   display: flex;
-//   justify-content: flex-end;
-//   gap: 1.8rem;
-//   .bar {
-//     width: 0.25rem;
-//     margin-left: 1.6rem;
-//     background-color: ${theme.colors.grey30};
-//   }
-// `;
+const EditComment = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.8rem;
+`;

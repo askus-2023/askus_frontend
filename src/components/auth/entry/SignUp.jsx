@@ -8,7 +8,7 @@ import icCancelRed from '../../../assets/icons/cancel-red.svg';
 import icCheck from '../../../assets/icons/check.svg';
 import useFormValidation from '../../../hooks/useFormValidation';
 import { useMutation } from 'react-query';
-import { duplicationCheck, signUp } from '../../../apis/auth';
+import { duplicationCheck, signUp } from '../../../api/auth';
 import Spinner from '../../common/spinner/Spinner';
 import OutlinedButton from '../../common/button/OutlinedButton';
 
@@ -277,7 +277,7 @@ const SignUp = ({ setPhase }) => {
 
   return (
     <Wrapper>
-      <form onSubmit={signUpHandler}>
+      <form onSubmit={signUpHandler} className='signup-form'>
         <ProfileSection>
           <label htmlFor='profile-image'>
             <img
@@ -383,8 +383,7 @@ export default SignUp;
 
 const Wrapper = styled.div`
   padding: 2.4rem 2rem;
-
-  form {
+  .signup-form {
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -3,10 +3,25 @@ import styled from 'styled-components';
 import { theme } from '../../../styles/Theme';
 import heartEmpty from '../../../assets/icons/heart-empty.svg';
 import heartFill from '../../../assets/icons/heart-fill.svg';
+import { categoryMap } from '../../../infra/Category';
+import { useNavigate } from 'react-router-dom';
 
-const SquareCard = ({ thumbnail, menu, title, date, category, like }) => {
+const SquareCard = ({
+  boardId,
+  thumbnail,
+  menu,
+  title,
+  date,
+  category,
+  like,
+}) => {
   const [show, setShow] = useState(false);
   const [isLike, setIsLike] = useState(like);
+  const navigate = useNavigate();
+
+  const navigateHandler = () => {
+    navigate(`/board/${boardId}`);
+  };
 
   const iconHandler = () => {
     if (isLike) {
@@ -25,12 +40,13 @@ const SquareCard = ({ thumbnail, menu, title, date, category, like }) => {
     <Wrapper
       onMouseOver={() => setShow(true)}
       onMouseOut={() => setShow(false)}
+      onClick={navigateHandler}
     >
       <img src={thumbnail} alt='thumbnail' className='thumbnail' />
       {show && (
         <div className='backcover'>
           <div className='category'>
-            [{category}] {menu}
+            [{categoryMap[category]}] {menu}
           </div>
           <div className='title'>{title}</div>
           <div className='bottomsection'>

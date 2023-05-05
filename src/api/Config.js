@@ -12,7 +12,7 @@ export const formDataApi = axios.create({
 const requestCallback = (config) => {
   const accessToken = aT.aTGetter();
   if (config?.headers && accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
+    config.headers['Authorization'] = `Bearer ${accessToken}`;
   }
   return config;
 };
@@ -54,4 +54,3 @@ formDataApi.interceptors.response.use(responseCallback, async (error) => {
   const prevRequest = responseError(error);
   return formDataApi(prevRequest);
 });
-

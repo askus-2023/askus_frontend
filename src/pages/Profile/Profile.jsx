@@ -2,11 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
-import profile from '../../assets/images/default-profile.png';
 import OutlinedButton from '../../components/common/button/OutlinedButton';
 import SquareCard from '../../components/common/card/SquareCard';
-import exPost from '../Board/DummyPost';
-import { viewProfile } from '../../apis/profile';
+import { viewProfile, viewProfileBoardLike } from '../../api/profile';
 import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
@@ -14,31 +12,50 @@ import { accessTokenState } from '../../recoil/auth/accessToken';
 const Profile = () => {
   const [selectedCate, setSelectedCate] = useState('작성글');
   const [myPost, setMyPost] = useState();
+  const [likePost, setLikePost] = useState();
 
   const navigate = useNavigate();
   const accessToken = useRecoilValue(accessTokenState);
 
-  const { data, isLoading, error } = useQuery('profile', () => {
+  const {
+    data: viewData,
+    isLoading: viewDataIsLoading,
+    error: viewDataError,
+  } = useQuery('viewProfile', () => {
     return viewProfile({
       accessToken: accessToken,
     });
   });
+  const [profileData, setProfileData] = useState(viewData);
+  const email = window.localStorage.getItem('email');
 
-  const profileData = data;
+  const {
+    data: likeData,
+    isLoading: likeDataIsLoading,
+    error: likeDataError,
+  } = useQuery('viewProfileBoardLike', () => {
+    return viewProfileBoardLike({ accessToken: accessToken, params: 'like' });
+  });
+
+  const [likeBoardData, setLikeBoardData] = useState(likeData);
 
   useEffect(() => {
-    if (data) {
-      setMyPost(data.boards);
+    setProfileData(viewData);
+    setLikeBoardData(likeData);
+    if (viewData) {
+      setMyPost(viewData.boards);
     }
-    console.log(myPost);
-  }, [data, myPost]);
+    if (likeData) {
+      setLikePost(likeData.boards);
+    }
+  }, [myPost, likeData, likeBoardData, viewData]);
 
-  if (isLoading) {
+  if (viewDataIsLoading || likeDataIsLoading) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>An error has occurred: {error.message}</div>;
+  if (viewDataError || likeDataError) {
+    return <div>An error has occurred: {viewDataError.message}</div>;
   }
 
   const postcategory = ['작성글', '좋아요'];
@@ -51,12 +68,12 @@ const Profile = () => {
     <Wrapper>
       <TopSection>
         <Info>
-          <img src={data.profileImageUrl} alt='profile' />
+          <img src={viewData.profileImageUrl} alt='profile' />
           <div className='infotxt'>
             <Greettxt>
-              <span>{data.nickname}</span> 님, 반가워요!
+              <span>{viewData.nickname}</span> 님, 반가워요!
             </Greettxt>
-            <div>abc@email.com</div>
+            <div>{email}</div>
           </div>
         </Info>
         <div>
@@ -80,36 +97,43 @@ const Profile = () => {
               value={cate}
               onClick={categoryHandler}
             >
-              {cate}({myPost && myPost.length})
+              {cate}(
+              {cate === '작성글'
+                ? myPost && myPost.length
+                : likePost && likePost.length}
+              )
             </button>
           ))}
         </PostCategory>
         <div>
           <PostCard>
             {selectedCate === '좋아요'
-              ? exPost
+              ? likePost &&
+                likePost
                   .map((post) => (
                     <SquareCard
                       key={post.id}
-                      thumbnail={post.thumbnail}
-                      menu={post.menu}
+                      boardId={post.id}
+                      thumbnail={post.thumbnailImageUrl}
+                      menu={post.foodsName}
                       title={post.title}
                       category={post.category}
-                      date={new Date(post.date)}
-                      like={post.like}
+                      date={new Date(post.createdAt)}
+                      like={post.myLike}
                     />
                   ))
                   .filter((post) => post.props.like === true)
               : myPost &&
                 myPost.map((post) => (
                   <SquareCard
-                    key={post.boardId}
+                    key={post.id}
+                    boardId={post.id}
                     thumbnail={post.thumbnailImageUrl}
-                    menu={post.foodName}
+                    menu={post.foodsName}
                     title={post.title}
                     category={post.category}
                     date={new Date(post.createdAt)}
-                    like={post.like}
+                    like={post.myLike}
                   />
                 ))}
           </PostCard>

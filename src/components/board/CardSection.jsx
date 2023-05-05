@@ -1,28 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import Card from '../common/card/Card';
-import { getBoardList } from '../../apis/board';
-import { useRecoilValue } from 'recoil';
-import { accessTokenState } from '../../recoil/auth/accessToken';
+import { getBoardList } from '../../api/board';
 import Spinner from '../common/spinner/Spinner';
 
 const limit = 20;
+const filterMap = {
+  NEWEST: 'CREATED_AT_DESC',
+  LIKES: 'LIKE_COUNT_DESC',
+};
 
 const CardSection = ({ tag }) => {
-  const { page, setPostLength } = useOutletContext();
+  const { page, setPostLength, selected } = useOutletContext();
   const offset = (page - 1) * limit;
-  const accessToken = useRecoilValue(accessTokenState);
-  const { data, isSuccess, isLoading } = useQuery(
+  const { data, isSuccess, isLoading, refetch } = useQuery(
     [`/boards/${tag}`],
     () =>
       getBoardList({
         tag,
         dateLoe: '',
         dateGoe: '',
-        sortTarget: 'CREATED_AT_DESC',
-        accessToken,
+        sortTarget: filterMap[selected],
       }),
     {
       staleTime: 30,
@@ -30,6 +30,11 @@ const CardSection = ({ tag }) => {
       onError: (res) => console.log(res),
     }
   );
+
+  useEffect(() => {
+    refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected]);
 
   return (
     <Wrapper>
@@ -40,31 +45,29 @@ const CardSection = ({ tag }) => {
           </SpinnerWrapper>
         </>
       )}
-      <div className='container'>
-        <CardWrapper>
-          {isSuccess &&
-            data
-              .slice(offset, offset + limit)
-              .map((post) => (
-                <Card
-                  key={post.id}
-                  boardId={post.id}
-                  profile={post.authorProfileImageUrl}
-                  thumbnail={post.thumbnailImageUrl}
-                  menu={post.menu}
-                  foodName={post.foodsName}
-                  title={post.title}
-                  date={post.createdAt}
-                  nickname={post.author}
-                  category={post.category ?? ''}
-                  likeCount={post.likeCount}
-                  myLike={post.myLike}
-                  replyCount={post.replyCount}
-                  accessToken={accessToken}
-                />
-              ))}
-        </CardWrapper>
-      </div>
+      {isSuccess && (
+        <div className='container'>
+          <CardWrapper>
+            {data.slice(offset, offset + limit).map((post) => (
+              <Card
+                key={post.id}
+                boardId={post.id}
+                profile={post.authorProfileImageUrl}
+                thumbnail={post.thumbnailImageUrl}
+                menu={post.menu}
+                foodName={post.foodsName}
+                title={post.title}
+                date={post.createdAt}
+                nickname={post.author}
+                category={post.category ?? ''}
+                likeCount={post.likeCount}
+                myLike={post.myLike}
+                replyCount={post.replyCount}
+              />
+            ))}
+          </CardWrapper>
+        </div>
+      )}
     </Wrapper>
   );
 };

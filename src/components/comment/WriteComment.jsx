@@ -4,52 +4,80 @@ import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import ContainedButton from '../common/button/ContainedButton';
 import TextButton from '../common/button/TextButton';
+import { createComment, editComment } from '../../api/comment';
 
-import { createComment } from '../../apis/comment';
-import { useRecoilValue } from 'recoil';
-import { accessTokenState } from '../../recoil/auth/accessToken';
-
-const WriteComment = ({ boardId, type, onClickCancelReply }) => {
+const WriteComment = ({
+  boardId,
+  editMode,
+  commentId,
+  existingComment,
+  setEditMode,
+}) => {
   const [comment, setComment] = useState('');
+  const [newComment, setNewComment] = useState(existingComment ?? '');
   const [isOpen, open] = useState(true);
   const queryClient = useQueryClient();
-  const accessToken = useRecoilValue(accessTokenState);
   const createMutation = useMutation(createComment);
+  const editMutation = useMutation(editComment);
 
   const commentHandler = (e) => {
     e.preventDefault();
-    if (comment) {
-      createMutation.mutate(
-        {
-          boardId,
-          content: comment,
-          accessToken,
-        },
-        {
-          onSuccess: () => {
-            setComment('');
-            queryClient.invalidateQueries([`boards/${boardId}`]);
+    if (!editMode) {
+      if (comment) {
+        createMutation.mutate(
+          {
+            boardId,
+            content: comment,
           },
-        }
-      );
+          {
+            onSuccess: () => {
+              setComment('');
+              queryClient.invalidateQueries([`boards/${boardId}/replies`]);
+            },
+          }
+        );
+      }
+    } else {
+      if (newComment) {
+        editMutation.mutate(
+          {
+            boardId,
+            commentId,
+            content: newComment,
+          },
+          {
+            onSuccess: () => {
+              setComment('');
+              setEditMode(() => false);
+              queryClient.invalidateQueries([`boards/${boardId}/replies`]);
+            },
+          }
+        );
+      }
     }
   };
   return (
     <Wrapper onClick={() => open(true)}>
       <FormEl isOpen={isOpen} onSubmit={commentHandler}>
-        {!comment && <Placeholder>댓글을 작성해보세요</Placeholder>}
+        {!comment && !editMode && (
+          <Placeholder>댓글을 작성해보세요</Placeholder>
+        )}
         {isOpen && (
           <>
             <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              value={!editMode ? comment : newComment}
+              onChange={(e) =>
+                !editMode
+                  ? setComment(e.target.value)
+                  : setNewComment(e.target.value)
+              }
             />
             <ButtonWrapper>
               <TextButton
                 open={open}
                 onClick={(e) => {
-                  if (type === 'reply') {
-                    onClickCancelReply();
+                  if (editMode) {
+                    setEditMode(() => false);
                   } else {
                     e.stopPropagation();
                     open(false);

@@ -10,7 +10,7 @@ import heartFill from '../../../assets/icons/heart-fill.svg';
 import icChat from '../../../assets/icons/chat.svg';
 import { categoryMap } from '../../../infra/Category';
 import useDatetimeFormat from '../../../hooks/useDatetimeFormat';
-import { addLike, removeLike } from '../../../apis/like';
+import { addLike, removeLike } from '../../../api/like';
 
 const Card = ({
   boardId,
@@ -24,7 +24,6 @@ const Card = ({
   myLike,
   likeCount,
   replyCount,
-  accessToken,
 }) => {
   const { displayDatetime } = useDatetimeFormat();
   const [likes, setLikes] = useState(likeCount);
@@ -38,7 +37,6 @@ const Card = ({
       addLikeMutation.mutate(
         {
           boardId,
-          accessToken,
         },
         {
           onSuccess: (res) => {
@@ -55,7 +53,6 @@ const Card = ({
       removeLikeMutation.mutate(
         {
           boardId,
-          accessToken,
         },
         {
           onSuccess: () => {
@@ -68,7 +65,7 @@ const Card = ({
   };
 
   const navigateHandler = () => {
-    navigate(`${boardId}`, {
+    navigate(`/board/${boardId}`, {
       state: { authorProfile: profile, likes, liked },
     });
   };

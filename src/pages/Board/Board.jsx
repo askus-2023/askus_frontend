@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
@@ -25,7 +25,7 @@ const limit = 20;
 
 const Board = () => {
   const [selectedCate, setSelectedCate] = useState('ALL');
-  const [selectedfilter, setSelectedFilter] = useState('최신순');
+  const [selectedFilter, setSelectedFilter] = useState('NEWEST');
   const [postLength, setPostLength] = useState(0);
   const [isSelected, setIsSelected] = useState(false);
   const [page, setPage] = useState(1);
@@ -37,7 +37,6 @@ const Board = () => {
   const categoryHandler = (key) => {
     setIsSelected(true);
     setPage(1);
-    setSelectedFilter('최신순');
 
     if (key === 'ALL') {
       key = '';
@@ -110,11 +109,11 @@ const Board = () => {
           <SelectButton
             onChange={filterHandler}
             option={filterOption}
-            selected={selectedfilter}
+            selected={selectedFilter}
           />
         </SelectSection>
       </div>
-      <Outlet context={{ page, setPostLength }} />
+      <Outlet context={{ page, setPostLength, selected: selectedFilter }} />
       <footer>
         <Pagination
           total={postLength}
@@ -133,7 +132,7 @@ export default Board;
 
 const Wrapper = styled.div`
   width: 100%;
-  padding: 16rem 3.6rem 0 5.2rem;
+  padding: 16rem 3.6rem 6rem 5.2rem;
   align-items: center;
   gap: 3rem;
   margin: auto;

@@ -1,13 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import CommentBox from '../../../components/comment/CommentBox';
 import Tag from '../../../components/tag/Tag';
 import defaultProfile from '../../../assets/images/default-profile.png';
-import { getBoardDetail } from '../../../apis/board';
-import { useRecoilValue } from 'recoil';
-import { accessTokenState } from '../../../recoil/auth/accessToken';
+import { deleteBoard, getBoardDetail } from '../../../api/board';
 import Spinner from '../../../components/common/spinner/Spinner';
 import { categoryMap } from '../../../infra/Category';
 import thumbnail from '../../../assets/images/thumbnail.png';
@@ -15,44 +13,94 @@ import { theme } from '../../../styles/Theme';
 import OutlinedButton from '../../../components/common/button/OutlinedButton';
 import icHeart from '../../../assets/icons/heart-empty.svg';
 import icHeartFill from '../../../assets/icons/heart-fill.svg';
+import { addLike, removeLike } from '../../../api/like';
+import ContainedButton from '../../../components/common/button/ContainedButton';
+
+export const updateImageUrl = (ref, images) => {
+  const article = ref?.current;
+  if (article) {
+    const imgTags = article.querySelectorAll('img');
+    for (let i = 0; i < imgTags.length; i++) {
+      if (images.length) {
+        imgTags[i].setAttribute('src', images[i]);
+      }
+    }
+  }
+};
 
 const BoardDetailPage = () => {
   const articleRef = useRef();
   const location = useLocation();
-  const accessToken = useRecoilValue(accessTokenState);
   const { boardId } = useParams();
-
+  const navigate = useNavigate();
+  const addLikeMutation = useMutation(addLike);
+  const removeLikeMutation = useMutation(removeLike);
+  const deleteBoardMutation = useMutation(deleteBoard);
+  const queryClient = useQueryClient();
   const { data, isLoading, isSuccess } = useQuery(
     [`boards/${boardId}`],
     () =>
       getBoardDetail({
-        id: boardId,
-        accessToken,
-      }), {
+        boardId,
+      }),
+    {
       staleTime: 30,
     }
   );
 
+  const deleteBoardHandler = () => {
+    if (confirm('정말 게시글을 삭제하시겠습니까?')) {
+      deleteBoardMutation.mutate(
+        { boardId },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries(['boards']);
+            navigate('/board');
+          },
+        }
+      );
+    }
+  };
+
   const tags = useMemo(
-    () => isSuccess && data?.tag.split(','),
+    () => isSuccess && data.tag.length && data?.tag.split(','),
     [isSuccess, data]
   );
 
-  const updateImageUrl = useCallback(() => {
-    if (isSuccess) {
-      const article = articleRef.current;
-      if (article) {
-        const imgTags = article.querySelectorAll('img');
-        for (let i = 0; i < imgTags.length; i++) {
-          imgTags[i].setAttribute('src', data.representativeImageUrls[i]);
+  const likeHandler = () => {
+    if (data?.myLike) {
+      removeLikeMutation.mutate(
+        {
+          boardId,
+        },
+        {
+          onSuccess: () =>
+            Promise.all([
+              queryClient.invalidateQueries([`boards/${boardId}`]),
+              queryClient.invalidateQueries(['boards']),
+            ]),
         }
-      }
+      );
+    } else {
+      addLikeMutation.mutate(
+        {
+          boardId,
+        },
+        {
+          onSuccess: () =>
+            Promise.all([
+              queryClient.invalidateQueries([`boards/${boardId}`]),
+              queryClient.invalidateQueries(['boards']),
+            ]),
+        }
+      );
     }
-  }, [isSuccess, data]);
+  };
 
   useEffect(() => {
-    updateImageUrl();
-  }, [updateImageUrl]);
+    isSuccess && updateImageUrl(articleRef, data.representativeImageUrls);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess]);
 
   return (
     <div className='wrapper'>
@@ -65,26 +113,29 @@ const BoardDetailPage = () => {
           >
             <div className='thumbnail__info thumbnail__info-left'>
               <Name>
-                [{categoryMap[data.category]}] {data.foodName}
+                [{categoryMap[data.category]}] {data.foodName}:{' '}
+                {data.ingredients}
               </Name>
               <Title>{data.title}</Title>
             </div>
             <div className='thumbnail__info thumbnail__info-right'>
-              <CreatedAt>
+              <p>
                 {new Intl.DateTimeFormat('ko-KR', { dateStyle: 'full' }).format(
                   new Date(data.createdAt)
                 )}
-              </CreatedAt>
+              </p>
             </div>
           </Thumbnail>
           <Content className='content'>
             <div className='content-left'>
               <div className='keywords'>
-                {tags.map((value, idx) => (
-                  <Tag key={idx} type='outline' hash={true}>
-                    {value}
-                  </Tag>
-                ))}
+                {tags
+                  ? tags.map((value, idx) => (
+                      <Tag key={idx} type='outline' hash={true}>
+                        {value}
+                      </Tag>
+                    ))
+                  : null}
               </div>
               <MainContent>
                 <div
@@ -99,27 +150,50 @@ const BoardDetailPage = () => {
                     이 콘텐츠가 마음에 드신다면
                   </span>
                 </div>
-                <OutlinedButton className='btn-like-it'>
-                  좋아요
+                <OutlinedButton className='btn-like-it' onClick={likeHandler}>
+                  <div>
+                    좋아요{' '}
+                    {data.likeCount && (
+                      <span className='like-count'>{data.likeCount}</span>
+                    )}
+                  </div>
                   <img
                     className='ic-heart ic-heart-empty'
-                    src={icHeart}
+                    src={data.myLike ? icHeartFill : icHeart}
                     alt='heartEmpty'
                   />
                 </OutlinedButton>
               </LikeIt>
             </div>
             <div className='content-right'>
-              <AuthorInfo className='author-profile'>
-                <div className='author-profile__image'>
-                  <img
-                    src={location.state?.authorProfile ?? defaultProfile}
-                    alt='프로필 이미지'
-                  />
+              <Author>
+                <div className='author-profile'>
+                  <div className='author-profile__image'>
+                    <img
+                      src={location.state?.authorProfile ?? defaultProfile}
+                      alt='프로필 이미지'
+                    />
+                  </div>
+                  <div className='author-profile__nickname'>{data.author}</div>
                 </div>
-                <div className='author-profile__nickname'>{data.author}</div>
-              </AuthorInfo>
-              <CommentBox comments={data.replies} boardId={boardId} />
+                {data.myBoard && (
+                  <div className='author-action'>
+                    <OutlinedButton
+                      className='btn-board btn-edit-board'
+                      onClick={() => navigate('edit')}
+                    >
+                      게시글 수정
+                    </OutlinedButton>
+                    <ContainedButton
+                      className='btn-board btn-delete-board'
+                      onClick={deleteBoardHandler}
+                    >
+                      삭제
+                    </ContainedButton>
+                  </div>
+                )}
+              </Author>
+              <CommentBox boardId={boardId} />
             </div>
           </Content>
         </>
@@ -146,14 +220,14 @@ const Thumbnail = styled.div`
   }
   .thumbnail__info-left {
     padding: 0 2rem 0 1.2rem;
-    flex: 0 1 60%;
+    flex: 0 1 70%;
     gap: 1.6rem;
     font-size: 2.2rem;
     line-height: 2.8rem;
   }
   .thumbnail__info-right {
     padding: 0 1.2rem 0 2rem;
-    flex: 0 1 40%;
+    flex: 0 1 30%;
     display: flex;
     font-size: 1.6rem;
     justify-content: flex-end;
@@ -166,7 +240,7 @@ const Title = styled.p`
   font-size: 3.2rem;
   line-height: 4rem;
 `;
-const CreatedAt = styled.p``;
+
 const Content = styled.div`
   padding: 4rem;
   display: flex;
@@ -174,20 +248,26 @@ const Content = styled.div`
   .content-left {
     padding: 0 1.2rem;
     flex: 0 0 60%;
+    .keywords {
+      min-height: 3.6rem;
+    }
   }
   .content-right {
+    direction: rtl;
     padding: 0 1.2rem;
-    flex: 0 1 40%;
-    display: flex;
-    flex-direction: column;
-    gap: 3rem;
+    flex: 1 1 40%;
+  }
+  .content-right > * {
+    direction: ltr;
   }
 `;
 const MainContent = styled.div`
+  min-width: 40rem;
   margin-top: 2rem;
-  padding-top: 2.2rem;
+  padding-top: 1.8rem;
   .article {
     padding: 0 0.6rem;
+    font-size: 1.6rem;
     line-height: 1.6;
     display: flex;
     flex-direction: column;
@@ -228,6 +308,9 @@ const LikeIt = styled.div`
     margin: 0 auto;
     border: 0.1rem solid ${theme.colors.red};
     button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       color: ${theme.colors.red};
       font-size: 1.4rem;
       padding: 0.8rem 1.5rem;
@@ -241,17 +324,40 @@ const LikeIt = styled.div`
       background-color: ${theme.colors.grey10};
     }
   }
-`;
-const AuthorInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-  img {
-    width: 4.2rem;
-    height: 4.2rem;
-    border-radius: 50%;
+  .like-count {
+    font-size: 1.4rem;
+    color: ${theme.colors.red};
   }
-  .author-profile__nickname {
-    font-size: 1.6rem;
+`;
+const Author = styled.div`
+  min-width: 28rem;
+  max-width: 45rem;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+  .author-profile {
+    display: flex;
+    float: right;
+    align-items: center;
+    gap: 1.2rem;
+    img {
+      width: 4.2rem;
+      height: 4.2rem;
+      border-radius: 50%;
+    }
+    .author-profile__nickname {
+      font-size: 1.6rem;
+    }
+  }
+  .author-action {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    .btn-board {
+      button {
+        padding: 0.6rem 0.8rem;
+        font-size: 1.4rem;
+      }
+    }
   }
 `;

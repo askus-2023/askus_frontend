@@ -9,12 +9,10 @@ import icCancel from '../../assets/icons/cancel.svg';
 import SearchInput from '../../components/common/input/SearchInput';
 import icAdd from '../../assets/icons/add.svg';
 import TextEditor from '../../components/board/TextEditor';
-import { upload } from '../../apis/board';
-import { useRecoilValue } from 'recoil';
-import { accessTokenState } from '../../recoil/auth/accessToken';
+import { createBoard } from '../../api/board';
 import Spinner from '../../components/common/spinner/Spinner';
 
-const filterOption = [
+export const filterOption = [
   {
     text: '한식',
     value: 'KOREAN',
@@ -50,8 +48,7 @@ const BoardWritePage = () => {
   const [allTag, setAllTag] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const accessToken = useRecoilValue(accessTokenState);
-  const uploadMutation = useMutation(upload);
+  const createMutation = useMutation(createBoard);
   const queryClient = useQueryClient();
 
   const uploadThumbnail = () => {
@@ -95,10 +92,11 @@ const BoardWritePage = () => {
         formData.append('representativeImages', image);
       }
     }
-    uploadMutation.mutate(
+    formData.append('thumbnailImageUpdate', false);
+    formData.append('representativeImageUpdate', false);
+    createMutation.mutate(
       {
         data: formData,
-        accessToken,
       },
       {
         onSuccess: () => {
