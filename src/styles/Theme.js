@@ -14,6 +14,7 @@ const colors = {
   grey20: '#EEEEEE',
   grey10: '#F5F5F5',
   red: '#F22D50',
+  tomato: '#FF6347',
 };
 
 const options = {

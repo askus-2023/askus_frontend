@@ -1,4 +1,4 @@
-import { keyframes } from "styled-components";
+import { keyframes } from 'styled-components';
 
 export const modalMount = keyframes`
   0% {
@@ -10,7 +10,7 @@ export const modalMount = keyframes`
   100% {
     transform: scale(1);
   }
-`
+`;
 export const modalUnmount = keyframes`
   0% {
     transform: scale(1);
@@ -21,7 +21,7 @@ export const modalUnmount = keyframes`
   100% {
     transform: scale(0);
   }
-`
+`;
 export const slideLeftIn = keyframes`
   0% {
     transform: translateX(44rem);
@@ -29,4 +29,4 @@ export const slideLeftIn = keyframes`
   100% {
     transform: translateX(0);
   }
-`
+`;

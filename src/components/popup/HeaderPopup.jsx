@@ -64,9 +64,9 @@ const Wrapper = styled.div`
     }
   }
   .popup-mount {
-    animation: ${popupMount} 0.5s;
+    animation: ${popupMount} 0.3s;
   }
   .popup-unmount {
-    animation: ${popupUnmount} 0.4s;
+    animation: ${popupUnmount} 0.3s;
   }
 `;

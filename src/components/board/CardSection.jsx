@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useSearchParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import Card from '../common/card/Card';
@@ -14,12 +14,17 @@ const filterMap = {
 
 const CardSection = ({ tag }) => {
   const { page, setPostLength, selected } = useOutletContext();
+  const [searchParams] = useSearchParams();
+  const keyword = searchParams.get('keyword');
+
   const offset = (page - 1) * limit;
+
   const { data, isSuccess, isLoading, refetch } = useQuery(
     [`/boards/${tag}`],
     () =>
       getBoardList({
         tag,
+        title: keyword ?? '',
         dateLoe: '',
         dateGoe: '',
         sortTarget: filterMap[selected],
@@ -34,7 +39,7 @@ const CardSection = ({ tag }) => {
   useEffect(() => {
     refetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected]);
+  }, [selected, keyword]);
 
   return (
     <Wrapper>

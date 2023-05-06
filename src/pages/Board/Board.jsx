@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import {
+  Outlet,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import ContainedButton from '../../components/common/button/ContainedButton';
+import OutlinedButton from '../../components/common/button/OutlinedButton';
 import SelectButton from '../../components/common/button/SelectButton';
 import Pagination from '../../components/common/pagination/Pagination';
+import icClose from '../../assets/icons/close.svg';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
 import { authModalState } from '../../recoil/auth/authModal';
@@ -33,21 +40,29 @@ const Board = () => {
   const [, openModal] = useRecoilState(authModalState);
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const keyword = searchParams.get('keyword');
 
   const categoryHandler = (key) => {
     setIsSelected(true);
     setPage(1);
 
-    if (key === 'ALL') {
-      key = '';
-    } else if (key === 'EUROPEAN') {
+    if (key === 'EUROPEAN') {
       key = 'WESTERN';
     }
-    navigate(`${key.toLowerCase()}`);
+    navigate(
+      `${key.toLowerCase()}?keyword=${
+        searchParams.get('keyword') ?? ''
+      }&sort=${selectedFilter.toLowerCase()}`
+    );
   };
 
   const filterHandler = (e) => {
     setSelectedFilter(e.target.value);
+    setSearchParams({
+      keyword: searchParams.get('keyword') ?? '',
+      sort: e.target.value.toLowerCase(),
+    });
     setIsSelected(true);
     setPage(1);
   };
@@ -105,7 +120,23 @@ const Board = () => {
             글 작성
           </ContainedButton>
         </TopSection>
-        <SelectSection>
+        <SelectSection keyword={keyword}>
+          {keyword && (
+            <OutlinedButton className='search-result'>
+              <span>검색어: {keyword}</span>
+              <img
+                role='presentation'
+                onClick={() => {
+                  setSearchParams({
+                    keyword: '',
+                    sort: selectedFilter.toLowerCase(),
+                  });
+                }}
+                src={icClose}
+                alt='검색어 삭제'
+              />
+            </OutlinedButton>
+          )}
           <SelectButton
             onChange={filterHandler}
             option={filterOption}
@@ -113,7 +144,14 @@ const Board = () => {
           />
         </SelectSection>
       </div>
-      <Outlet context={{ page, setPostLength, selected: selectedFilter }} />
+      <Outlet
+        context={{
+          page,
+          setPostLength,
+          selected: selectedFilter,
+          keyword: location.state?.keyword,
+        }}
+      />
       <footer>
         <Pagination
           total={postLength}
@@ -179,6 +217,28 @@ const Category = styled.div`
 
 const SelectSection = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: ${({ keyword }) => (keyword ? 'space-between' : 'flex-end')};
   margin-top: 1.6rem;
+  gap: 4rem;
+  .search-result {
+    border-color: ${theme.colors.grey50};
+    &:hover {
+      cursor: default;
+    }
+    button {
+      color: ${theme.colors.grey90};
+      padding: 0.4rem 1rem;
+      span {
+        font-size: 1.6rem;
+        margin-right: 0.6rem;
+      }
+      img {
+        width: 1.4rem;
+        height: 1.4rem;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
 `;

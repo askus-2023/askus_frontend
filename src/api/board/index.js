@@ -14,11 +14,18 @@ export const getBoardDetail = async ({ boardId }) => {
   }
 };
 
-export const getBoardList = async ({ tag, dateLoe, dateGoe, sortTarget }) => {
+export const getBoardList = async ({
+  tag,
+  title,
+  dateLoe,
+  dateGoe,
+  sortTarget,
+}) => {
   try {
     const { data } = await rawApi.get(`/v1/boards`, {
       params: {
         tag,
+        title,
         dateLoe,
         dateGoe,
         sortTarget,

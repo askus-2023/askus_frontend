@@ -1,4 +1,4 @@
-import { keyframes } from "styled-components";
+import { keyframes } from 'styled-components';
 
 export const commentMount = keyframes`
   0% {
@@ -11,4 +11,4 @@ export const commentMount = keyframes`
     display: none;
     transform: scaleY(0) translateX(-1%);
   }
-`
+`;

@@ -14,7 +14,7 @@ import AuthModal from '../auth/entry/AuthModal';
 import logo from '../../assets/images/logo.png';
 import icBurgerSimple from '../../assets/icons/burger-simple.svg';
 import icProfile from '../../assets/icons/default-profile.svg';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
 import { authModalState } from '../../recoil/auth/authModal';
@@ -23,6 +23,7 @@ import { throttle } from 'lodash';
 
 const Header = () => {
   const [phase, setPhase] = useState('signin');
+  const [searchKeyword, setSearchKeyword] = useState('');
   const [alpha, setAlpha] = useState(0);
   const [scrollY, setScrollY] = useState(window.scrollY);
   const profileRef = useRef(null);
@@ -34,7 +35,7 @@ const Header = () => {
   const [isOpenPopup, openPopup] = useState(false);
   const [animation, setAnimation] = useState('popup-mount');
   const profileImage = window.localStorage.getItem('profile_img');
-
+  const [, setSearchParams] = useSearchParams();
   const calculateAlpha = useMemo(
     () =>
       throttle(() => {
@@ -46,17 +47,16 @@ const Header = () => {
     []
   );
 
-  const closePopup = useCallback(
-    (e) => {
-      const target = e.target;
-      if (profileRef.current?.contains(target)) {
-        setAnimation('popup-mount');
-        openPopup(true);
-      } else {
-        setAnimation('popup-unmount')
-        setTimeout(() => openPopup(false), 300)
-      }
-    }, []);
+  const closePopup = useCallback((e) => {
+    const target = e.target;
+    if (profileRef.current?.contains(target)) {
+      setAnimation('popup-mount');
+      openPopup(true);
+    } else {
+      setAnimation('popup-unmount');
+      setTimeout(() => openPopup(false), 200);
+    }
+  }, []);
 
   useEffect(() => {
     document.addEventListener('scroll', calculateAlpha, { passive: true });
@@ -82,12 +82,32 @@ const Header = () => {
           {pathname === '/main' ? (
             scrollY > 480 && (
               <li className='header-action__search'>
-                <SearchInput />
+                <SearchInput
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setSearchKeyword('');
+                    setSearchParams({ keyword: searchKeyword, sort: 'newest' });
+                    navigate(`/board/all?keyword=${searchKeyword}&sort=newest`);
+                  }}
+                  value={searchKeyword}
+                  onChange={(e) => setSearchKeyword(e.target.vlaue)}
+                />
               </li>
             )
           ) : (
             <li className='header-action__search'>
-              <SearchInput />
+              <SearchInput
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setSearchKeyword('');
+                  setSearchParams({ keyword: searchKeyword, sort: 'newest' });
+                  navigate(`/board/all?keyword=${searchKeyword}&sort=newest`);
+                }}
+                value={searchKeyword}
+                onChange={(e) => {
+                  setSearchKeyword(e.target.value);
+                }}
+              />
             </li>
           )}
           {accessToken ? (
@@ -104,7 +124,9 @@ const Header = () => {
                   alt='프로필 아이콘'
                 />
               </ProfileWrapper>
-              {isOpenPopup && <HeaderPopup ref={popupRef} className={animation} />}
+              {isOpenPopup && (
+                <HeaderPopup ref={popupRef} className={animation} />
+              )}
             </li>
           ) : (
             <>
