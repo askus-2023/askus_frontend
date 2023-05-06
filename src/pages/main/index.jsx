@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Tag from '../../components/tag/Tag';
@@ -9,6 +9,11 @@ import { theme } from '../../styles/Theme';
 
 const MainPage = () => {
   const navigate = useNavigate();
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const searchHandler = (e) => {
+    e.preventDefault();
+    navigate(`/board/all?keyword=${searchKeyword}&sort=newest`);
+  };
 
   return (
     <Wrapper>
@@ -25,7 +30,9 @@ const MainPage = () => {
             <li className='category'>
               <button
                 onClick={() =>
-                  navigate('/board', { state: { category: '한식' } })
+                  navigate('/board/all?keyword=&sort=newest', {
+                    state: { category: '한식' },
+                  })
                 }
               >
                 <Tag className='category-item'>전체</Tag>
@@ -34,7 +41,9 @@ const MainPage = () => {
             <li className='category'>
               <button
                 onClick={() =>
-                  navigate('/board/korean', { state: { category: '한식' } })
+                  navigate('/board/korean?keyword=&sort=newest', {
+                    state: { category: '한식' },
+                  })
                 }
               >
                 <Tag className='category-item'>한식</Tag>
@@ -43,7 +52,9 @@ const MainPage = () => {
             <li className='category'>
               <button
                 onClick={() =>
-                  navigate('/board/western', { state: { category: '양식' } })
+                  navigate('/board/western?keyword=&sort=newest', {
+                    state: { category: '양식' },
+                  })
                 }
               >
                 <Tag className='category-item'>양식</Tag>
@@ -52,7 +63,9 @@ const MainPage = () => {
             <li className='category'>
               <button
                 onClick={() =>
-                  navigate('/board/japanese', { state: { category: '일식' } })
+                  navigate('/board/japanese?keyword=&sort=newest', {
+                    state: { category: '일식' },
+                  })
                 }
               >
                 <Tag className='category-item'>일식</Tag>
@@ -61,7 +74,9 @@ const MainPage = () => {
             <li className='category'>
               <button
                 onClick={() =>
-                  navigate('/board/chinese', { state: { category: '중식' } })
+                  navigate('/board/chinese?keyword=&sort=newest', {
+                    state: { category: '중식' },
+                  })
                 }
               >
                 <Tag className='category-item'>중식</Tag>
@@ -70,7 +85,9 @@ const MainPage = () => {
             <li className='category'>
               <button
                 onClick={() =>
-                  navigate('/board/etc', { state: { category: '기타' } })
+                  navigate('/board/etc?keyword=&sort=newest', {
+                    state: { category: '기타' },
+                  })
                 }
               >
                 <Tag className='category-item'>기타</Tag>
@@ -78,11 +95,12 @@ const MainPage = () => {
             </li>
           </ul>
         </CategoryWrapper>
-        <SearchWrapper>
+        <SearchWrapper onSubmit={searchHandler}>
           <SearchInput
             className='search'
             placeholder='레시피 검색하기..'
             alwaysVisible={true}
+            onChange={(e) => setSearchKeyword(e.target.value)}
           />
           <div className='ic-search'>
             <img src={icSearch} alt='검색' />

@@ -52,7 +52,7 @@ function App() {
             <Route path='/main' element={<MainPage />} />
             <Route element={<RequireAuth />}>
               <Route path='/board' element={<Board />}>
-                <Route path='' element={<CardSection tag='' />} />
+                <Route path='all' element={<CardSection tag='' />} />
                 <Route path='korean' element={<CardSection tag='KOREAN' />} />
                 <Route
                   path='japanese'
