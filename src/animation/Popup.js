@@ -1,4 +1,4 @@
-import { keyframes } from "styled-components";
+import { keyframes } from 'styled-components';
 
 export const popupMount = keyframes`
   0% {
@@ -10,15 +10,12 @@ export const popupMount = keyframes`
   100% {
     transform: scale(1);
   }
-`
+`;
 export const popupUnmount = keyframes`
-  0% {
+  from {
     transform: scale(1);
   }
-  80% {
-    transform: scale(0.2);
+  to {
+    transform: scale(0.4);
   }
-  100% {
-    transform: scale(0);
-  }
-`
+`;

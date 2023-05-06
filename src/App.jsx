@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { accessTokenState } from './recoil/auth/accessToken';
 
 import Header from './components/header/Header';
@@ -18,12 +18,16 @@ import RemoveTrailingSlash from './components/RemoveTrailingSlash';
 import RequireLoginPage from './pages/auth/RequireLogin';
 import CardSection from './components/board/CardSection';
 import { AccessToken } from './infra/AccessToken';
+import AIButton from './components/AIChat/AIButton';
+import ChatWindow from './components/AIChat/ChatWindow';
+import { chatWindowState } from './recoil/AIChat/chatWindow';
 
 export const aT = new AccessToken();
 
 function App() {
   const queryClient = new QueryClient();
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+  const isOpenChat = useRecoilValue(chatWindowState);
 
   useEffect(() => {
     aT.aTSetter(accessToken);
@@ -67,10 +71,11 @@ function App() {
               <Route path='/profile' element={<Profile />} />
               <Route path='/profile/edit' element={<ProfileEdit />} />
             </Route>
-
             <Route path='/require-login' element={<RequireLoginPage />} />
           </Route>
         </Routes>
+        <AIButton />
+        {isOpenChat.chatWindow && <ChatWindow />}
       </QueryClientProvider>
     </div>
   );

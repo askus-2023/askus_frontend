@@ -15,7 +15,7 @@ const AuthModal = ({ phase, setPhase }) => {
   const handleCloseModal = (value) => {
     setAnimation('modal-unmount');
     setTimeout(() => openModal(value), 150);
-  }
+  };
 
   return (
     <Wrapper>
