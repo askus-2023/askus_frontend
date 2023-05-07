@@ -2,11 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 
-const AIMessage = ({ message }) => {
+const AIMessage = ({ message, children, isLoading }) => {
   return (
     <Wrapper>
       <Message>
-        <p className='ai-message'>{message}</p>
+        {isLoading ?
+          children :
+          <p className='ai-message'>{message}</p>  
+        }
       </Message>
     </Wrapper>
   );

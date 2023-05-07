@@ -6,13 +6,13 @@ import MyMessage from './MyMessage';
 import icChatbot from '../../assets/icons/chatbot-white.svg';
 import icClose from '../../assets/icons/close-white.svg';
 import openAI from '../../assets/images/openAI.png';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { messagesState } from '../../recoil/AIChat/messages';
 import { chatWindowState } from '../../recoil/AIChat/chatWindow';
 import { chatMount, chatUnmount } from '../../animation/Chat';
 import { chat } from '../../api/chat';
 import { useMutation } from 'react-query';
-import { accessTokenState } from '../../recoil/auth/accessToken';
+import Spinner2 from '../common/spinner/Spinner2';
 
 const ChatWindow = () => {
   const textAreaRef = useRef();
@@ -22,7 +22,6 @@ const ChatWindow = () => {
   const [messages, setMessages] = useRecoilState(messagesState);
   const [, openChat] = useRecoilState(chatWindowState);
 
-  const accessToken = useRecoilValue(accessTokenState);
   const chatMutation = useMutation(chat, {
     onSuccess: (data) => {
       setMessages((prev) => [...prev, { from: 'ai', content: data.answer }]);
@@ -36,7 +35,7 @@ const ChatWindow = () => {
     e.preventDefault();
     if (question) {
       setMessages((prev) => [...prev, { from: 'me', content: question }]);
-      chatMutation.mutate({ accessToken: accessToken });
+      chatMutation.mutate({ question });
     }
     setQuestion('');
   };
@@ -99,11 +98,15 @@ const ChatWindow = () => {
           <div className='messages-wrapper'>
             {messages.map((message, index) => {
               if (message.from === 'ai') {
-                return <AIMessage key={index} message={message.content} />;
+                return <AIMessage key={index} message={message.content} isLoading={false} />;
               } else {
                 return <MyMessage key={index} message={message.content} />;
               }
             })}
+            {chatMutation.isLoading && 
+              <AIMessage isLoading={true}>
+                <Spinner2 />
+              </AIMessage>}
             <div ref={scrollRef} />
           </div>
           <TypeArea>
