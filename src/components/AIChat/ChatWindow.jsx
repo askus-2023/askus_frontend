@@ -6,10 +6,13 @@ import MyMessage from './MyMessage';
 import icChatbot from '../../assets/icons/chatbot-white.svg';
 import icClose from '../../assets/icons/close-white.svg';
 import openAI from '../../assets/images/openAI.png';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { messagesState } from '../../recoil/AIChat/messages';
 import { chatWindowState } from '../../recoil/AIChat/chatWindow';
 import { chatMount, chatUnmount } from '../../animation/Chat';
+import { chat } from '../../api/chat';
+import { useMutation } from 'react-query';
+import { accessTokenState } from '../../recoil/auth/accessToken';
 
 const ChatWindow = () => {
   const textAreaRef = useRef();
@@ -19,10 +22,21 @@ const ChatWindow = () => {
   const [messages, setMessages] = useRecoilState(messagesState);
   const [, openChat] = useRecoilState(chatWindowState);
 
+  const accessToken = useRecoilValue(accessTokenState);
+  const chatMutation = useMutation(chat, {
+    onSuccess: (data) => {
+      setMessages((prev) => [...prev, { from: 'ai', content: data.answer }]);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
   const submitHandler = (e) => {
     e.preventDefault();
     if (question) {
       setMessages((prev) => [...prev, { from: 'me', content: question }]);
+      chatMutation.mutate({ accessToken: accessToken });
     }
     setQuestion('');
   };
