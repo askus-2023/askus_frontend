@@ -10,6 +10,9 @@ import { useRecoilState } from 'recoil';
 import { messagesState } from '../../recoil/AIChat/messages';
 import { chatWindowState } from '../../recoil/AIChat/chatWindow';
 import { chatMount, chatUnmount } from '../../animation/Chat';
+import { chat } from '../../api/chat';
+import { useMutation } from 'react-query';
+import Spinner2 from '../common/spinner/Spinner2';
 
 const ChatWindow = () => {
   const textAreaRef = useRef();
@@ -19,10 +22,20 @@ const ChatWindow = () => {
   const [messages, setMessages] = useRecoilState(messagesState);
   const [, openChat] = useRecoilState(chatWindowState);
 
+  const chatMutation = useMutation(chat, {
+    onSuccess: (data) => {
+      setMessages((prev) => [...prev, { from: 'ai', content: data.answer }]);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
   const submitHandler = (e) => {
     e.preventDefault();
     if (question) {
       setMessages((prev) => [...prev, { from: 'me', content: question }]);
+      chatMutation.mutate({ question });
     }
     setQuestion('');
   };
@@ -85,11 +98,15 @@ const ChatWindow = () => {
           <div className='messages-wrapper'>
             {messages.map((message, index) => {
               if (message.from === 'ai') {
-                return <AIMessage key={index} message={message.content} />;
+                return <AIMessage key={index} message={message.content} isLoading={false} />;
               } else {
                 return <MyMessage key={index} message={message.content} />;
               }
             })}
+            {chatMutation.isLoading && 
+              <AIMessage isLoading={true}>
+                <Spinner2 />
+              </AIMessage>}
             <div ref={scrollRef} />
           </div>
           <TypeArea>
