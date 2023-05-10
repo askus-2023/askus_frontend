@@ -6,10 +6,7 @@ const AIMessage = ({ message, children, isLoading }) => {
   return (
     <Wrapper>
       <Message>
-        {isLoading ?
-          children :
-          <p className='ai-message'>{message}</p>  
-        }
+        {isLoading ? children : <p className='ai-message'>{message}</p>}
       </Message>
     </Wrapper>
   );

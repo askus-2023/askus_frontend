@@ -98,15 +98,22 @@ const ChatWindow = () => {
           <div className='messages-wrapper'>
             {messages.map((message, index) => {
               if (message.from === 'ai') {
-                return <AIMessage key={index} message={message.content} isLoading={false} />;
+                return (
+                  <AIMessage
+                    key={index}
+                    message={message.content}
+                    isLoading={false}
+                  />
+                );
               } else {
                 return <MyMessage key={index} message={message.content} />;
               }
             })}
-            {chatMutation.isLoading && 
+            {chatMutation.isLoading && (
               <AIMessage isLoading={true}>
                 <Spinner2 />
-              </AIMessage>}
+              </AIMessage>
+            )}
             <div ref={scrollRef} />
           </div>
           <TypeArea>
