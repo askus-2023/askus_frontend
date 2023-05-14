@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import OutlinedButton from '../../components/common/button/OutlinedButton';
@@ -13,7 +13,7 @@ const Profile = () => {
   const [selectedCate, setSelectedCate] = useState('작성글');
   const [myPost, setMyPost] = useState();
   const [likePost, setLikePost] = useState();
-
+  const location = useLocation();
   const navigate = useNavigate();
   const accessToken = useRecoilValue(accessTokenState);
 
@@ -38,6 +38,15 @@ const Profile = () => {
   });
 
   const [likeBoardData, setLikeBoardData] = useState(likeData);
+
+  useEffect(() => {
+    if (location.state?.cate) {
+      setSelectedCate(location.state.cate);
+      if (myPost || likePost) {
+        window.scrollTo({ top: 200, behavior: 'smooth' });
+      }
+    }
+  }, [likePost, location.state.cate, myPost]);
 
   useEffect(() => {
     setProfileData(viewData);
