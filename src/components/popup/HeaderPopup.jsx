@@ -3,10 +3,20 @@ import styled from 'styled-components';
 import { theme } from '../../styles/Theme';
 import { useNavigate } from 'react-router-dom';
 import { popupMount, popupUnmount } from '../../animation/Popup';
+import { logout } from '../../api/auth';
+import { useRecoilState } from 'recoil';
+import { accessTokenState } from '../../recoil/auth/accessToken';
 
 const HeaderPopup = forwardRef(({ className }, ref) => {
   const navigate = useNavigate();
+  const [, setAccessToken] = useRecoilState(accessTokenState);
 
+  const logoutHandler = () => {
+    logout().then(() => {
+      setAccessToken('');
+      window.localStorage.clear();
+    });
+  };
   return (
     <Wrapper className='popup-wrapper' ref={ref}>
       <ul className={`popup-wrapper__ul ${className}`}>
@@ -14,14 +24,22 @@ const HeaderPopup = forwardRef(({ className }, ref) => {
           <button onClick={() => navigate('/profile')}>프로필</button>
         </li>
         <li className='my-articles'>
-          <button>내가 쓴 글</button>
+          <button
+            onClick={() => navigate('/profile', { state: { cate: '작성글' } })}
+          >
+            내가 쓴 글
+          </button>
         </li>
         <li className='my-likes'>
-          <button>좋아요</button>
+          <button
+            onClick={() => navigate('/profile', { state: { cate: '좋아요' } })}
+          >
+            좋아요
+          </button>
         </li>
-        {/* <li className='logout'>
-          <button>로그아웃</button>
-        </li> */}
+        <li className='logout'>
+          <button onClick={logoutHandler}>로그아웃</button>
+        </li>
       </ul>
     </Wrapper>
   );
