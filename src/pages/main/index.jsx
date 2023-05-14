@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Tag from '../../components/tag/Tag';
 import SearchInput from '../../components/common/input/SearchInput';
+import MainScrollPart from '../../components/main/MainScrollPart';
 import bgImage from '../../assets/images/mainPage/bg-01.jpg';
 import icSearch from '../../assets/icons/search-grey.svg';
 import { theme } from '../../styles/Theme';
@@ -107,7 +108,9 @@ const MainPage = () => {
           </div>
         </SearchWrapper>
       </SectionTop>
-      <SectionMiddle></SectionMiddle>
+      <SectionMiddle>
+        <MainScrollPart />
+      </SectionMiddle>
     </Wrapper>
   );
 };
@@ -186,8 +189,7 @@ const SearchWrapper = styled.div`
       }
     }
   }
-}
 `;
 const SectionMiddle = styled.section`
-  height: 100rem;
+  /* height: 100rem; */
 `;
