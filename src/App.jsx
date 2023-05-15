@@ -59,7 +59,7 @@ function App() {
                   element={<CardSection tag='JAPANESE' />}
                 />
                 <Route
-                  path='western'
+                  path='european'
                   element={<CardSection tag='EUROPEAN' />}
                 />
                 <Route path='chinese' element={<CardSection tag='CHINESE' />} />

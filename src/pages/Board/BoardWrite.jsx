@@ -19,7 +19,7 @@ export const filterOption = [
   },
   {
     text: '양식',
-    value: 'WESTERN',
+    value: 'EUROPEAN',
   },
   {
     text: '일식',
