@@ -18,9 +18,9 @@ const ProfileEdit = () => {
   const [curPassword, setCurPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
-  const [nickname, setNickname] = useState(profileData.state.nickname);
+  const [nickname, setNickname] = useState(window.localStorage.getItem('nickname'));
   const [formValid, setFormValid] = useState({});
-  const [image, setImage] = useState(profileData.state.profileImageUrl);
+  const [image, setImage] = useState(window.localStorage.getItem('profile_img'));
   const [isImageUpdate, setIsImageUpdate] = useState(false);
 
   const accessToken = useRecoilValue(accessTokenState);
@@ -62,7 +62,7 @@ const ProfileEdit = () => {
     return pwError + proError;
   }
 
-  const profileImageData = profileData.state.profileImageUrl;
+  const profileImageData = window.localStorage.getItem('profile_img');
 
   const editProSubmitHandler = async (e) => {
     e.preventDefault();
