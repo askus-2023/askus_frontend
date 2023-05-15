@@ -101,7 +101,7 @@ const BoardWritePage = () => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries(['/boards']);
-          navigate('/board');
+          navigate('/board/all?keyword=&sort=newest');
         },
         onError: (err) => console.log(err),
         onSettled: () => {

@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import imageCompression from 'browser-image-compression';
 import { editPassword, editProfile } from '../../api/profile';
@@ -13,7 +12,6 @@ import { useRecoilValue } from 'recoil';
 import { accessTokenState } from '../../recoil/auth/accessToken';
 
 const ProfileEdit = () => {
-  const profileData = useLocation();
   const fileInputRef = useRef(null);
   const [curPassword, setCurPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
