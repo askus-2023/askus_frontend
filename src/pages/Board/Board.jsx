@@ -46,10 +46,6 @@ const Board = () => {
   const categoryHandler = (key) => {
     setIsSelected(true);
     setPage(1);
-
-    if (key === 'EUROPEAN') {
-      key = 'WESTERN';
-    }
     navigate(
       `${key.toLowerCase()}?keyword=${
         searchParams.get('keyword') ?? ''
@@ -74,7 +70,7 @@ const Board = () => {
       case 'korean':
         setSelectedCate('KOREAN');
         break;
-      case 'western':
+      case 'european':
         setSelectedCate('EUROPEAN');
         break;
       case 'japanese':

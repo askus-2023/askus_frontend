@@ -53,7 +53,7 @@ const MainPage = () => {
             <li className='category'>
               <button
                 onClick={() =>
-                  navigate('/board/western?keyword=&sort=newest', {
+                  navigate('/board/european?keyword=&sort=newest', {
                     state: { category: '양식' },
                   })
                 }

@@ -46,7 +46,7 @@ const Profile = () => {
         window.scrollTo({ top: 200, behavior: 'smooth' });
       }
     }
-  }, [likePost, location.state.cate, myPost]);
+  }, [likePost, location.state?.cate, myPost]);
 
   useEffect(() => {
     setProfileData(viewData);
